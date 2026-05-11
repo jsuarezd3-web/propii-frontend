@@ -108,8 +108,17 @@
   </div>
 
   <script>
-    let GOOGLE_REVIEW_URL = '';
-    const WORKER_ID = 1;
+const params = new URLSearchParams(window.location.search);
+const WORKER_ID = parseInt(params.get('id')) || 1;
+let GOOGLE_REVIEW_URL = '';
+
+fetch(`https://propii-production.up.railway.app/workers/${WORKER_ID}`)
+    .then(r => r.json())
+    .then(w => {
+        document.getElementById('worker-name').textContent = w.name;
+        document.getElementById('role').textContent = (w.role || 'Trabajador') + (w.hotel_name ? ' · ' + w.hotel_name : '');
+        GOOGLE_REVIEW_URL = w.google_review_url || '';
+    });
 
     const stripe = Stripe('pk_test_51SWW0qGiQIMXrUUgIecxTu9jMrqPq3Vn6G8XDMYe0woByiCYc8Qpr0rNmMjE13NC7OdZg2byhsUN6vnmDJec5xbI00Uh5LgBDN');
     const elements = stripe.elements();
@@ -149,7 +158,7 @@
     paymentRequest.on('paymentmethod', async (ev) => {
       const custom = document.getElementById('custom-amount').value;
       const amount = parseFloat(custom || selectedAmount);
-      const res = await fetch(`http://127.0.0.1:8000/tips/charge/${WORKER_ID}`, {
+      const res = await fetch(`https://propii-production.up.railway.app/tips/charge/${WORKER_ID}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ payment_method_id: ev.paymentMethod.id, amount_mxn: amount })
