@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Propii — Mi Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      min-height: 100vh;
+    }
+    .header {
+      background: #185FA5;
+      padding: 1.25rem 1.5rem;
+      color: white;
+    }
+    .header-logo { font-size: 12px; font-weight: 500; color: #B5D4F4; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+    .header-name { font-size: 20px; font-weight: 600; }
+    .header-role { font-size: 13px; color: #85B7EB; margin-top: 2px; }
+    .tabs {
+      display: flex;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      overflow-x: auto;
+    }
+    .tab {
+      flex: 1;
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6b7280;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .tab.active {
+      color: #185FA5;
+      border-bottom-color: #185FA5;
+    }
+    .body { padding: 1.25rem; max-width: 500px; margin: 0 auto; }
+    .summary-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .summary-label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .summary-amount { font-size: 32px; font-weight: 700; color: #111827; }
+    .summary-amount span { font-size: 16px; font-weight: 400; color: #6b7280; margin-left: 4px; }
+    .summary-count { font-size: 13px; color: #6b7280; margin-top: 4px; }
+    .next-deposit {
+      background: #E6F1FB;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .next-deposit-icon { font-size: 24px; }
+    .next-deposit-label { font-size: 12px; color: #185FA5; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .next-deposit-info { font-size: 15px; font-weight: 600; color: #111827; margin-top: 2px; }
+    .movements-title { font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .movement-item {
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .movement-date { font-size: 13px; color: #6b7280; }
+    .movement-amount { font-size: 16px; font-weight: 600; color: #3B6D11; }
+    .empty { text-align: center; padding: 2rem; color: #9ca3af; font-size: 14px; }
+    .loading { text-align: center; padding: 2rem; color: #9ca3af; }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-section" style="display:none;">
+    <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1rem;">
+      <div style="width:100%; max-width:360px; background:#fff; border-radius:24px; box-shadow:0 4px 24px rgba(0,0,0,0.08); overflow:hidden;">
+        <div style="background:#185FA5; padding:2rem 1.5rem; text-align:center;">
+          <div style="font-size:13px; font-weight:500; color:#B5D4F4; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">Propii</div>
+          <div style="font-size:22px; font-weight:600; color:#fff;">Inicia sesión</div>
+          <div style="font-size:14px; color:#85B7EB; margin-top:4px;">Accede a tu dashboard de propinas</div>
+        </div>
+        <div style="padding:1.5rem;">
+          <input id="login-email" type="email" placeholder="Tu email" style="width:100%; padding:12px; border-radius:8px; border:1px solid #d1d5db; font-size:15px; margin-bottom:10px; outline:none;" />
+          <input id="login-password" type="password" placeholder="Contraseña" style="width:100%; padding:12px; border-radius:8px; border:1px solid #d1d5db; font-size:15px; margin-bottom:6px; outline:none;" />
+          <div id="login-error" style="color:#dc2626; font-size:13px; min-height:20px; margin-bottom:10px;"></div>
+          <button onclick="login()" style="width:100%; padding:14px; background:#3B6D11; border:none; border-radius:8px; color:#fff; font-size:16px; font-weight:500; cursor:pointer;">Entrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard-section" style="display:none;">
+    <div class="header">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div class="header-logo">Propii</div>
+          <div class="header-name" id="worker-name">Cargando...</div>
+          <div class="header-role" id="worker-role"></div>
+        </div>
+        <button onclick="cerrarSesion()" style="background:rgba(255,255,255,0.2); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-size:12px; cursor:pointer;">Salir</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="cambiarPeriodo('hoy', this)">Hoy</div>
+      <div class="tab" onclick="cambiarPeriodo('semana', this)">Semana</div>
+      <div class="tab" onclick="cambiarPeriodo('mes', this)">Mes</div>
+      <div class="tab" onclick="cambiarPeriodo('año', this)">Año</div>
+    </div>
+
+    <div class="body">
+      <div class="loading" id="loading">Cargando datos...</div>
+      <div id="content" style="display:none;">
+        <div class="summary-card">
+          <div class="summary-label" id="summary-label">Hoy</div>
+          <div class="summary-amount" id="summary-amount">$0 <span>MXN</span></div>
+          <div class="summary-count" id="summary-count">0 propinas</div>
+        </div>
+        <div class="next-deposit">
+          <div class="next-deposit-icon">🏦</div>
+          <div>
+            <div class="next-deposit-label">Próximo depósito</div>
+            <div class="next-deposit-info" id="next-deposit">En proceso con Stripe</div>
+          </div>
+        </div>
+        <div class="movements-title">Movimientos</div>
+        <div id="movements"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+const BACKEND = 'https://propii-production.up.railway.app';
+let dashboardData = null;
+let token = localStorage.getItem('propii_token');
+let workerId = localStorage.getItem('propii_worker_id');
+
+const labels = { hoy: 'Hoy', semana: 'Esta semana', mes: 'Este mes', año: 'Este año' };
+
+function mostrarLogin() {
+  document.getElementById('login-section').style.display = 'block';
+  document.getElementById('dashboard-section').style.display = 'none';
+}
+
+function mostrarDashboard() {
+  document.getElementById('login-section').style.display = 'none';
+  document.getElementById('dashboard-section').style.display = 'block';
+}
+
+async function login() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const errorEl = document.getElementById('login-error');
+
+  const res = await fetch(`${BACKEND}/workers/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+
+  if (res.ok) {
+    const data = await res.json();
+    localStorage.setItem('propii_token', data.access_token);
+    localStorage.setItem('propii_worker_id', data.worker_id);
+    token = data.access_token;
+    workerId = data.worker_id;
+    errorEl.textContent = '';
+    cargarDashboard();
+  } else {
+    errorEl.textContent = 'Email o contraseña incorrectos';
+  }
+}
+
+function cerrarSesion() {
+  localStorage.removeItem('propii_token');
+  localStorage.removeItem('propii_worker_id');
+  token = null;
+  workerId = null;
+  mostrarLogin();
+}
+
+async function cargarDashboard() {
+  if (!token || !workerId) { mostrarLogin(); return; }
+
+  const res = await fetch(`${BACKEND}/workers/${workerId}/dashboard`);
+  if (!res.ok) { cerrarSesion(); return; }
+
+  dashboardData = await res.json();
+  document.getElementById('worker-name').textContent = dashboardData.worker.full_name;
+  document.getElementById('worker-role').textContent = dashboardData.worker.role + ' · ' + dashboardData.worker.hotel_or_place;
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+  mostrarDashboard();
+  renderPeriodo('hoy');
+}
+
+function renderPeriodo(periodo) {
+  const data = dashboardData[periodo];
+  document.getElementById('summary-label').textContent = labels[periodo];
+  document.getElementById('summary-amount').innerHTML = `$${data.total_mxn.toFixed(0)} <span>MXN</span>`;
+  document.getElementById('summary-count').textContent = `${data.cantidad} propina${data.cantidad !== 1 ? 's' : ''}`;
+
+  const movEl = document.getElementById('movements');
+  if (data.movimientos.length === 0) {
+    movEl.innerHTML = '<div class="empty">Sin movimientos en este periodo</div>';
+  } else {
+    movEl.innerHTML = data.movimientos.map(m => `
+      <div class="movement-item">
+        <div class="movement-date">${m.fecha}</div>
+        <div class="movement-amount">$${m.monto.toFixed(0)} MXN</div>
+      </div>
+    `).join('');
+  }
+}
+
+function cambiarPeriodo(periodo, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderPeriodo(periodo);
+}
+
+if (token && workerId) {
+  cargarDashboard();
+} else {
+  mostrarLogin();
+}  </script>
+</body>
+</html>

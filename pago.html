@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Propii</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .phone-frame {
+      width: 100%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .header { background: #185FA5; padding: 1.5rem 1.25rem 1.25rem; text-align: center; }
+    .header-logo { font-size: 13px; font-weight: 500; color: #B5D4F4; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .header-name { font-size: 22px; font-weight: 500; color: #ffffff; margin-bottom: 4px; }
+    .header-role { font-size: 14px; color: #85B7EB; }
+    .lang-toggle { display: flex; justify-content: flex-end; padding: 0.75rem 1.25rem 0; gap: 6px; }
+    .lang-btn { font-size: 12px; padding: 3px 10px; border-radius: 20px; border: 1px solid #d1d5db; background: transparent; color: #6b7280; cursor: pointer; }
+    .lang-btn.active { background: #185FA5; color: #fff; border-color: #185FA5; }
+    .body { padding: 1.25rem; }
+    .section-label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+    .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .amount-btn { padding: 10px 0; border-radius: 8px; border: 1px solid #d1d5db; background: #f9fafb; font-size: 15px; font-weight: 500; color: #111827; cursor: pointer; text-align: center; }
+    .amount-btn.selected { border: 2px solid #185FA5; color: #185FA5; background: #E6F1FB; }
+    .custom-wrap { display: flex; align-items: center; border-radius: 8px; border: 1px solid #d1d5db; background: #f9fafb; margin-bottom: 0.5rem; overflow: hidden; }
+    .custom-prefix { padding: 10px 8px 10px 12px; font-size: 15px; color: #6b7280; flex-shrink: 0; }
+    .custom-input { flex: 1; padding: 10px 12px 10px 0; border: none; background: transparent; font-size: 15px; color: #111827; outline: none; }
+    .currency-note { font-size: 12px; color: #9ca3af; margin-bottom: 1.25rem; padding-left: 2px; }
+    .divider { height: 1px; background: #f3f4f6; margin: 1.25rem 0; }
+    #card-element { padding: 12px; border-radius: 8px; border: 1px solid #d1d5db; background: #f9fafb; margin-bottom: 10px; min-height: 44px; }
+    #card-errors { color: #dc2626; font-size: 13px; margin-bottom: 10px; min-height: 18px; }
+    .pay-btn { width: 100%; padding: 14px; background: #3B6D11; border: none; border-radius: 8px; color: #ffffff; font-size: 16px; font-weight: 500; cursor: pointer; margin-top: 0.5rem; transition: background 0.15s; }
+    .pay-btn:hover { background: #2d5409; }
+    .pay-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+    .stripe-badge { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 0.75rem; font-size: 12px; color: #9ca3af; padding-bottom: 0.5rem; }
+    .stripe-logo { display: inline-flex; align-items: center; justify-content: center; background: #635BFF; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-weight: 500; color: #ffffff; }
+    #success-msg { display: none; text-align: center; padding: 1.5rem 1rem; }
+    .star { font-size: 36px; cursor: pointer; transition: transform 0.1s; user-select: none; }
+    .star:hover { transform: scale(1.2); }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <div class="header">
+      <div class="header-logo">Propii</div>
+      <div class="header-name" id="worker-name">Carlos Ramírez</div>
+      <div class="header-role" id="role">Mesero · Hotel Fiesta Americana</div>
+    </div>
+
+    <div class="lang-toggle">
+      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+
+    <div class="body">
+      <div id="payment-section">
+        <div class="section-label" id="lbl-amount">¿Cuánto deseas dejar?</div>
+        <div class="amount-grid">
+          <div class="amount-btn" onclick="selectAmount(this, 50)">$50</div>
+          <div class="amount-btn selected" onclick="selectAmount(this, 100)">$100</div>
+          <div class="amount-btn" onclick="selectAmount(this, 200)">$200</div>
+        </div>
+
+        <div class="custom-wrap">
+          <span class="custom-prefix">$</span>
+          <input class="custom-input" id="custom-amount" type="number" min="1" placeholder="Otro monto" oninput="clearSelected()" />
+        </div>
+        <div class="currency-note" id="lbl-currency-note">Todos los montos en pesos mexicanos (MXN)</div>
+
+        <div class="divider"></div>
+
+        <div class="section-label" id="lbl-card">Datos de tu tarjeta</div>
+        <div id="apple-google-pay" style="display:none; margin-bottom:12px;">
+          <div id="payment-request-button"></div>
+          <div style="text-align:center; font-size:12px; color:#9ca3af; margin:10px 0;" id="lbl-or">— o paga con tarjeta —</div>
+        </div>
+        <div id="card-element"></div>
+        <div id="card-errors"></div>
+
+        <button class="pay-btn" id="pay-btn" onclick="handlePay()">Pagar $100 MXN</button>
+      </div>
+
+      <div id="success-msg"></div>
+
+      <div class="stripe-badge">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <rect x="2" y="5" width="8" height="6" rx="1" fill="#9ca3af"/>
+          <path d="M4 5V3.5a2 2 0 1 1 4 0V5" stroke="#9ca3af" stroke-width="1.2" fill="none"/>
+        </svg>
+        <span id="lbl-secure">Pago seguro con</span>
+        <span class="stripe-logo">stripe</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let GOOGLE_REVIEW_URL = '';
+    const WORKER_ID = 1;
+
+    const stripe = Stripe('pk_test_51SWW0qGiQIMXrUUgIecxTu9jMrqPq3Vn6G8XDMYe0woByiCYc8Qpr0rNmMjE13NC7OdZg2byhsUN6vnmDJec5xbI00Uh5LgBDN');
+    const elements = stripe.elements();
+
+    const cardElement = elements.create('card', {
+      hidePostalCode: true,
+      style: {
+        base: { fontSize: '15px', color: '#111827', '::placeholder': { color: '#9ca3af' } },
+        invalid: { color: '#dc2626' }
+      }
+    });
+    cardElement.mount('#card-element');
+    cardElement.on('change', e => {
+      document.getElementById('card-errors').textContent = e.error ? e.error.message : '';
+    });
+
+    const paymentRequest = stripe.paymentRequest({
+      country: 'MX',
+      currency: 'mxn',
+      total: { label: 'Propina', amount: 10000 },
+      requestPayerName: false,
+      requestPayerEmail: false,
+    });
+
+    const prButton = elements.create('paymentRequestButton', {
+      paymentRequest,
+      style: { paymentRequestButton: { height: '48px', borderRadius: '8px' } }
+    });
+
+    paymentRequest.canMakePayment().then(result => {
+      if (result) {
+        document.getElementById('apple-google-pay').style.display = 'block';
+        prButton.mount('#payment-request-button');
+      }
+    });
+
+    paymentRequest.on('paymentmethod', async (ev) => {
+      const custom = document.getElementById('custom-amount').value;
+      const amount = parseFloat(custom || selectedAmount);
+      const res = await fetch(`http://127.0.0.1:8000/tips/charge/${WORKER_ID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payment_method_id: ev.paymentMethod.id, amount_mxn: amount })
+      });
+      const data = await res.json();
+      if (res.ok) { ev.complete('success'); showSuccess(amount); }
+      else { ev.complete('fail'); document.getElementById('card-errors').textContent = data.detail || 'Error al procesar'; }
+    });
+
+    const t = {
+      es: {
+        role: 'Mesero · Hotel Fiesta Americana',
+        amount: '¿Cuánto deseas dejar?',
+        currencyNote: 'Todos los montos en pesos mexicanos (MXN)',
+        card: 'Datos de tu tarjeta',
+        pay: 'Pagar',
+        secure: 'Pago seguro con',
+        or: '— o paga con tarjeta —',
+        otherAmount: 'Otro monto',
+        successTitle: '¡Propina enviada!',
+        received: 'recibió',
+        reviewPrompt: '¿Cómo fue tu experiencia en Hotel Fiesta Americana?',
+        thankYouPositive: '¡Gracias! Tu opinión nos ayuda mucho.',
+        feedbackPlaceholder: '¿Qué podemos mejorar?',
+        sendFeedback: 'Enviar comentario',
+        feedbackSent: '¡Gracias por tu comentario!'
+        
+      },
+      en: {
+        role: 'Waiter · Hotel Fiesta Americana',
+        amount: 'How much would you like to leave?',
+        currencyNote: 'All amounts in Mexican pesos (MXN)',
+        card: 'Card details',
+        pay: 'Pay',
+        secure: 'Secured by',
+        or: '— or pay with card —',
+        otherAmount: 'Other amount',
+        successTitle: 'Tip sent!',
+        received: 'received',
+        reviewPrompt: 'How was your experience at Hotel Fiesta Americana?',
+        thankYouPositive: 'Thank you! Your review means a lot.',
+        feedbackPlaceholder: 'What could we improve?',
+        sendFeedback: 'Send feedback',
+        feedbackSent: 'Thank you for your feedback!'
+      }
+    };
+
+    let currentLang = 'es';
+    let selectedAmount = 100;
+
+    function showSuccess(amount) {
+      const tx = t[currentLang];
+      document.getElementById('payment-section').style.display = 'none';
+      const successEl = document.getElementById('success-msg');
+      successEl.style.display = 'block';
+      successEl.innerHTML = `
+        <div style="font-size:36px; margin-bottom:12px;">✅</div>
+        <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:6px;">${tx.successTitle}</div>
+        <div style="font-size:14px; color:#6b7280; margin-bottom:24px;">Carlos Ramírez ${tx.received} $${amount} MXN</div>
+        <div style="font-size:15px; color:#374151; font-weight:500; margin-bottom:14px;">${tx.reviewPrompt}</div>
+        <div style="display:flex; justify-content:center; gap:6px; margin-bottom:16px;">
+          ${[1,2,3,4,5].map(i => `<span class="star" id="star-${i}" onclick="handleStar(${i})">☆</span>`).join('')}
+        </div>
+        <div id="review-feedback" style="font-size:13px; color:#6b7280;"></div>
+      `;
+    }
+
+    function handleStar(rating) {
+      if (rating >= 4 && !GOOGLE_REVIEW_URL) {
+        document.getElementById('review-feedback').textContent = 'No hay URL de reseña configurada.';
+        return;
+      }
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`star-${i}`).textContent = i <= rating ? '⭐' : '☆';
+      }
+      const tx = t[currentLang];
+      setTimeout(() => {
+        if (rating >= 4) {
+          window.open(GOOGLE_REVIEW_URL, '_blank');
+          document.getElementById('review-feedback').textContent = tx.thankYouPositive;
+        } else {
+          document.getElementById('review-feedback').innerHTML = `
+            <textarea id="negative-feedback" placeholder="${tx.feedbackPlaceholder}"
+              style="width:100%; padding:10px; border-radius:8px; border:1px solid #d1d5db;
+              font-size:13px; resize:none; margin-bottom:8px;" rows="3"></textarea>
+            <button onclick="sendFeedback()" style="
+              width:100%; padding:10px; background:#185FA5; border:none;
+              border-radius:8px; color:#fff; font-size:14px; cursor:pointer;">
+              ${tx.sendFeedback}
+            </button>
+          `;
+        }
+      }, 500);
+    }
+
+    function sendFeedback() {
+      const tx = t[currentLang];
+      document.getElementById('review-feedback').innerHTML = `
+        <div style="color:#3B6D11; font-size:14px; font-weight:500;">${tx.feedbackSent}</div>
+      `;
+    }
+
+async function cargarWorker() {
+  const res = await fetch(`https://propii-production.up.railway.app/workers/${WORKER_ID}`);
+  const worker = await res.json();
+  document.getElementById('worker-name').textContent = worker.full_name;
+  document.getElementById('role').textContent = worker.role + ' · ' + worker.hotel_or_place;
+  if (worker.hotel_id) {
+    const hotelRes = await fetch(`https://propii-production.up.railway.app/hotels/${worker.hotel_id}`);
+    const hotel = await hotelRes.json();
+    if (hotel.google_place_id) {
+      GOOGLE_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=' + hotel.google_place_id;
+    }
+  }
+}
+
+cargarWorker();
+
+    function setLang(lang) {
+      currentLang = lang;
+      const tx = t[lang];
+      document.getElementById('custom-amount').placeholder = tx.otherAmount;
+      document.getElementById('role').textContent = tx.role;
+      document.getElementById('lbl-amount').textContent = tx.amount;
+      document.getElementById('lbl-currency-note').textContent = tx.currencyNote;
+      document.getElementById('lbl-card').textContent = tx.card;
+      document.getElementById('lbl-secure').textContent = tx.secure;
+      const lblOr = document.getElementById('lbl-or');
+      if (lblOr) lblOr.textContent = tx.or;
+      document.getElementById('btn-es').className = 'lang-btn' + (lang === 'es' ? ' active' : '');
+      document.getElementById('btn-en').className = 'lang-btn' + (lang === 'en' ? ' active' : '');
+      updatePayBtn();
+    }
+
+    function updatePayBtn() {
+      const tx = t[currentLang];
+      const custom = document.getElementById('custom-amount').value;
+      const amount = custom || selectedAmount;
+      document.getElementById('pay-btn').textContent = tx.pay + ' $' + amount + ' MXN';
+    }
+
+    function selectAmount(el, amount) {
+      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedAmount = amount;
+      document.getElementById('custom-amount').value = amount;
+      updatePayBtn();
+      paymentRequest.update({ total: { label: 'Propina', amount: amount * 100 } });
+    }
+
+    function clearSelected() {
+      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+      selectedAmount = null;
+      updatePayBtn();
+    }
+
+    async function handlePay() {
+      const btn = document.getElementById('pay-btn');
+      const custom = document.getElementById('custom-amount').value;
+      const amount = parseFloat(custom || selectedAmount);
+
+      if (!amount || amount < 10) {
+        document.getElementById('card-errors').textContent = 'El monto mínimo es $10 MXN';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '...';
+
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+      });
+
+      if (error) {
+        document.getElementById('card-errors').textContent = error.message;
+        btn.disabled = false;
+        updatePayBtn();
+        return;
+      }
+
+      const res = await fetch(`https://propii-production.up.railway.app/tips/charge/${WORKER_ID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payment_method_id: paymentMethod.id, amount_mxn: amount })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        showSuccess(amount);
+      } else {
+        document.getElementById('card-errors').textContent = data.detail || 'Error al procesar el pago';
+        btn.disabled = false;
+        updatePayBtn();
+      }
+    }
+
+    const browserLang = navigator.language || navigator.userLanguage || 'es';
+    setLang(browserLang.startsWith('en') ? 'en' : 'es');
+  </script>
+</body>
+</html>
