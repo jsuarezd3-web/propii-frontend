@@ -9,7 +9,7 @@
     body { font-family: 'Inter', -apple-system, sans-serif; background: #0a1628; color: #fff; }
 
     nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(10,22,40,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.07); }
-    .nav-logo img { height: 36px; }
+    .nav-logo img { height: 52px; }
     .nav-btn { background: #F7931E; color: #fff; border: none; padding: 0.5rem 1.4rem; border-radius: 50px; font-size: 0.9rem; cursor: pointer; text-decoration: none; font-weight: 600; }
 
     .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6rem 2rem 4rem; background: linear-gradient(135deg, #0a1628 0%, #0d2444 50%, #0a1628 100%); }
@@ -37,6 +37,26 @@
     .who-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 1.5rem; text-align: center; }
     .who-icon { font-size: 2rem; margin-bottom: 0.8rem; }
     .who-card h4 { font-size: 0.95rem; font-weight: 600; }
+
+    /* TESTIMONIO */
+    .testimonial { padding: 5rem 2rem; display: flex; justify-content: center; background: rgba(247,147,30,0.05); border-top: 1px solid rgba(247,147,30,0.1); border-bottom: 1px solid rgba(247,147,30,0.1); }
+    .testimonial-inner { max-width: 620px; text-align: center; }
+    .testimonial-quote { font-size: 1.4rem; font-weight: 300; line-height: 1.7; color: rgba(255,255,255,0.9); margin-bottom: 1.5rem; font-style: italic; }
+    .testimonial-quote span { color: #F7931E; font-weight: 600; font-style: normal; }
+    .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 1rem; }
+    .testimonial-avatar { width: 48px; height: 48px; border-radius: 50%; background: #2B7BC4; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; }
+    .testimonial-name { text-align: left; }
+    .testimonial-name strong { display: block; font-size: 0.95rem; }
+    .testimonial-name span { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+
+    /* EMPRESAS */
+    .empresas { padding: 5rem 2rem; max-width: 1000px; margin: 0 auto; }
+    .empresas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem; }
+    @media (max-width: 600px) { .empresas-grid { grid-template-columns: 1fr; } }
+    .empresa-card { background: rgba(43,123,196,0.08); border: 1px solid rgba(43,123,196,0.2); border-radius: 20px; padding: 2rem; }
+    .empresa-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .empresa-card p { color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .btn-empresa { background: #2B7BC4; color: #fff; padding: 0.7rem 1.5rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-block; }
 
     .login-section { padding: 5rem 2rem; display: flex; justify-content: center; }
     .login-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 400px; }
@@ -79,3 +99,109 @@
       <div class="step-num">1</div>
       <h3>Crea tu cuenta</h3>
       <p>Regístrate gratis en menos de 2 minutos con tu nombre y teléfono.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Muestra tu QR</h3>
+      <p>Imprime o muestra tu código QR único al cliente al terminar el servicio.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Recibe tu dinero</h3>
+      <p>El cliente paga con tarjeta o Google Pay y tú ves el depósito en tu dashboard.</p>
+    </div>
+  </div>
+</div>
+
+<div class="who">
+  <div class="who-inner">
+    <div class="section-label">Para quién es</div>
+    <h2>Cualquier trabajador que merece propina</h2>
+    <div class="who-grid">
+      <div class="who-card"><div class="who-icon">🛒</div><h4>Empacadores</h4></div>
+      <div class="who-card"><div class="who-icon">🍽️</div><h4>Meseros</h4></div>
+      <div class="who-card"><div class="who-icon">🏨</div><h4>Hotelería</h4></div>
+      <div class="who-card"><div class="who-icon">⛽</div><h4>Gasolineros</h4></div>
+      <div class="who-card"><div class="who-icon">🚗</div><h4>Valet parking</h4></div>
+      <div class="who-card"><div class="who-icon">💇</div><h4>Estilistas</h4></div>
+      <div class="who-card"><div class="who-icon">🏋️</div><h4>Entrenadores</h4></div>
+    </div>
+  </div>
+</div>
+
+<div class="testimonial">
+  <div class="testimonial-inner">
+    <div class="testimonial-quote">
+      "Antes perdía propinas porque los clientes no traían efectivo. Con Propii <span>recibo más del doble</span> y veo todo en mi teléfono."
+    </div>
+    <div class="testimonial-author">
+      <div class="testimonial-avatar">CR</div>
+      <div class="testimonial-name">
+        <strong>Carlos Ramírez</strong>
+        <span>Mesero · Hotel Fiesta Americana, Monterrey</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="empresas">
+  <div class="section-label">Para empresas</div>
+  <h2>Aumenta la satisfacción de tu equipo</h2>
+  <p class="sub" style="color:rgba(255,255,255,0.55); font-size:1.05rem; margin-bottom:0;">Propii se integra sin fricción en supermercados, restaurantes, hoteles y gasolineras.</p>
+  <div class="empresas-grid">
+    <div class="empresa-card">
+      <h3>🏪 Supermercados y retail</h3>
+      <p>Tus empacadores y personal de piso reciben propinas digitales sin interrumpir la operación. Sin terminales extra, sin efectivo.</p>
+      <a href="mailto:hola@propii.mx" class="btn-empresa">Contactar</a>
+    </div>
+    <div class="empresa-card">
+      <h3>🍽️ Restaurantes y hoteles</h3>
+      <p>Cada mesero, botones o valet tiene su propio QR. Tú ves el reporte general, ellos ven sus propinas en tiempo real.</p>
+      <a href="mailto:hola@propii.mx" class="btn-empresa">Contactar</a>
+    </div>
+  </div>
+</div>
+
+<div id="login" class="login-section">
+  <div class="login-card">
+    <h2>Iniciar sesión</h2>
+    <p>Accede a tu dashboard de propinas</p>
+    <div class="input-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="email" placeholder="tu@correo.com">
+    </div>
+    <div class="input-group">
+      <label>Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+    <button class="btn-login" onclick="login()">Entrar</button>
+    <div class="login-footer">
+      ¿No tienes cuenta? <a href="registro.html">Regístrate gratis</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 Propii · Propinas digitales para México</footer>
+
+<script>
+  async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    if (!email || !password) return alert('Llena todos los campos');
+    const res = await fetch('https://propii-production.up.railway.app/workers/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('token', data);
+      window.location.href = 'dashboard.html';
+    } else {
+      alert('Credenciales incorrectas');
+    }
+  }
+</script>
+
+</body>
+</html>
