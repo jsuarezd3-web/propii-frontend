@@ -87,6 +87,7 @@
   <p>Este es tu QR personal. Muéstralo o imprímelo para recibir propinas.</p>
   <div id="qrcode"></div>
   <div class="qr-url" id="qr-url-text"></div>
+  <button onclick="guardarQR()" class="btn-dashboard" style="background:#F7931E; margin-bottom:0.8rem;">Guardar imagen del QR</button>
   <a href="dashboard.html" class="btn-dashboard">Ver mi dashboard</a>
 </div>
 
@@ -137,13 +138,18 @@
 
       const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
       document.getElementById('qr-url-text').textContent = pagoUrl;
-      new QRCode(document.getElementById('qrcode'), {
-        text: pagoUrl,
-        width: 200,
-        height: 200,
-        colorDark: '#0a1628',
-        colorLight: '#ffffff'
-      });
+const qrDiv = document.getElementById('qrcode');
+qrDiv.style.background = '#ffffff';
+qrDiv.style.padding = '16px';
+qrDiv.style.borderRadius = '12px';
+qrDiv.style.display = 'inline-block';
+new QRCode(qrDiv, {
+  text: pagoUrl,
+  width: 200,
+  height: 200,
+  colorDark: '#0a1628',
+  colorLight: '#ffffff'
+});
 
       document.getElementById('form-card').style.display = 'none';
       document.getElementById('success-card').style.display = 'block';
@@ -154,6 +160,14 @@
       btn.textContent = 'Crear cuenta y obtener QR';
     }
   }
+function guardarQR() {
+  const canvas = document.querySelector('#qrcode canvas');
+  const link = document.createElement('a');
+  link.download = 'mi-qr-propii.png';
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
 </script>
 
 </body>
