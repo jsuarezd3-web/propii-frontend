@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propii — Registro</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #0a1628; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+    .logo { margin-bottom: 2rem; }
+    .logo img { height: 60px; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 440px; }
+    .card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .card p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 2rem; }
+    .input-group { margin-bottom: 1rem; }
+    .input-group label { display: block; font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; }
+    .input-group input, .input-group select { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 0.75rem 1rem; color: #fff; font-size: 0.95rem; outline: none; }
+    .input-group select option { background: #0d2444; }
+    .input-group input:focus, .input-group select:focus { border-color: #2B7BC4; }
+    .btn-register { width: 100%; background: #F7931E; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+    .btn-register:disabled { opacity: 0.6; cursor: not-allowed; }
+    .footer-link { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+    .footer-link a { color: #F7931E; text-decoration: none; }
+    .error { color: #f87171; font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
+
+    /* QR SUCCESS */
+    .success { display: none; text-align: center; }
+    .success h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .success p { color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; font-size: 0.95rem; }
+    #qrcode { display: flex; justify-content: center; margin: 1.5rem 0; }
+    #qrcode canvas { border-radius: 12px; padding: 12px; background: #fff; }
+    .qr-url { background: rgba(255,255,255,0.07); border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.5); word-break: break-all; margin-bottom: 1.5rem; }
+    .btn-dashboard { display: block; background: #2B7BC4; color: #fff; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 600; text-decoration: none; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="logo"><img src="logo.png" alt="Propii"></div>
+
+<div class="card" id="form-card">
+  <h2>Crea tu cuenta</h2>
+  <p>Gratis. Tu QR listo en segundos.</p>
+
+  <div class="input-group">
+    <label>Nombre completo</label>
+    <input type="text" id="full_name" placeholder="Ej. Juan García">
+  </div>
+  <div class="input-group">
+    <label>Correo electrónico</label>
+    <input type="email" id="email" placeholder="tu@correo.com">
+  </div>
+  <div class="input-group">
+    <label>Teléfono</label>
+    <input type="tel" id="phone" placeholder="+52 81 1234 5678">
+  </div>
+  <div class="input-group">
+    <label>¿Qué eres?</label>
+    <select id="role">
+      <option value="">Selecciona tu rol</option>
+      <option value="Empacador">Empacador</option>
+      <option value="Mesero">Mesero</option>
+      <option value="Gasolinero">Gasolinero</option>
+      <option value="Valet parking">Valet parking</option>
+      <option value="Estilista">Estilista</option>
+      <option value="Entrenador">Entrenador</option>
+      <option value="Hotelería">Hotelería</option>
+      <option value="Otro">Otro</option>
+    </select>
+  </div>
+  <div class="input-group">
+    <label>Lugar de trabajo</label>
+    <input type="text" id="hotel_or_place" placeholder="Ej. HEB Cumbres, Hotel Fiesta">
+  </div>
+  <div class="input-group">
+    <label>Contraseña</label>
+    <input type="password" id="password" placeholder="Mínimo 6 caracteres">
+  </div>
+
+  <button class="btn-register" id="btn-register" onclick="registrar()">Crear cuenta y obtener QR</button>
+  <div class="error" id="error-msg"></div>
+  <div class="footer-link">¿Ya tienes cuenta? <a href="index.html">Iniciar sesión</a></div>
+</div>
+
+<div class="card success" id="success-card">
+  <h2>¡Bienvenido a Propii! 🎉</h2>
+  <p>Este es tu QR personal. Muéstralo o imprímelo para recibir propinas.</p>
+  <div id="qrcode"></div>
+  <div class="qr-url" id="qr-url-text"></div>
+  <a href="dashboard.html" class="btn-dashboard">Ver mi dashboard</a>
+</div>
+
+<script>
+  async function registrar() {
+    const full_name = document.getElementById('full_name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const role = document.getElementById('role').value;
+    const hotel_or_place = document.getElementById('hotel_or_place').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!full_name || !email || !phone || !role || !hotel_or_place || !password) {
+      document.getElementById('error-msg').textContent = 'Por favor llena todos los campos.';
+      return;
+    }
+    if (password.length < 6) {
+      document.getElementById('error-msg').textContent = 'La contraseña debe tener al menos 6 caracteres.';
+      return;
+    }
+
+    const btn = document.getElementById('btn-register');
+    btn.disabled = true;
+    btn.textContent = 'Creando cuenta...';
+    document.getElementById('error-msg').textContent = '';
+
+    try {
+      const res = await fetch('https://propii-production.up.railway.app/workers/onboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name, email, role, hotel_or_place, phone })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        document.getElementById('error-msg').textContent = data.detail || 'Error al crear la cuenta.';
+        btn.disabled = false;
+        btn.textContent = 'Crear cuenta y obtener QR';
+        return;
+      }
+
+      const workerId = data.id;
+
+      await fetch('https://propii-production.up.railway.app/workers/set-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
+      document.getElementById('qr-url-text').textContent = pagoUrl;
+      new QRCode(document.getElementById('qrcode'), {
+        text: pagoUrl,
+        width: 200,
+        height: 200,
+        colorDark: '#0a1628',
+        colorLight: '#ffffff'
+      });
+
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('success-card').style.display = 'block';
+
+    } catch (e) {
+      document.getElementById('error-msg').textContent = 'Error de conexión. Intenta de nuevo.';
+      btn.disabled = false;
+      btn.textContent = 'Crear cuenta y obtener QR';
+    }
+  }
+</script>
+
+</body>
+</html>
