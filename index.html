@@ -1,1 +1,161 @@
-<meta http-equiv="refresh" content="0; url=/pago.html"> 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propii — Propinas digitales</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #0f0c29; color: #fff; }
+
+    /* NAV */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(15,12,41,0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .nav-logo { font-size: 1.4rem; font-weight: 700; color: #fff; }
+    .nav-logo span { color: #7c6fe0; }
+    .nav-btn { background: #7c6fe0; color: #fff; border: none; padding: 0.5rem 1.4rem; border-radius: 50px; font-size: 0.9rem; cursor: pointer; text-decoration: none; }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6rem 2rem 4rem; background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); }
+    .hero-badge { background: rgba(124,111,224,0.2); border: 1px solid rgba(124,111,224,0.4); color: #a99ef0; padding: 0.4rem 1.2rem; border-radius: 50px; font-size: 0.85rem; margin-bottom: 1.5rem; display: inline-block; }
+    .hero h1 { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.2rem; }
+    .hero h1 span { color: #7c6fe0; }
+    .hero p { font-size: 1.15rem; color: rgba(255,255,255,0.65); max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary { background: #7c6fe0; color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
+    .btn-outline { background: transparent; color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.3); text-decoration: none; cursor: pointer; }
+    .hero-img { margin-top: 4rem; width: 100%; max-width: 380px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2rem; }
+
+    /* CÓMO FUNCIONA */
+    .section { padding: 5rem 2rem; max-width: 1000px; margin: 0 auto; }
+    .section-label { color: #7c6fe0; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8rem; }
+    .section h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; margin-bottom: 1rem; }
+    .section p.sub { color: rgba(255,255,255,0.55); font-size: 1.05rem; margin-bottom: 3rem; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .step { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 2rem 1.5rem; }
+    .step-num { width: 40px; height: 40px; background: #7c6fe0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.2rem; }
+    .step h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.6rem; }
+    .step p { color: rgba(255,255,255,0.55); font-size: 0.9rem; line-height: 1.6; }
+
+    /* PARA QUIÉN */
+    .who { background: rgba(124,111,224,0.06); border-top: 1px solid rgba(124,111,224,0.15); border-bottom: 1px solid rgba(124,111,224,0.15); padding: 5rem 2rem; }
+    .who-inner { max-width: 1000px; margin: 0 auto; }
+    .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 2.5rem; }
+    .who-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 1.5rem; text-align: center; }
+    .who-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+    .who-card h4 { font-size: 0.95rem; font-weight: 600; }
+
+    /* LOGIN */
+    .login-section { padding: 5rem 2rem; display: flex; justify-content: center; }
+    .login-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 400px; }
+    .login-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .login-card p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 2rem; }
+    .input-group { margin-bottom: 1rem; }
+    .input-group label { display: block; font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; }
+    .input-group input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 0.75rem 1rem; color: #fff; font-size: 0.95rem; outline: none; }
+    .input-group input:focus { border-color: #7c6fe0; }
+    .btn-login { width: 100%; background: #7c6fe0; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+    .login-footer { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+    .login-footer a { color: #a99ef0; text-decoration: none; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 2rem; color: rgba(255,255,255,0.25); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Pro<span>pii</span></div>
+  <a href="#login" class="nav-btn">Iniciar sesión</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">✦ Propinas digitales para trabajadores mexicanos</div>
+  <h1>Tu trabajo merece<br><span>una propina digital</span></h1>
+  <p>Recibe propinas con tarjeta o Google Pay directo a tu cuenta. Sin efectivo, sin complicaciones.</p>
+  <div class="hero-btns">
+    <a href="registro.html" class="btn-primary">Registrarme gratis</a>
+    <a href="#como-funciona" class="btn-outline">Cómo funciona</a>
+  </div>
+</section>
+
+<div id="como-funciona" class="section">
+  <div class="section-label">Cómo funciona</div>
+  <h2>Tres pasos y listo</h2>
+  <p class="sub">Sin banco, sin terminal, sin trámites.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Crea tu cuenta</h3>
+      <p>Regístrate gratis en menos de 2 minutos con tu nombre y teléfono.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Muestra tu QR</h3>
+      <p>Imprime o muestra tu código QR único al cliente al terminar el servicio.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Recibe tu dinero</h3>
+      <p>El cliente paga con tarjeta o Google Pay y tú ves el depósito en tu dashboard.</p>
+    </div>
+  </div>
+</div>
+
+<div class="who">
+  <div class="who-inner">
+    <div class="section-label">Para quién es</div>
+    <h2>Cualquier trabajador que merece propina</h2>
+    <div class="who-grid">
+      <div class="who-card"><div class="who-icon">🛒</div><h4>Empacadores</h4></div>
+      <div class="who-card"><div class="who-icon">🍽️</div><h4>Meseros</h4></div>
+      <div class="who-card"><div class="who-icon">🏨</div><h4>Hotelería</h4></div>
+      <div class="who-card"><div class="who-icon">🚗</div><h4>Valet parking</h4></div>
+      <div class="who-card"><div class="who-icon">💇</div><h4>Estilistas</h4></div>
+      <div class="who-card"><div class="who-icon">🏋️</div><h4>Entrenadores</h4></div>
+    </div>
+  </div>
+</div>
+
+<div id="login" class="login-section">
+  <div class="login-card">
+    <h2>Iniciar sesión</h2>
+    <p>Accede a tu dashboard de propinas</p>
+    <div class="input-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="email" placeholder="tu@correo.com">
+    </div>
+    <div class="input-group">
+      <label>Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+    <button class="btn-login" onclick="login()">Entrar</button>
+    <div class="login-footer">
+      ¿No tienes cuenta? <a href="registro.html">Regístrate gratis</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 Propii · Propinas digitales para México</footer>
+
+<script>
+  async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    if (!email || !password) return alert('Llena todos los campos');
+    const res = await fetch('https://propii-production.up.railway.app/workers/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('token', data);
+      window.location.href = 'dashboard.html';
+    } else {
+      alert('Credenciales incorrectas');
+    }
+  }
+</script>
+
+</body>
+</html>
