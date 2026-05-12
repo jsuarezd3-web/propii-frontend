@@ -161,11 +161,48 @@ new QRCode(qrDiv, {
     }
   }
 function guardarQR() {
-  const canvas = document.querySelector('#qrcode canvas');
-  const link = document.createElement('a');
-  link.download = 'mi-qr-propii.png';
-  link.href = canvas.toDataURL();
-  link.click();
+  const qrCanvas = document.querySelector('#qrcode canvas');
+  const nombre = document.getElementById('full_name').value.trim();
+  
+  const canvas = document.createElement('canvas');
+  canvas.width = 400;
+  canvas.height = 520;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#ffffff';
+  ctx.roundRect(0, 0, 400, 520, 20);
+  ctx.fill();
+
+  const logo = new Image();
+  logo.src = 'logo.png';
+  logo.onload = function() {
+    ctx.drawImage(logo, 100, 24, 200, 70);
+
+    ctx.drawImage(qrCanvas, 75, 110, 250, 250);
+
+    ctx.fillStyle = '#0a1628';
+    ctx.font = 'bold 22px Inter, Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('¡Escanéame!', 200, 395);
+
+    ctx.fillStyle = '#2B7BC4';
+    ctx.font = '17px Inter, Arial';
+    ctx.fillText('Déjame una propina digital', 200, 425);
+
+    ctx.fillStyle = '#555';
+    ctx.font = 'bold 16px Inter, Arial';
+    ctx.fillText(nombre, 200, 460);
+
+    ctx.fillStyle = '#F7931E';
+    ctx.font = 'bold 14px Inter, Arial';
+    ctx.fillText('propii.mx', 200, 495);
+
+    const link = document.createElement('a');
+    link.download = 'mi-qr-propii.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+}
 }
 
 </script>
