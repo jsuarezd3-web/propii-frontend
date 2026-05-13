@@ -128,12 +128,20 @@
         return;
       }
 
-      const workerId = data.worker_id;
-
-      await fetch('https://propii-production.up.railway.app/workers/set-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+const workerId = data.worker_id;
+if (data.onboarding_url) {
+  window.location.href = data.onboarding_url;
+} else {
+  const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
+  document.getElementById('qr-url-text').textContent = pagoUrl;
+  const qrDiv = document.getElementById('qrcode');
+  qrDiv.style.background = '#ffffff';
+  qrDiv.style.padding = '16px';
+  qrDiv.style.borderRadius = '12px';
+  qrDiv.style.display = 'inline-block';
+  new QRCode(qrDiv, { text: pagoUrl, width: 200, height: 200, colorDark: '#0a1628', colorLight: '#ffffff' });
+  document.getElementById('form-card').style.display = 'none';
+  document.getElementById('success-card').style.display = 'block';
       });
 
       const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
