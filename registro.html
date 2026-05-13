@@ -176,7 +176,10 @@ function guardarQR() {
   const logo = new Image();
   logo.src = 'logo.png';
   logo.onload = function() {
-    ctx.drawImage(logo, 100, 24, 200, 70);
+const ratio = logo.width / logo.height;
+const logoH = 60;
+const logoW = logoH * ratio;
+ctx.drawImage(logo, (400 - logoW) / 2, 24, logoW, logoH);
 
     ctx.drawImage(qrCanvas, 75, 110, 250, 250);
 
