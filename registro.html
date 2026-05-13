@@ -166,11 +166,11 @@ function guardarQR() {
   
   const canvas = document.createElement('canvas');
   canvas.width = 400;
-  canvas.height = 660;
+  canvas.height = 720;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = '#ffffff';
-  ctx.roundRect(0, 0, 400, 520, 20);
+  ctx.roundRect(0, 0, 400, 720, 20);
   ctx.fill();
 
   const logo = new Image();
