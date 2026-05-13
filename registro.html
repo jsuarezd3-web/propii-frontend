@@ -177,7 +177,7 @@ function guardarQR() {
   logo.src = 'logo.png';
   logo.onload = function() {
 const ratio = logo.width / logo.height;
-const logoH = 100;
+const logoH = 140;
 const logoW = logoH * ratio;
 ctx.drawImage(logo, (400 - logoW) / 2, 20, logoW, logoH);
 
