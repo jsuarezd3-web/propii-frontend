@@ -128,39 +128,28 @@
         return;
       }
 
-const workerId = data.worker_id;
-if (data.onboarding_url) {
-  window.location.href = data.onboarding_url;
-} else {
-  const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
-  document.getElementById('qr-url-text').textContent = pagoUrl;
-  const qrDiv = document.getElementById('qrcode');
-  qrDiv.style.background = '#ffffff';
-  qrDiv.style.padding = '16px';
-  qrDiv.style.borderRadius = '12px';
-  qrDiv.style.display = 'inline-block';
-  new QRCode(qrDiv, { text: pagoUrl, width: 200, height: 200, colorDark: '#0a1628', colorLight: '#ffffff' });
-  document.getElementById('form-card').style.display = 'none';
-  document.getElementById('success-card').style.display = 'block';
+      const workerId = data.worker_id;
+
+      await fetch('https://propii-production.up.railway.app/workers/set-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
       });
 
-      const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
-      document.getElementById('qr-url-text').textContent = pagoUrl;
-const qrDiv = document.getElementById('qrcode');
-qrDiv.style.background = '#ffffff';
-qrDiv.style.padding = '16px';
-qrDiv.style.borderRadius = '12px';
-qrDiv.style.display = 'inline-block';
-new QRCode(qrDiv, {
-  text: pagoUrl,
-  width: 200,
-  height: 200,
-  colorDark: '#0a1628',
-  colorLight: '#ffffff'
-});
-
-      document.getElementById('form-card').style.display = 'none';
-      document.getElementById('success-card').style.display = 'block';
+      if (data.onboarding_url) {
+        window.location.href = data.onboarding_url;
+      } else {
+        const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
+        document.getElementById('qr-url-text').textContent = pagoUrl;
+        const qrDiv = document.getElementById('qrcode');
+        qrDiv.style.background = '#ffffff';
+        qrDiv.style.padding = '16px';
+        qrDiv.style.borderRadius = '12px';
+        qrDiv.style.display = 'inline-block';
+        new QRCode(qrDiv, { text: pagoUrl, width: 200, height: 200, colorDark: '#0a1628', colorLight: '#ffffff' });
+        document.getElementById('form-card').style.display = 'none';
+        document.getElementById('success-card').style.display = 'block';
+      }
 
     } catch (e) {
       document.getElementById('error-msg').textContent = 'Error de conexión. Intenta de nuevo.';
@@ -168,55 +157,44 @@ new QRCode(qrDiv, {
       btn.textContent = 'Crear cuenta y obtener QR';
     }
   }
-function guardarQR() {
-  const qrCanvas = document.querySelector('#qrcode canvas');
-  const nombre = document.getElementById('full_name').value.trim();
-  
-  const canvas = document.createElement('canvas');
-  canvas.width = 400;
-  canvas.height = 620;
-  const ctx = canvas.getContext('2d');
 
-  ctx.fillStyle = '#ffffff';
-  ctx.roundRect(0, 0, 400, 620, 20);
-  ctx.fill();
-
-  const logo = new Image();
-  logo.src = 'logo.png';
-  logo.onload = function() {
-const ratio = logo.width / logo.height;
-const logoH = 140;
-const logoW = logoH * ratio;
-ctx.drawImage(logo, (400 - logoW) / 2, 20, logoW, logoH);
-
-    ctx.drawImage(qrCanvas, 75, 170, 250, 250);
-
-    ctx.fillStyle = '#0a1628';
-    ctx.font = 'bold 22px Inter, Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('¡Escanéame!', 200, 460);
-
-    ctx.fillStyle = '#2B7BC4';
-    ctx.font = 'bold 22px Inter, Arial';
-    ctx.fillText('Déjame una propina digital', 200, 495);
-
-    ctx.fillStyle = '#555';
-    ctx.font = 'bold 16px Inter, Arial';
-    ctx.fillText(nombre, 200, 530);
-
-    ctx.fillStyle = '#F7931E';
-    ctx.font = 'bold 14px Inter, Arial';
-    ctx.fillText('propii.mx', 200, 560);
-
-    const link = document.createElement('a');
-    link.download = 'mi-qr-propii.png';
-    link.href = canvas.toDataURL();
-    link.click();
-  };
-}
-
-
+  function guardarQR() {
+    const qrCanvas = document.querySelector('#qrcode canvas');
+    const nombre = document.getElementById('full_name').value.trim();
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 620;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.roundRect(0, 0, 400, 620, 20);
+    ctx.fill();
+    const logo = new Image();
+    logo.src = 'logo.png';
+    logo.onload = function() {
+      const ratio = logo.width / logo.height;
+      const logoH = 140;
+      const logoW = logoH * ratio;
+      ctx.drawImage(logo, (400 - logoW) / 2, 20, logoW, logoH);
+      ctx.drawImage(qrCanvas, 75, 170, 250, 250);
+      ctx.fillStyle = '#0a1628';
+      ctx.font = 'bold 22px Inter, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('¡Escanéame!', 200, 460);
+      ctx.fillStyle = '#2B7BC4';
+      ctx.font = 'bold 22px Inter, Arial';
+      ctx.fillText('Déjame una propina digital', 200, 495);
+      ctx.fillStyle = '#555';
+      ctx.font = 'bold 16px Inter, Arial';
+      ctx.fillText(nombre, 200, 530);
+      ctx.fillStyle = '#F7931E';
+      ctx.font = 'bold 14px Inter, Arial';
+      ctx.fillText('propii.mx', 200, 560);
+      const link = document.createElement('a');
+      link.download = 'mi-qr-propii.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    };
+  }
 </script>
-
 </body>
 </html>
