@@ -177,9 +177,9 @@ function guardarQR() {
   logo.src = 'logo.png';
   logo.onload = function() {
 const ratio = logo.width / logo.height;
-const logoH = 60;
+const logoH = 100;
 const logoW = logoH * ratio;
-ctx.drawImage(logo, (400 - logoW) / 2, 24, logoW, logoH);
+ctx.drawImage(logo, (400 - logoW) / 2, 20, logoW, logoH);
 
     ctx.drawImage(qrCanvas, 75, 110, 250, 250);
 
@@ -189,8 +189,8 @@ ctx.drawImage(logo, (400 - logoW) / 2, 24, logoW, logoH);
     ctx.fillText('¡Escanéame!', 200, 395);
 
     ctx.fillStyle = '#2B7BC4';
-    ctx.font = '17px Inter, Arial';
-    ctx.fillText('Déjame una propina digital', 200, 425);
+    ctx.font = 'bold 22px Inter, Arial';
+    ctx.fillText('Déjame una propina digital', 200, 430);
 
     ctx.fillStyle = '#555';
     ctx.font = 'bold 16px Inter, Arial';
