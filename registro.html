@@ -42,10 +42,14 @@
   <h2>Crea tu cuenta</h2>
   <p>Gratis. Tu QR listo en segundos.</p>
 
-  <div class="input-group">
-    <label>Nombre completo</label>
-    <input type="text" id="full_name" placeholder="Ej. Juan García">
-  </div>
+<div class="input-group">
+    <label>Nombre(s)</label>
+    <input type="text" id="first_name" placeholder="Ej. Juan Carlos">
+</div>
+<div class="input-group">
+    <label>Apellido(s)</label>
+    <input type="text" id="last_name" placeholder="Ej. García López">
+</div>
   <div class="input-group">
     <label>Correo electrónico</label>
     <input type="email" id="email" placeholder="tu@correo.com">
@@ -54,6 +58,34 @@
     <label>Teléfono</label>
     <input type="tel" id="phone" placeholder="+52 81 1234 5678">
   </div>
+<div class="input-group">
+    <label>Fecha de nacimiento</label>
+    <input type="date" id="fecha_nacimiento">
+</div>
+<div class="input-group">
+    <label>Calle y número</label>
+    <input type="text" id="calle" placeholder="Ej. Av. Constitución 123">
+</div>
+<div class="input-group">
+    <label>Colonia</label>
+    <input type="text" id="colonia" placeholder="Ej. Centro">
+</div>
+<div class="input-group">
+    <label>Ciudad</label>
+    <input type="text" id="ciudad" placeholder="Ej. Monterrey">
+</div>
+<div class="input-group">
+    <label>Código postal</label>
+    <input type="text" id="codigo_postal" placeholder="Ej. 64000">
+</div>
+<div class="input-group">
+    <label>CLABE interbancaria <span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">(opcional)</span></label>
+    <input type="text" id="clabe" placeholder="18 dígitos">
+</div>
+<div class="input-group">
+    <label>RFC <span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">(opcional)</span></label>
+    <input type="text" id="rfc" placeholder="Ej. GALO900101ABC">
+</div>
   <div class="input-group">
     <label>¿Qué eres?</label>
     <select id="role">
@@ -93,14 +125,23 @@
 
 <script>
   async function registrar() {
-    const full_name = document.getElementById('full_name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const role = document.getElementById('role').value;
-    const hotel_or_place = document.getElementById('hotel_or_place').value.trim();
-    const password = document.getElementById('password').value;
+const first_name = document.getElementById('first_name').value.trim();
+const last_name = document.getElementById('last_name').value.trim();
+const full_name = `${first_name} ${last_name}`.trim();
+const email = document.getElementById('email').value.trim();
+const phone = document.getElementById('phone').value.trim();
+const role = document.getElementById('role').value;
+const hotel_or_place = document.getElementById('hotel_or_place').value.trim();
+const password = document.getElementById('password').value;
+const fecha_nacimiento = document.getElementById('fecha_nacimiento').value;
+const calle = document.getElementById('calle').value.trim();
+const colonia = document.getElementById('colonia').value.trim();
+const ciudad = document.getElementById('ciudad').value.trim();
+const codigo_postal = document.getElementById('codigo_postal').value.trim();
+const clabe = document.getElementById('clabe').value.trim();
+const rfc = document.getElementById('rfc').value.trim();
 
-    if (!full_name || !email || !phone || !role || !hotel_or_place || !password) {
+    if (!first_name || !last_name || !email || !phone || !role || !hotel_or_place || !password || !fecha_nacimiento || !calle || !colonia || !ciudad || !codigo_postal) {
       document.getElementById('error-msg').textContent = 'Por favor llena todos los campos.';
       return;
     }
@@ -118,7 +159,7 @@
       const res = await fetch('https://propii-production.up.railway.app/workers/onboard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ full_name, email, role, hotel_or_place, phone })
+        body: JSON.stringify({ full_name, first_name, last_name, email, role, hotel_or_place, phone, fecha_nacimiento, calle, colonia, ciudad, codigo_postal, clabe, rfc })
       });
       const data = await res.json();
       if (!res.ok) {
