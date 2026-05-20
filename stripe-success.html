@@ -50,7 +50,7 @@
 
     fetch(`https://propii-production.up.railway.app/workers/${workerId}`)
       .then(r => r.json())
-      .then(w => { workerName = w.full_name; });
+      .then(w => { workerName = w.full_name || ''; });
   }
 
   function guardarQR() {
