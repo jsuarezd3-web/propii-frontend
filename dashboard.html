@@ -115,6 +115,11 @@
       </div>
     </div>
 
+<div style="display:flex; gap:0.8rem; padding:1rem; background:rgba(0,0,0,0.1);">
+  <button onclick="verQR()" style="flex:1; padding:10px; background:#F7931E; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">📱 Ver mi QR</button>
+  <button onclick="completarStripe()" style="flex:1; padding:10px; background:#2B7BC4; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">🏦 Completar banco</button>
+</div>
+
     <div class="tabs">
       <div class="tab active" onclick="cambiarPeriodo('hoy', this)">Hoy</div>
       <div class="tab" onclick="cambiarPeriodo('semana', this)">Semana</div>
@@ -237,6 +242,24 @@ if (token && workerId) {
   cargarDashboard();
 } else {
   mostrarLogin();
-}  </script>
+}
+
+function verQR() {
+  const workerId = localStorage.getItem('worker_id');
+  const workerName = document.getElementById('worker-name').textContent;
+  window.location.href = `stripe-success.html?id=${workerId}&name=${encodeURIComponent(workerName)}`;
+}
+
+async function completarStripe() {
+  const workerId = localStorage.getItem('worker_id');
+  const res = await fetch(`https://propii-production.up.railway.app/workers/${workerId}/stripe-link`);
+  const data = await res.json();
+  if (data.url) {
+    window.location.href = data.url;
+  } else {
+    alert('Error al generar el link de Stripe');
+  }
+}
+</script>
 </body>
 </html>
