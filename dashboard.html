@@ -245,13 +245,13 @@ if (token && workerId) {
 }
 
 function verQR() {
-  const workerId = localStorage.getItem('worker_id');
+  const workerId = localStorage.getItem('propii_worker_id');
   const workerName = document.getElementById('worker-name').textContent;
   window.location.href = `stripe-success.html?id=${workerId}&name=${encodeURIComponent(workerName)}`;
 }
 
 async function completarStripe() {
-  const workerId = localStorage.getItem('worker_id');
+  const workerId = localStorage.getItem('propii_worker_id');
   const res = await fetch(`https://propii-production.up.railway.app/workers/${workerId}/stripe-link`);
   const data = await res.json();
   if (data.url) {
