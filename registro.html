@@ -63,8 +63,12 @@
     <input type="date" id="fecha_nacimiento">
 </div>
 <div class="input-group">
-    <label>Calle y número</label>
-    <input type="text" id="calle" placeholder="Ej. Av. Constitución 123">
+    <label>Calle</label>
+    <input type="text" id="calle" placeholder="Ej. Av. Constitución">
+</div>
+<div class="input-group">
+    <label>Número exterior</label>
+    <input type="text" id="numero_exterior" placeholder="Ej. 123">
 </div>
 <div class="input-group">
     <label>Colonia</label>
@@ -135,6 +139,7 @@ const hotel_or_place = document.getElementById('hotel_or_place').value.trim();
 const password = document.getElementById('password').value;
 const fecha_nacimiento = document.getElementById('fecha_nacimiento').value;
 const calle = document.getElementById('calle').value.trim();
+const numero_exterior = document.getElementById('numero_exterior').value.trim();
 const colonia = document.getElementById('colonia').value.trim();
 const ciudad = document.getElementById('ciudad').value.trim();
 const codigo_postal = document.getElementById('codigo_postal').value.trim();
@@ -159,7 +164,7 @@ const rfc = document.getElementById('rfc').value.trim();
       const res = await fetch('https://propii-production.up.railway.app/workers/onboard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ full_name, first_name, last_name, email, role, hotel_or_place, phone, fecha_nacimiento, calle, colonia, ciudad, codigo_postal, clabe, rfc })
+        body: JSON.stringify({ full_name, first_name, last_name, email, role, hotel_or_place, phone, fecha_nacimiento, numero_exterior, calle, colonia, ciudad, codigo_postal, clabe, rfc })
       });
       const data = await res.json();
       if (!res.ok) {
