@@ -115,9 +115,18 @@ let GOOGLE_REVIEW_URL = '';
 fetch(`https://propii-production.up.railway.app/workers/${WORKER_ID}`)
     .then(r => r.json())
     .then(w => {
-        document.getElementById('worker-name').textContent = w.name;
-        document.getElementById('role').textContent = (w.role || 'Trabajador') + (w.hotel_name ? ' · ' + w.hotel_name : '');
+        document.getElementById('worker-name').textContent = w.full_name;
+        document.getElementById('role').textContent = (w.role || 'Trabajador') + (w.hotel_or_place ? ' · ' + w.hotel_or_place : '');
         GOOGLE_REVIEW_URL = w.google_review_url || '';
+        
+        if (!w.stripe_account_id) {
+            document.querySelector('.phone-frame').innerHTML = `
+                <div style="padding:3rem 2rem; text-align:center;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">⚠️</div>
+                    <h2 style="color:#0a1628; margin-bottom:0.8rem;">Pago no disponible</h2>
+                    <p style="color:#6b7280; font-size:0.95rem;">Este trabajador aún no ha completado su registro de pagos.</p>
+                </div>`;
+        }
     });
 
     const stripe = Stripe('pk_test_51SWW0qGiQIMXrUUgIecxTu9jMrqPq3Vn6G8XDMYe0woByiCYc8Qpr0rNmMjE13NC7OdZg2byhsUN6vnmDJec5xbI00Uh5LgBDN');

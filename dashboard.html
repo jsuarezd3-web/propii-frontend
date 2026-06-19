@@ -116,7 +116,7 @@
     </div>
 
 <div style="display:flex; gap:0.8rem; padding:1rem; background:rgba(0,0,0,0.1);">
-  <button onclick="verQR()" style="flex:1; padding:10px; background:#F7931E; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">📱 Ver mi QR</button>
+  <button id="btn-ver-qr" onclick="verQR()" style="flex:1; padding:10px; background:#F7931E; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">📱 Ver mi QR</button>
   <button onclick="completarStripe()" style="flex:1; padding:10px; background:#2B7BC4; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">🏦 Completar banco</button>
 </div>
 
@@ -217,6 +217,11 @@ async function cargarDashboard() {
     aviso.style.cssText = 'background:#F7931E; color:#fff; padding:12px 16px; text-align:center; font-size:13px; font-weight:600;';
     aviso.innerHTML = '⚠️ Completa tu registro bancario para empezar a recibir propinas. <a href="#" onclick="completarStripe()" style="color:#fff; text-decoration:underline;">Completar ahora</a>';
     document.querySelector('.header').after(aviso);
+
+    document.getElementById('btn-ver-qr').disabled = true;
+    document.getElementById('btn-ver-qr').style.opacity = '0.4';
+    document.getElementById('btn-ver-qr').title = 'Completa tu registro bancario primero';
+
   }
   
   renderPeriodo('hoy');
