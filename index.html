@@ -8,69 +8,67 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', -apple-system, sans-serif; background: #f4f6f9; color: #111827; }
 
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; position: fixed; top: 0; width: 100%; z-index: 100; background: #185FA5; border-bottom: 1px solid rgba(0,0,0,0.1); }
-    .nav-logo img { height: 120px; }
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; position: fixed; top: 0; width: 100%; z-index: 100; background: #185FA5; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .nav-logo img { height: 52px; filter: brightness(0) invert(1); }
     .nav-btn { background: #F7931E; color: #fff; border: none; padding: 0.5rem 1.4rem; border-radius: 50px; font-size: 0.9rem; cursor: pointer; text-decoration: none; font-weight: 600; }
 
     .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6rem 2rem 4rem; background: #185FA5; }
-    .hero-badge { background: rgba(43,123,196,0.2); border: 1px solid rgba(43,123,196,0.4); color: #7ab8e8; padding: 0.4rem 1.2rem; border-radius: 50px; font-size: 0.85rem; margin-bottom: 1.5rem; display: inline-block; }
+    .hero-badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.4rem 1.2rem; border-radius: 50px; font-size: 0.85rem; margin-bottom: 1.5rem; display: inline-block; }
     .hero h1 { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.2rem; color: #fff; }
     .hero h1 span { color: #F7931E; }
-    .hero p { font-size: 1.15rem; color: rgba(255,255,255,0.65); max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem; }
+    .hero p { font-size: 1.15rem; color: rgba(255,255,255,0.85); max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem; }
     .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
     .btn-primary { background: #F7931E; color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
-    .btn-outline { background: transparent; color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-size: 1rem; border: 1px solid rgba(255,255,255,0.3); text-decoration: none; cursor: pointer; }
+    .btn-outline { background: transparent; color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-size: 1rem; border: 2px solid rgba(255,255,255,0.6); text-decoration: none; cursor: pointer; }
 
     .section { padding: 5rem 2rem; max-width: 1000px; margin: 0 auto; }
     .section-label { color: #F7931E; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8rem; }
     .section h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; margin-bottom: 1rem; color: #111827; }
-    .section p.sub { color: rgba(255,255,255,0.55); font-size: 1.05rem; margin-bottom: 3rem; }
+    .section p.sub { color: #6b7280; font-size: 1.05rem; margin-bottom: 3rem; }
     .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
-    .step { background: #fff; border: 1px solid #e5e7eb; border-radius: 20px; padding: 2rem 1.5rem; }
-    .step-num { width: 40px; height: 40px; background: #2B7BC4; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.2rem; }
-    .step h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.6rem; }
-    .step p { color: rgba(255,255,255,0.55); font-size: 0.9rem; line-height: 1.6; }
+    .step { background: #fff; border: 1px solid #e5e7eb; border-radius: 20px; padding: 2rem 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .step-num { width: 40px; height: 40px; background: #185FA5; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.2rem; color: #fff; }
+    .step h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.6rem; color: #111827; }
+    .step p { color: #6b7280; font-size: 0.9rem; line-height: 1.6; }
 
-    .who { background: rgba(43,123,196,0.06); border-top: 1px solid rgba(43,123,196,0.15); border-bottom: 1px solid rgba(43,123,196,0.15); padding: 5rem 2rem; }
+    .who { background: #fff; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; padding: 5rem 2rem; }
     .who-inner { max-width: 1000px; margin: 0 auto; }
     .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2.5rem; }
-    .who-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 1.5rem; text-align: center; }
+    .who-card { background: #f4f6f9; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.5rem; text-align: center; }
     .who-icon { font-size: 2rem; margin-bottom: 0.8rem; }
-    .who-card h4 { font-size: 0.95rem; font-weight: 600; }
+    .who-card h4 { font-size: 0.95rem; font-weight: 600; color: #111827; }
 
-    /* TESTIMONIO */
-    .testimonial { padding: 5rem 2rem; display: flex; justify-content: center; background: rgba(247,147,30,0.05); border-top: 1px solid rgba(247,147,30,0.1); border-bottom: 1px solid rgba(247,147,30,0.1); }
+    .testimonial { padding: 5rem 2rem; display: flex; justify-content: center; background: #E6F1FB; border-top: 1px solid #C5DDF5; border-bottom: 1px solid #C5DDF5; }
     .testimonial-inner { max-width: 620px; text-align: center; }
-    .testimonial-quote { font-size: 1.4rem; font-weight: 300; line-height: 1.7; color: rgba(255,255,255,0.9); margin-bottom: 1.5rem; font-style: italic; }
-    .testimonial-quote span { color: #F7931E; font-weight: 600; font-style: normal; }
+    .testimonial-quote { font-size: 1.4rem; font-weight: 300; line-height: 1.7; color: #111827; margin-bottom: 1.5rem; font-style: italic; }
+    .testimonial-quote span { color: #185FA5; font-weight: 600; font-style: normal; }
     .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 1rem; }
-    .testimonial-avatar { width: 48px; height: 48px; border-radius: 50%; background: #2B7BC4; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; }
+    .testimonial-avatar { width: 48px; height: 48px; border-radius: 50%; background: #185FA5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: #fff; }
     .testimonial-name { text-align: left; }
-    .testimonial-name strong { display: block; font-size: 0.95rem; }
-    .testimonial-name span { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+    .testimonial-name strong { display: block; font-size: 0.95rem; color: #111827; }
+    .testimonial-name span { font-size: 0.85rem; color: #6b7280; }
 
-    /* EMPRESAS */
     .empresas { padding: 5rem 2rem; max-width: 1000px; margin: 0 auto; }
     .empresas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem; }
     @media (max-width: 600px) { .empresas-grid { grid-template-columns: 1fr; } }
-    .empresa-card { background: rgba(43,123,196,0.08); border: 1px solid rgba(43,123,196,0.2); border-radius: 20px; padding: 2rem; }
-    .empresa-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; }
-    .empresa-card p { color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
-    .btn-empresa { background: #2B7BC4; color: #fff; padding: 0.7rem 1.5rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-block; }
+    .empresa-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 20px; padding: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .empresa-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; color: #111827; }
+    .empresa-card p { color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .btn-empresa { background: #185FA5; color: #fff; padding: 0.7rem 1.5rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-block; }
 
-    .login-section { padding: 5rem 2rem; display: flex; justify-content: center; }
-    .login-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 400px; }
-    .login-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .login-card p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 2rem; }
+    .login-section { padding: 5rem 2rem; display: flex; justify-content: center; background: #f4f6f9; }
+    .login-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .login-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; color: #111827; }
+    .login-card p { color: #6b7280; font-size: 0.9rem; margin-bottom: 2rem; }
     .input-group { margin-bottom: 1rem; }
-    .input-group label { display: block; font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; }
-    .input-group input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 0.75rem 1rem; color: #fff; font-size: 0.95rem; outline: none; }
-    .input-group input:focus { border-color: #2B7BC4; }
-    .btn-login { width: 100%; background: #2B7BC4; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
-    .login-footer { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: rgba(255,255,255,0.4); }
-    .login-footer a { color: #F7931E; text-decoration: none; }
+    .input-group label { display: block; font-size: 0.85rem; color: #374151; margin-bottom: 0.4rem; font-weight: 500; }
+    .input-group input { width: 100%; background: #f4f6f9; border: 1px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; color: #111827; font-size: 0.95rem; outline: none; }
+    .input-group input:focus { border-color: #185FA5; background: #fff; }
+    .btn-login { width: 100%; background: #185FA5; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+    .login-footer { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: #6b7280; }
+    .login-footer a { color: #F7931E; text-decoration: none; font-weight: 600; }
 
-    footer { text-align: center; padding: 2rem; color: rgba(255,255,255,0.25); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); }
+    footer { text-align: center; padding: 2rem; color: #9ca3af; font-size: 0.85rem; border-top: 1px solid #e5e7eb; background: #fff; }
   </style>
 </head>
 <body>
