@@ -127,7 +127,20 @@
   <a href="dashboard.html" class="btn-dashboard">Ver mi dashboard</a>
 </div>
 
+
+
 <script>
+function validarCLABE(clabe) {
+    if (!/^\d{18}$/.test(clabe)) return false;
+    const factores = [3, 7, 1];
+    let suma = 0;
+    for (let i = 0; i < 17; i++) {
+        suma += (parseInt(clabe[i]) * factores[i % 3]) % 10;
+    }
+    const digitoVerificador = (10 - (suma % 10)) % 10;
+    return digitoVerificador === parseInt(clabe[17]);
+}
+
   async function registrar() {
 const first_name = document.getElementById('first_name').value.trim();
 const last_name = document.getElementById('last_name').value.trim();
@@ -154,6 +167,11 @@ const rfc = document.getElementById('rfc').value.trim();
       document.getElementById('error-msg').textContent = 'La contraseña debe tener al menos 6 caracteres.';
       return;
     }
+
+    if (clabe && !validarCLABE(clabe)) {
+      document.getElementById('error-msg').textContent = 'La CLABE no es válida. Verifica los 18 dígitos.';
+      return;
+}
 
     const btn = document.getElementById('btn-register');
     btn.disabled = true;
