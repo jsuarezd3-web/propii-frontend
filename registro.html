@@ -131,14 +131,17 @@
 
 <script>
 function validarCLABE(clabe) {
-    if (!/^\d{18}$/.test(clabe)) return false;
+    if (clabe.length !== 18) return 'La CLABE debe tener exactamente 18 dígitos.';
+    if (!/^\d{18}$/.test(clabe)) return 'La CLABE solo debe contener números.';
     const factores = [3, 7, 1];
     let suma = 0;
     for (let i = 0; i < 17; i++) {
         suma += (parseInt(clabe[i]) * factores[i % 3]) % 10;
     }
     const digitoVerificador = (10 - (suma % 10)) % 10;
-    return digitoVerificador === parseInt(clabe[17]);
+    if (digitoVerificador !== parseInt(clabe[17])) return 'La CLABE no es válida, verifica que esté correcta.';
+    return null;
+
 }
 
   async function registrar() {
@@ -168,9 +171,12 @@ const rfc = document.getElementById('rfc').value.trim();
       return;
     }
 
-    if (clabe && !validarCLABE(clabe)) {
-      document.getElementById('error-msg').textContent = 'La CLABE no es válida. Verifica los 18 dígitos.';
+    if (clabe) {
+      const errorClabe = validarCLABE(clabe);
+      if (errorClabe) {
+          document.getElementById('error-msg').textContent = errorClabe;
       return;
+      }
 }
 
     const btn = document.getElementById('btn-register');
