@@ -112,12 +112,15 @@ const params = new URLSearchParams(window.location.search);
 const WORKER_ID = parseInt(params.get('id')) || 1;
 let GOOGLE_REVIEW_URL = '';
 
+let mensajeAgradecimiento = '';
+
 fetch(`https://propii-production.up.railway.app/workers/${WORKER_ID}`)
     .then(r => r.json())
     .then(w => {
         document.getElementById('worker-name').textContent = w.full_name;
         document.getElementById('role').textContent = (w.role || 'Trabajador') + (w.hotel_or_place ? ' · ' + w.hotel_or_place : '');
         GOOGLE_REVIEW_URL = w.google_review_url || '';
+        mensajeAgradecimiento = w.mensaje_agradecimiento || '';
         
         if (!w.stripe_account_id) {
             document.querySelector('.phone-frame').innerHTML = `
@@ -231,7 +234,8 @@ fetch(`https://propii-production.up.railway.app/workers/${WORKER_ID}`)
         <div style="display:flex; justify-content:center; gap:6px; margin-bottom:16px;">
           ${[1,2,3,4,5].map(i => `<span class="star" id="star-${i}" onclick="handleStar(${i})">☆</span>`).join('')}
         </div>
-        <div id="review-feedback" style="font-size:13px; color:#6b7280;"></div>
+        ${mensajeAgradecimiento ? `<div style="background:#F4F6F9; border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:14px; color:#374151; font-style:italic;">"${mensajeAgradecimiento}"</div>` : ''}
+<div id="review-feedback" style="font-size:13px; color:#6b7280;"></div>
       `;
     }
 
