@@ -144,6 +144,24 @@ function validarCLABE(clabe) {
 
 }
 
+function validarRFC(rfc) {
+    if (!rfc) return null;
+    const regex = /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/i;
+    if (!regex.test(rfc)) return 'El RFC no tiene un formato válido. Ejemplo: GALO900101ABC';
+    return null;
+}
+
+function validarTelefono(tel) {
+    const limpio = tel.replace(/[\s\+\-\(\)]/g, '');
+    if (!/^\d{10,12}$/.test(limpio)) return 'El teléfono debe tener entre 10 y 12 dígitos numéricos.';
+    return null;
+}
+
+function validarCP(cp) {
+    if (!/^\d{5}$/.test(cp)) return 'El código postal debe tener exactamente 5 dígitos.';
+    return null;
+}
+
   async function registrar() {
 const first_name = document.getElementById('first_name').value.trim();
 const last_name = document.getElementById('last_name').value.trim();
@@ -171,12 +189,22 @@ const rfc = document.getElementById('rfc').value.trim();
       return;
     }
 
-    if (clabe) {
+      if (clabe) {
       const errorClabe = validarCLABE(clabe);
       if (errorClabe) {
           document.getElementById('error-msg').textContent = errorClabe;
       return;
       }
+
+      const errorRFC = validarRFC(rfc);
+      if (errorRFC) { document.getElementById('error-msg').textContent = errorRFC; return; }
+
+      const errorTel = validarTelefono(phone);
+      if (errorTel) { document.getElementById('error-msg').textContent = errorTel; return; }
+
+      const errorCP = validarCP(codigo_postal);
+      if (errorCP) { document.getElementById('error-msg').textContent = errorCP; return; }
+
 }
 
     const btn = document.getElementById('btn-register');
