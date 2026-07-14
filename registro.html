@@ -109,6 +109,12 @@
     <input type="text" id="hotel_or_place" placeholder="Ej. HEB Cumbres, Hotel Fiesta">
   </div>
   <div class="input-group">
+      <label>Mensaje de agradecimiento para tus clientes</label>
+      <input type="text" id="mensaje_agradecimiento" placeholder="Ej. ¡Gracias! Me ayuda a pagar mis estudios 🙏" maxlength="150">
+      <div style="font-size:0.75rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">Tus clientes verán este mensaje después de dejarte propina.</div>
+  </div>
+
+  <div class="input-group">
     <label>Contraseña</label>
     <input type="password" id="password" placeholder="Mínimo 6 caracteres">
   </div>
@@ -179,6 +185,7 @@ const ciudad = document.getElementById('ciudad').value.trim();
 const codigo_postal = document.getElementById('codigo_postal').value.trim();
 const clabe = document.getElementById('clabe').value.trim();
 const rfc = document.getElementById('rfc').value.trim();
+const mensaje_agradecimiento = document.getElementById('mensaje_agradecimiento').value.trim();
 
     if (!first_name || !last_name || !email || !phone || !role || !hotel_or_place || !password || !fecha_nacimiento || !calle || !colonia || !ciudad || !codigo_postal) {
       document.getElementById('error-msg').textContent = 'Por favor llena todos los campos.';
@@ -216,7 +223,7 @@ const rfc = document.getElementById('rfc').value.trim();
       const res = await fetch('https://propii-production.up.railway.app/workers/onboard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ full_name, first_name, last_name, email, role, hotel_or_place, phone, fecha_nacimiento, numero_exterior, calle, colonia, ciudad, codigo_postal, clabe, rfc })
+        body: JSON.stringify({ full_name, first_name, last_name, email, role, hotel_or_place, phone, fecha_nacimiento, numero_exterior, calle, colonia, ciudad, codigo_postal, clabe, rfc, mensaje_agradecimiento })
       });
       const data = await res.json();
       if (!res.ok) {
