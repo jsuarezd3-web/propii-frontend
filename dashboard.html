@@ -118,6 +118,7 @@
 <div style="display:flex; gap:0.8rem; padding:1rem; background:rgba(0,0,0,0.1);">
   <button id="btn-ver-qr" onclick="verQR()" style="flex:1; padding:10px; background:#F7931E; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">📱 Ver mi QR</button>
   <button onclick="completarStripe()" style="flex:1; padding:10px; background:#2B7BC4; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">🏦 Completar banco</button>
+  <button onclick="editarMensaje()" style="flex:1; padding:10px; background:#185FA5; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">✏️ Mi mensaje</button>
 </div>
 
     <div class="tabs">
@@ -264,6 +265,8 @@ function verQR() {
   window.location.href = `stripe-success.html?id=${workerId}&name=${encodeURIComponent(workerName)}`;
 }
 
+
+
 async function completarStripe() {
   const workerId = localStorage.getItem('propii_worker_id');
   const res = await fetch(`https://propii-production.up.railway.app/workers/${workerId}/stripe-link`);
@@ -274,6 +277,20 @@ async function completarStripe() {
     alert('Error al generar el link de Stripe');
   }
 }
+
+function editarMensaje() {
+  const mensaje = prompt('Escribe tu mensaje de agradecimiento (máx. 150 caracteres):', dashboardData.worker.mensaje_agradecimiento || '');
+  if (mensaje === null) return;
+  fetch(`https://propii-production.up.railway.app/workers/${workerId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify({ mensaje_agradecimiento: mensaje.substring(0, 150) })
+  }).then(r => {
+    if (r.ok) alert('¡Mensaje actualizado!');
+    else alert('Error al actualizar el mensaje.');
+  });
+}
+
 </script>
 </body>
 </html>
