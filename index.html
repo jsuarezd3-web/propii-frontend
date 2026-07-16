@@ -200,7 +200,8 @@
     });
     const data = await res.json();
     if (res.ok) {
-      localStorage.setItem('token', data);
+      localStorage.setItem('propii_token', data.access_token);
+      localStorage.setItem('propii_worker_id', data.worker_id);
       window.location.href = 'dashboard.html';
     } else {
       alert('Credenciales incorrectas');

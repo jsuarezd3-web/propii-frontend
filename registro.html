@@ -183,7 +183,7 @@ const numero_exterior = document.getElementById('numero_exterior').value.trim();
 const colonia = document.getElementById('colonia').value.trim();
 const ciudad = document.getElementById('ciudad').value.trim();
 const codigo_postal = document.getElementById('codigo_postal').value.trim();
-const clabe = document.getElementById('clabe').value.trim();
+const clabe = document.getElementById('clabe').value.replace(/\s/g, '');
 const rfc = document.getElementById('rfc').value.trim();
 const mensaje_agradecimiento = document.getElementById('mensaje_agradecimiento').value.trim();
 
