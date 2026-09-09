@@ -129,7 +129,7 @@ async function initPage() {
     mensajeAgradecimiento = w.mensaje_agradecimiento || '';
 
     // Montos dinámicos según rol
-    const rolesAltos = ['mesero', 'bartender', 'entrenador', 'barman'];
+    const rolesAltos = ['mesero', 'bartender', 'entrenador', 'estilista', 'hotelería', 'valet', 'otro'];
     const roleWorker = (w.role || '').toLowerCase();
     const esRolAlto = rolesAltos.some(r => roleWorker.includes(r));
     
