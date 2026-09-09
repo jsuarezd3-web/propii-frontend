@@ -69,7 +69,7 @@
     <div class="body">
       <div id="payment-section">
         <div class="section-label" id="lbl-amount">¿Cuánto deseas dejar?</div>
-        <div class="amount-grid">
+        <div class="amount-grid" id="amount-grid">
           <div class="amount-btn" onclick="selectAmount(this, 50)">$50</div>
           <div class="amount-btn selected" onclick="selectAmount(this, 100)">$100</div>
           <div class="amount-btn" onclick="selectAmount(this, 200)">$200</div>
@@ -127,6 +127,22 @@ async function initPage() {
     document.getElementById('role').textContent = (w.role || 'Trabajador') + (w.hotel_or_place ? ' · ' + w.hotel_or_place : '');
     GOOGLE_REVIEW_URL = w.google_review_url || '';
     mensajeAgradecimiento = w.mensaje_agradecimiento || '';
+
+    // Montos dinámicos según rol
+    const rolesAltos = ['mesero', 'bartender', 'entrenador', 'barman'];
+    const roleWorker = (w.role || '').toLowerCase();
+    const esRolAlto = rolesAltos.some(r => roleWorker.includes(r));
+    
+    const montos = esRolAlto ? [50, 100, 200] : [20, 50, 100];
+    const defaultMonto = esRolAlto ? 100 : 50;
+    selectedAmount = defaultMonto;
+    
+    document.getElementById('amount-grid').innerHTML = montos.map((m, i) => 
+        `<div class="amount-btn ${m === defaultMonto ? 'selected' : ''}" onclick="selectAmount(this, ${m})">$${m}</div>`
+    ).join('');
+    
+    document.getElementById('custom-amount').value = defaultMonto;
+    updatePayBtn();
 
     if (!w.stripe_account_id) {
         document.querySelector('.phone-frame').innerHTML = `
