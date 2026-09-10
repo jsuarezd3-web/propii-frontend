@@ -202,7 +202,9 @@ function cerrarSesion() {
 async function cargarDashboard() {
   if (!token || !workerId) { mostrarLogin(); return; }
 
-  const res = await fetch(`${BACKEND}/workers/${workerId}/dashboard`);
+  const res = await fetch(`${BACKEND}/workers/${workerId}/dashboard`, { 
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
   if (!res.ok) { cerrarSesion(); return; }
 
   dashboardData = await res.json();
