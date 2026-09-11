@@ -111,273 +111,261 @@
 const params = new URLSearchParams(window.location.search);
 const WORKER_ID = parseInt(params.get('id')) || 1;
 let GOOGLE_REVIEW_URL = '';
-
 let mensajeAgradecimiento = '';
+let stripe, elements, cardElement, paymentRequest;
+let currentLang = 'es';
+let selectedAmount = 100;
 
-let stripe, elements, cardElement;
+const t = {
+  es: {
+    amount: '¿Cuánto deseas dejar?',
+    currencyNote: 'Todos los montos en pesos mexicanos (MXN)',
+    card: 'Datos de tu tarjeta',
+    pay: 'Pagar',
+    secure: 'Pago seguro con',
+    or: '— o paga con tarjeta —',
+    otherAmount: 'Otro monto',
+    successTitle: '¡Propina enviada!',
+    received: 'recibió',
+    reviewPrompt: '¿Cómo fue tu experiencia?',
+    thankYouPositive: '¡Gracias! Tu opinión nos ayuda mucho.',
+    feedbackPlaceholder: '¿Qué podemos mejorar?',
+    sendFeedback: 'Enviar comentario',
+    feedbackSent: '¡Gracias por tu comentario!'
+  },
+  en: {
+    amount: 'How much would you like to leave?',
+    currencyNote: 'All amounts in Mexican pesos (MXN)',
+    card: 'Card details',
+    pay: 'Pay',
+    secure: 'Secured by',
+    or: '— or pay with card —',
+    otherAmount: 'Other amount',
+    successTitle: 'Tip sent!',
+    received: 'received',
+    reviewPrompt: 'How was your experience?',
+    thankYouPositive: 'Thank you! Your review means a lot.',
+    feedbackPlaceholder: 'What could we improve?',
+    sendFeedback: 'Send feedback',
+    feedbackSent: 'Thank you for your feedback!'
+  }
+};
+
+function setLang(lang) {
+  currentLang = lang;
+  const tx = t[lang];
+  document.getElementById('custom-amount').placeholder = tx.otherAmount;
+  document.getElementById('lbl-amount').textContent = tx.amount;
+  document.getElementById('lbl-currency-note').textContent = tx.currencyNote;
+  document.getElementById('lbl-card').textContent = tx.card;
+  document.getElementById('lbl-secure').textContent = tx.secure;
+  const lblOr = document.getElementById('lbl-or');
+  if (lblOr) lblOr.textContent = tx.or;
+  document.getElementById('btn-es').className = 'lang-btn' + (lang === 'es' ? ' active' : '');
+  document.getElementById('btn-en').className = 'lang-btn' + (lang === 'en' ? ' active' : '');
+  updatePayBtn();
+}
+
+function updatePayBtn() {
+  const tx = t[currentLang];
+  const custom = document.getElementById('custom-amount').value;
+  const amount = custom || selectedAmount;
+  document.getElementById('pay-btn').textContent = tx.pay + ' $' + amount + ' MXN';
+}
+
+function selectAmount(el, amount) {
+  document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAmount = amount;
+  document.getElementById('custom-amount').value = amount;
+  updatePayBtn();
+  if (paymentRequest) paymentRequest.update({ total: { label: 'Propina', amount: amount * 100 } });
+}
+
+function clearSelected() {
+  document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+  selectedAmount = null;
+  updatePayBtn();
+}
+
+function showSuccess(amount) {
+  const tx = t[currentLang];
+  const workerName = document.getElementById('worker-name').textContent;
+  document.getElementById('payment-section').style.display = 'none';
+  const successEl = document.getElementById('success-msg');
+  successEl.style.display = 'block';
+  successEl.innerHTML = `
+    <div style="font-size:36px; margin-bottom:12px;">✅</div>
+    <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:6px;">${tx.successTitle}</div>
+    <div style="font-size:14px; color:#6b7280; margin-bottom:24px;">${workerName} ${tx.received} $${amount} MXN</div>
+    <div style="font-size:15px; color:#374151; font-weight:500; margin-bottom:14px;">${tx.reviewPrompt}</div>
+    <div style="display:flex; justify-content:center; gap:6px; margin-bottom:16px;">
+      ${[1,2,3,4,5].map(i => `<span class="star" id="star-${i}" onclick="handleStar(${i})">☆</span>`).join('')}
+    </div>
+    ${mensajeAgradecimiento ? `<div style="background:#F4F6F9; border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:14px; color:#374151; font-style:italic;">"${mensajeAgradecimiento}"</div>` : ''}
+    <div id="review-feedback" style="font-size:13px; color:#6b7280;"></div>
+  `;
+}
+
+function handleStar(rating) {
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById(`star-${i}`).textContent = i <= rating ? '⭐' : '☆';
+  }
+  const tx = t[currentLang];
+  setTimeout(() => {
+    if (rating >= 4 && GOOGLE_REVIEW_URL) {
+      window.open(GOOGLE_REVIEW_URL, '_blank');
+      document.getElementById('review-feedback').textContent = tx.thankYouPositive;
+    } else if (rating >= 4) {
+      document.getElementById('review-feedback').textContent = tx.thankYouPositive;
+    } else {
+      document.getElementById('review-feedback').innerHTML = `
+        <textarea id="negative-feedback" placeholder="${tx.feedbackPlaceholder}"
+          style="width:100%; padding:10px; border-radius:8px; border:1px solid #d1d5db;
+          font-size:13px; resize:none; margin-bottom:8px;" rows="3"></textarea>
+        <button onclick="sendFeedback()" style="
+          width:100%; padding:10px; background:#185FA5; border:none;
+          border-radius:8px; color:#fff; font-size:14px; cursor:pointer;">
+          ${tx.sendFeedback}
+        </button>
+      `;
+    }
+  }, 500);
+}
+
+function sendFeedback() {
+  const tx = t[currentLang];
+  document.getElementById('review-feedback').innerHTML = `
+    <div style="color:#3B6D11; font-size:14px; font-weight:500;">${tx.feedbackSent}</div>
+  `;
+}
+
+async function handlePay() {
+  const btn = document.getElementById('pay-btn');
+  const custom = document.getElementById('custom-amount').value;
+  const amount = parseFloat(custom || selectedAmount);
+
+  if (!amount || amount < 10) {
+    document.getElementById('card-errors').textContent = 'El monto mínimo es $10 MXN';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  const { paymentMethod, error } = await stripe.createPaymentMethod({
+    type: 'card',
+    card: cardElement,
+  });
+
+  if (error) {
+    document.getElementById('card-errors').textContent = error.message;
+    btn.disabled = false;
+    updatePayBtn();
+    return;
+  }
+
+  const res = await fetch(`https://propii-production.up.railway.app/tips/charge/${WORKER_ID}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ payment_method_id: paymentMethod.id, amount_mxn: amount })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    showSuccess(amount);
+  } else {
+    document.getElementById('card-errors').textContent = data.detail || 'Error al procesar el pago';
+    btn.disabled = false;
+    updatePayBtn();
+  }
+}
 
 async function initPage() {
-    const configRes = await fetch('https://propii-production.up.railway.app/config');
-    const config = await configRes.json();
-    stripe = Stripe(config.stripe_publishable_key);
+  const configRes = await fetch('https://propii-production.up.railway.app/config');
+  const config = await configRes.json();
+  stripe = Stripe(config.stripe_publishable_key);
 
-    const workerRes = await fetch(`https://propii-production.up.railway.app/workers/${WORKER_ID}`);
-    const w = await workerRes.json();
-    document.getElementById('worker-name').textContent = w.full_name;
-    document.getElementById('role').textContent = (w.role || 'Trabajador') + (w.hotel_or_place ? ' · ' + w.hotel_or_place : '');
-    GOOGLE_REVIEW_URL = w.google_review_url || '';
-    mensajeAgradecimiento = w.mensaje_agradecimiento || '';
+  const workerRes = await fetch(`https://propii-production.up.railway.app/workers/${WORKER_ID}`);
+  const w = await workerRes.json();
+  document.getElementById('worker-name').textContent = w.full_name;
+  document.getElementById('role').textContent = (w.role || 'Trabajador') + (w.hotel_or_place ? ' · ' + w.hotel_or_place : '');
+  GOOGLE_REVIEW_URL = w.google_review_url || '';
+  mensajeAgradecimiento = w.mensaje_agradecimiento || '';
 
-    // Montos dinámicos según rol
-    const rolesAltos = ['mesero', 'bartender', 'entrenador', 'estilista', 'hotelería', 'valet', 'otro'];
-    const roleWorker = (w.role || '').toLowerCase();
-    const esRolAlto = rolesAltos.some(r => roleWorker.includes(r));
-    
-    const montos = esRolAlto ? [50, 100, 200] : [20, 50, 100];
-    const defaultMonto = esRolAlto ? 100 : 50;
-    selectedAmount = defaultMonto;
-    
-    document.getElementById('amount-grid').innerHTML = montos.map((m, i) => 
-        `<div class="amount-btn ${m === defaultMonto ? 'selected' : ''}" onclick="selectAmount(this, ${m})">$${m}</div>`
-    ).join('');
-    
-    document.getElementById('custom-amount').value = defaultMonto;
-    updatePayBtn();
+  const rolesAltos = ['mesero', 'bartender', 'entrenador', 'estilista', 'hotelería', 'valet', 'otro'];
+  const roleWorker = (w.role || '').toLowerCase();
+  const esRolAlto = rolesAltos.some(r => roleWorker.includes(r));
+  const montos = esRolAlto ? [50, 100, 200] : [20, 50, 100];
+  const defaultMonto = esRolAlto ? 100 : 50;
+  selectedAmount = defaultMonto;
 
-    if (!w.stripe_account_id) {
-        document.querySelector('.phone-frame').innerHTML = `
-            <div style="padding:3rem 2rem; text-align:center;">
-                <div style="font-size:3rem; margin-bottom:1rem;">⚠️</div>
-                <h2 style="color:#0a1628; margin-bottom:0.8rem;">Pago no disponible</h2>
-                <p style="color:#6b7280; font-size:0.95rem;">Este trabajador aún no ha completado su registro de pagos.</p>
-            </div>`;
-        return;
+  document.getElementById('amount-grid').innerHTML = montos.map(m =>
+    `<div class="amount-btn ${m === defaultMonto ? 'selected' : ''}" onclick="selectAmount(this, ${m})">$${m}</div>`
+  ).join('');
+
+  document.getElementById('custom-amount').value = defaultMonto;
+  updatePayBtn();
+
+  if (!w.stripe_account_id) {
+    document.querySelector('.phone-frame').innerHTML = `
+      <div style="padding:3rem 2rem; text-align:center;">
+        <div style="font-size:3rem; margin-bottom:1rem;">⚠️</div>
+        <h2 style="color:#0a1628; margin-bottom:0.8rem;">Pago no disponible</h2>
+        <p style="color:#6b7280; font-size:0.95rem;">Este trabajador aún no ha completado su registro de pagos.</p>
+      </div>`;
+    return;
+  }
+
+  elements = stripe.elements();
+  cardElement = elements.create('card', {
+    hidePostalCode: true,
+    style: {
+      base: { fontSize: '15px', color: '#111827', '::placeholder': { color: '#9ca3af' } },
+      invalid: { color: '#dc2626' }
     }
+  });
+  cardElement.mount('#card-element');
+  cardElement.on('change', e => {
+    document.getElementById('card-errors').textContent = e.error ? e.error.message : '';
+  });
 
-    elements = stripe.elements();
-    cardElement = elements.create('card', {
-      hidePostalCode: true,
-      style: {
-        base: { fontSize: '15px', color: '#111827', '::placeholder': { color: '#9ca3af' } },
-        invalid: { color: '#dc2626' }
-      }
+  paymentRequest = stripe.paymentRequest({
+    country: 'MX',
+    currency: 'mxn',
+    total: { label: 'Propina', amount: defaultMonto * 100 },
+    requestPayerName: false,
+    requestPayerEmail: false,
+  });
+
+  const prButton = elements.create('paymentRequestButton', {
+    paymentRequest,
+    style: { paymentRequestButton: { height: '48px', borderRadius: '8px' } }
+  });
+
+  paymentRequest.canMakePayment().then(result => {
+    if (result) {
+      document.getElementById('apple-google-pay').style.display = 'block';
+      prButton.mount('#payment-request-button');
+    }
+  });
+
+  paymentRequest.on('paymentmethod', async (ev) => {
+    const custom = document.getElementById('custom-amount').value;
+    const amount = parseFloat(custom || selectedAmount);
+    const res = await fetch(`https://propii-production.up.railway.app/tips/charge/${WORKER_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ payment_method_id: ev.paymentMethod.id, amount_mxn: amount })
     });
-    cardElement.mount('#card-element');
-    cardElement.on('change', e => {
-      document.getElementById('card-errors').textContent = e.error ? e.error.message : '';
-    });
+    const data = await res.json();
+    if (res.ok) { ev.complete('success'); showSuccess(amount); }
+    else { ev.complete('fail'); document.getElementById('card-errors').textContent = data.detail || 'Error al procesar'; }
+  });
 
-    const paymentRequest = stripe.paymentRequest({
-      country: 'MX',
-      currency: 'mxn',
-      total: { label: 'Propina', amount: 10000 },
-      requestPayerName: false,
-      requestPayerEmail: false,
-    });
-
-    const prButton = elements.create('paymentRequestButton', {
-      paymentRequest,
-      style: { paymentRequestButton: { height: '48px', borderRadius: '8px' } }
-    });
-
-    paymentRequest.canMakePayment().then(result => {
-      if (result) {
-        document.getElementById('apple-google-pay').style.display = 'block';
-        prButton.mount('#payment-request-button');
-      }
-    });
-
-    paymentRequest.on('paymentmethod', async (ev) => {
-      const custom = document.getElementById('custom-amount').value;
-      const amount = parseFloat(custom || selectedAmount);
-      const res = await fetch(`https://propii-production.up.railway.app/tips/charge/${WORKER_ID}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_method_id: ev.paymentMethod.id, amount_mxn: amount })
-      });
-      const data = await res.json();
-      if (res.ok) { ev.complete('success'); showSuccess(amount); }
-      else { ev.complete('fail'); document.getElementById('card-errors').textContent = data.detail || 'Error al procesar'; }
-    });
-
-    const t = {
-      es: {
-        role: 'Mesero · Hotel Fiesta Americana',
-        amount: '¿Cuánto deseas dejar?',
-        currencyNote: 'Todos los montos en pesos mexicanos (MXN)',
-        card: 'Datos de tu tarjeta',
-        pay: 'Pagar',
-        secure: 'Pago seguro con',
-        or: '— o paga con tarjeta —',
-        otherAmount: 'Otro monto',
-        successTitle: '¡Propina enviada!',
-        received: 'recibió',
-        reviewPrompt: '¿Cómo fue tu experiencia en Hotel Fiesta Americana?',
-        thankYouPositive: '¡Gracias! Tu opinión nos ayuda mucho.',
-        feedbackPlaceholder: '¿Qué podemos mejorar?',
-        sendFeedback: 'Enviar comentario',
-        feedbackSent: '¡Gracias por tu comentario!'
-        
-      },
-      en: {
-        role: 'Waiter · Hotel Fiesta Americana',
-        amount: 'How much would you like to leave?',
-        currencyNote: 'All amounts in Mexican pesos (MXN)',
-        card: 'Card details',
-        pay: 'Pay',
-        secure: 'Secured by',
-        or: '— or pay with card —',
-        otherAmount: 'Other amount',
-        successTitle: 'Tip sent!',
-        received: 'received',
-        reviewPrompt: 'How was your experience at Hotel Fiesta Americana?',
-        thankYouPositive: 'Thank you! Your review means a lot.',
-        feedbackPlaceholder: 'What could we improve?',
-        sendFeedback: 'Send feedback',
-        feedbackSent: 'Thank you for your feedback!'
-      }
-    };
-
-    let currentLang = 'es';
-    let selectedAmount = 100;
-
-    function showSuccess(amount) {
-      const tx = t[currentLang];
-      document.getElementById('payment-section').style.display = 'none';
-      const successEl = document.getElementById('success-msg');
-      successEl.style.display = 'block';
-      successEl.innerHTML = `
-        <div style="font-size:36px; margin-bottom:12px;">✅</div>
-        <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:6px;">${tx.successTitle}</div>
-        <div style="font-size:14px; color:#6b7280; margin-bottom:24px;">Carlos Ramírez ${tx.received} $${amount} MXN</div>
-        <div style="font-size:15px; color:#374151; font-weight:500; margin-bottom:14px;">${tx.reviewPrompt}</div>
-        <div style="display:flex; justify-content:center; gap:6px; margin-bottom:16px;">
-          ${[1,2,3,4,5].map(i => `<span class="star" id="star-${i}" onclick="handleStar(${i})">☆</span>`).join('')}
-        </div>
-        ${mensajeAgradecimiento ? `<div style="background:#F4F6F9; border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:14px; color:#374151; font-style:italic;">"${mensajeAgradecimiento}"</div>` : ''}
-<div id="review-feedback" style="font-size:13px; color:#6b7280;"></div>
-      `;
-    }
-
-    function handleStar(rating) {
-      if (rating >= 4 && !GOOGLE_REVIEW_URL) {
-        document.getElementById('review-feedback').textContent = 'No hay URL de reseña configurada.';
-        return;
-      }
-      for (let i = 1; i <= 5; i++) {
-        document.getElementById(`star-${i}`).textContent = i <= rating ? '⭐' : '☆';
-      }
-      const tx = t[currentLang];
-      setTimeout(() => {
-        if (rating >= 4) {
-          window.open(GOOGLE_REVIEW_URL, '_blank');
-          document.getElementById('review-feedback').textContent = tx.thankYouPositive;
-        } else {
-          document.getElementById('review-feedback').innerHTML = `
-            <textarea id="negative-feedback" placeholder="${tx.feedbackPlaceholder}"
-              style="width:100%; padding:10px; border-radius:8px; border:1px solid #d1d5db;
-              font-size:13px; resize:none; margin-bottom:8px;" rows="3"></textarea>
-            <button onclick="sendFeedback()" style="
-              width:100%; padding:10px; background:#185FA5; border:none;
-              border-radius:8px; color:#fff; font-size:14px; cursor:pointer;">
-              ${tx.sendFeedback}
-            </button>
-          `;
-        }
-      }, 500);
-    }
-
-    function sendFeedback() {
-      const tx = t[currentLang];
-      document.getElementById('review-feedback').innerHTML = `
-        <div style="color:#3B6D11; font-size:14px; font-weight:500;">${tx.feedbackSent}</div>
-      `;
-    }
-
-
-
-    function setLang(lang) {
-      currentLang = lang;
-      const tx = t[lang];
-      document.getElementById('custom-amount').placeholder = tx.otherAmount;
-      document.getElementById('role').textContent = tx.role;
-      document.getElementById('lbl-amount').textContent = tx.amount;
-      document.getElementById('lbl-currency-note').textContent = tx.currencyNote;
-      document.getElementById('lbl-card').textContent = tx.card;
-      document.getElementById('lbl-secure').textContent = tx.secure;
-      const lblOr = document.getElementById('lbl-or');
-      if (lblOr) lblOr.textContent = tx.or;
-      document.getElementById('btn-es').className = 'lang-btn' + (lang === 'es' ? ' active' : '');
-      document.getElementById('btn-en').className = 'lang-btn' + (lang === 'en' ? ' active' : '');
-      updatePayBtn();
-    }
-
-    function updatePayBtn() {
-      const tx = t[currentLang];
-      const custom = document.getElementById('custom-amount').value;
-      const amount = custom || selectedAmount;
-      document.getElementById('pay-btn').textContent = tx.pay + ' $' + amount + ' MXN';
-    }
-
-    function selectAmount(el, amount) {
-      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedAmount = amount;
-      document.getElementById('custom-amount').value = amount;
-      updatePayBtn();
-      paymentRequest.update({ total: { label: 'Propina', amount: amount * 100 } });
-    }
-
-    function clearSelected() {
-      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
-      selectedAmount = null;
-      updatePayBtn();
-    }
-
-    async function handlePay() {
-      const btn = document.getElementById('pay-btn');
-      const custom = document.getElementById('custom-amount').value;
-      const amount = parseFloat(custom || selectedAmount);
-
-      if (!amount || amount < 10) {
-        document.getElementById('card-errors').textContent = 'El monto mínimo es $10 MXN';
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = '...';
-
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElement,
-      });
-
-      if (error) {
-        document.getElementById('card-errors').textContent = error.message;
-        btn.disabled = false;
-        updatePayBtn();
-        return;
-      }
-
-      const res = await fetch(`https://propii-production.up.railway.app/tips/charge/${WORKER_ID}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_method_id: paymentMethod.id, amount_mxn: amount })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        showSuccess(amount);
-      } else {
-        document.getElementById('card-errors').textContent = data.detail || 'Error al procesar el pago';
-        btn.disabled = false;
-        updatePayBtn();
-      }
-    }
-
-    const browserLang = navigator.language || navigator.userLanguage || 'es';
-    setLang(browserLang.startsWith('en') ? 'en' : 'es');
+  const browserLang = navigator.language || navigator.userLanguage || 'es';
+  setLang(browserLang.startsWith('en') ? 'en' : 'es');
 }
 
 initPage();
