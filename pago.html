@@ -294,21 +294,7 @@ async function initPage() {
       `;
     }
 
-async function cargarWorker() {
-  const res = await fetch(`https://propii-production.up.railway.app/workers/${WORKER_ID}`);
-  const worker = await res.json();
-  document.getElementById('worker-name').textContent = worker.full_name;
-  document.getElementById('role').textContent = worker.role + ' · ' + worker.hotel_or_place;
-  if (worker.hotel_id) {
-    const hotelRes = await fetch(`https://propii-production.up.railway.app/hotels/${worker.hotel_id}`);
-    const hotel = await hotelRes.json();
-    if (hotel.google_place_id) {
-      GOOGLE_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=' + hotel.google_place_id;
-    }
-  }
-}
 
-cargarWorker();
 
     function setLang(lang) {
       currentLang = lang;
