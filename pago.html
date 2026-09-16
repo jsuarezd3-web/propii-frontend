@@ -77,7 +77,7 @@
 
         <div class="custom-wrap">
           <span class="custom-prefix">$</span>
-          <input class="custom-input" id="custom-amount" type="number" min="1" placeholder="Otro monto" oninput="clearSelected()" />
+          <input class="custom-input" id="custom-amount" type="number" min="1" placeholder="Otro monto" oninput="clearSelected(); updatePaymentRequest();" />
         </div>
         <div class="currency-note" id="lbl-currency-note">Todos los montos en pesos mexicanos (MXN)</div>
 
@@ -186,6 +186,15 @@ function selectAmount(el, amount) {
 function clearSelected() {
   document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
   selectedAmount = null;
+  updatePayBtn();
+}
+
+function updatePaymentRequest() {
+  const custom = document.getElementById('custom-amount').value;
+  const amount = parseFloat(custom);
+  if (paymentRequest && amount >= 10) {
+    paymentRequest.update({ total: { label: 'Propina', amount: amount * 100 } });
+  }
   updatePayBtn();
 }
 
