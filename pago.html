@@ -167,7 +167,8 @@ function setLang(lang) {
 }
 
 function updatePayBtn() {
-  const tx = t[currentLang];
+  const activeLang = document.getElementById('btn-es').classList.contains('active') ? 'es' : 'en';
+  const tx = t[activeLang];
   const custom = document.getElementById('custom-amount').value;
   const amount = custom || selectedAmount;
   document.getElementById('pay-btn').textContent = tx.pay + ' $' + amount + ' MXN';
