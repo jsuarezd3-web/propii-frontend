@@ -40,6 +40,18 @@
     .custom-prefix { padding: 10px 8px 10px 12px; font-size: 15px; color: #6b7280; flex-shrink: 0; }
     .custom-input { flex: 1; padding: 10px 12px 10px 0; border: none; background: transparent; font-size: 15px; color: #111827; outline: none; }
     .currency-note { font-size: 12px; color: #9ca3af; margin-bottom: 1.25rem; padding-left: 2px; }
+    .fee-breakdown {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 1rem;
+      font-size: 13px;
+    }
+    .fee-row { display: flex; justify-content: space-between; align-items: center; color: #6b7280; margin-bottom: 4px; }
+    .fee-row:last-child { margin-bottom: 0; border-top: 1px solid #e5e7eb; padding-top: 6px; margin-top: 2px; color: #111827; font-weight: 600; }
+    .fee-row .fee-label { }
+    .fee-row .fee-amount { font-weight: 500; }
     .divider { height: 1px; background: #f3f4f6; margin: 1.25rem 0; }
     #card-element { padding: 12px; border-radius: 8px; border: 1px solid #d1d5db; background: #f9fafb; margin-bottom: 10px; min-height: 44px; }
     #card-errors { color: #dc2626; font-size: 13px; margin-bottom: 10px; min-height: 18px; }
@@ -81,6 +93,21 @@
         </div>
         <div class="currency-note" id="lbl-currency-note">Todos los montos en pesos mexicanos (MXN)</div>
 
+        <div class="fee-breakdown" id="fee-breakdown">
+          <div class="fee-row">
+            <span class="fee-label" id="lbl-tip-line">Propina</span>
+            <span class="fee-amount" id="tip-amount-display">$100.00</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label" id="lbl-service-fee">Cargo de servicio digital</span>
+            <span class="fee-amount">$3.90</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label" id="lbl-total">Total</span>
+            <span class="fee-amount" id="total-amount-display">$103.90</span>
+          </div>
+        </div>
+
         <div class="divider"></div>
 
         <div class="section-label" id="lbl-card">Datos de tu tarjeta</div>
@@ -91,7 +118,7 @@
         <div id="card-element"></div>
         <div id="card-errors"></div>
 
-        <button class="pay-btn" id="pay-btn" onclick="handlePay()">Pagar $100 MXN</button>
+        <button class="pay-btn" id="pay-btn" onclick="handlePay()">Pagar $103.90 MXN</button>
       </div>
 
       <div id="success-msg"></div>
@@ -108,6 +135,7 @@
   </div>
 
   <script>
+const CARGO_SERVICIO = 3.90;
 const params = new URLSearchParams(window.location.search);
 const WORKER_ID = parseInt(params.get('id')) || 1;
 let GOOGLE_REVIEW_URL = '';
@@ -131,7 +159,10 @@ const t = {
     thankYouPositive: '¡Gracias! Tu opinión nos ayuda mucho.',
     feedbackPlaceholder: '¿Qué podemos mejorar?',
     sendFeedback: 'Enviar comentario',
-    feedbackSent: '¡Gracias por tu comentario!'
+    feedbackSent: '¡Gracias por tu comentario!',
+    tipLine: 'Propina',
+    serviceFee: 'Cargo de servicio digital',
+    total: 'Total'
   },
   en: {
     amount: 'How much would you like to leave?',
@@ -147,7 +178,10 @@ const t = {
     thankYouPositive: 'Thank you! Your review means a lot.',
     feedbackPlaceholder: 'What could we improve?',
     sendFeedback: 'Send feedback',
-    feedbackSent: 'Thank you for your feedback!'
+    feedbackSent: 'Thank you for your feedback!',
+    tipLine: 'Tip',
+    serviceFee: 'Digital service fee',
+    total: 'Total'
   }
 };
 
@@ -161,6 +195,9 @@ function setLang(lang) {
   document.getElementById('lbl-secure').textContent = tx.secure;
   const lblOr = document.getElementById('lbl-or');
   if (lblOr) lblOr.textContent = tx.or;
+  document.getElementById('lbl-tip-line').textContent = tx.tipLine;
+  document.getElementById('lbl-service-fee').textContent = tx.serviceFee;
+  document.getElementById('lbl-total').textContent = tx.total;
   document.getElementById('btn-es').className = 'lang-btn' + (lang === 'es' ? ' active' : '');
   document.getElementById('btn-en').className = 'lang-btn' + (lang === 'en' ? ' active' : '');
   updatePayBtn();
@@ -170,8 +207,11 @@ function updatePayBtn() {
   const activeLang = document.getElementById('btn-es').classList.contains('active') ? 'es' : 'en';
   const tx = t[activeLang];
   const custom = document.getElementById('custom-amount').value;
-  const amount = custom || selectedAmount;
-  document.getElementById('pay-btn').textContent = tx.pay + ' $' + amount + ' MXN';
+  const amount = parseFloat(custom || selectedAmount) || 0;
+  const total = (amount + CARGO_SERVICIO).toFixed(2);
+  document.getElementById('tip-amount-display').textContent = '$' + amount.toFixed(2);
+  document.getElementById('total-amount-display').textContent = '$' + total;
+  document.getElementById('pay-btn').textContent = tx.pay + ' $' + total + ' MXN';
 }
 
 function selectAmount(el, amount) {
@@ -180,7 +220,7 @@ function selectAmount(el, amount) {
   selectedAmount = amount;
   document.getElementById('custom-amount').value = amount;
   updatePayBtn();
-  if (paymentRequest) paymentRequest.update({ total: { label: 'Propina', amount: amount * 100 } });
+  if (paymentRequest) paymentRequest.update({ total: { label: 'Total', amount: Math.round((amount + CARGO_SERVICIO) * 100) } });
 }
 
 function clearSelected() {
@@ -193,7 +233,7 @@ function updatePaymentRequest() {
   const custom = document.getElementById('custom-amount').value;
   const amount = parseFloat(custom);
   if (paymentRequest && amount >= 10) {
-    paymentRequest.update({ total: { label: 'Propina', amount: amount * 100 } });
+    paymentRequest.update({ total: { label: 'Total', amount: Math.round((amount + CARGO_SERVICIO) * 100) } });
   }
   updatePayBtn();
 }
@@ -207,9 +247,13 @@ function showSuccess(amount) {
   successEl.innerHTML = `
     <div style="font-size:36px; margin-bottom:12px;">✅</div>
     <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:6px;">${tx.successTitle}</div>
-    <div style="font-size:14px; color:#6b7280; margin-bottom:24px;">${workerName} ${tx.received} $${amount} MXN</div>
+    <div style="font-size:14px; color:#6b7280; margin-bottom:24px;">${workerName} ${tx.received} $${parseFloat(amount).toFixed(2)} MXN</div>
 
     ${mensajeAgradecimiento ? `<div style="background:#F4F6F9; border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:14px; color:#374151; font-style:italic;">"${mensajeAgradecimiento}"</div>` : ''}
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px; color:#6b7280; margin-bottom:10px;">${tx.reviewPrompt}</div>
+      ${[1,2,3,4,5].map(i => `<span class="star" id="star-${i}" onclick="handleStar(${i})">☆</span>`).join('')}
+    </div>
     <div id="review-feedback" style="font-size:13px; color:#6b7280;"></div>
   `;
 }
@@ -341,7 +385,7 @@ async function initPage() {
   paymentRequest = stripe.paymentRequest({
     country: 'MX',
     currency: 'mxn',
-    total: { label: 'Propina', amount: defaultMonto * 100 },
+    total: { label: 'Total', amount: Math.round((defaultMonto + CARGO_SERVICIO) * 100) },
     requestPayerName: false,
     requestPayerEmail: false,
   });
@@ -371,7 +415,6 @@ async function initPage() {
     else { ev.complete('fail'); document.getElementById('card-errors').textContent = data.detail || 'Error al procesar'; }
   });
 
-  const browserLang = navigator.language || navigator.userLanguage || 'es';
   setLang('es');
 }
 
