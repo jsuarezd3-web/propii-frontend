@@ -62,18 +62,22 @@
     .empresa-card p { color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
     .btn-empresa { background: #185FA5; color: #fff; padding: 0.7rem 1.5rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-block; }
 
-    /* LOGIN */
-    .login-section { padding: 5rem 2rem; display: flex; justify-content: center; background: #F4F6F9; }
-    .login-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-    .login-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; color: #111827; }
-    .login-card p { color: #6b7280; font-size: 0.9rem; margin-bottom: 2rem; }
-    .input-group { margin-bottom: 1rem; }
-    .input-group label { display: block; font-size: 0.85rem; color: #374151; margin-bottom: 0.4rem; font-weight: 500; }
-    .input-group input { width: 100%; background: #F4F6F9; border: 1px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; color: #111827; font-size: 0.95rem; outline: none; }
-    .input-group input:focus { border-color: #185FA5; background: #fff; box-shadow: 0 0 0 3px rgba(24,95,165,0.1); }
-    .btn-login { width: 100%; background: #185FA5; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
-    .login-footer { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: #6b7280; }
-    .login-footer a { color: #F7931E; text-decoration: none; font-weight: 600; }
+    /* SELECTOR DE ACCESO */
+    .access-section { padding: 5rem 2rem; display: flex; flex-direction: column; align-items: center; background: #F4F6F9; }
+    .access-section h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; color: #111827; margin-bottom: 0.6rem; text-align: center; }
+    .access-section p { color: #6b7280; font-size: 1rem; margin-bottom: 2.5rem; text-align: center; }
+    .access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; max-width: 560px; }
+    @media (max-width: 520px) { .access-grid { grid-template-columns: 1fr; } }
+    .access-card { background: #fff; border: 2px solid #e5e7eb; border-radius: 24px; padding: 2.5rem 2rem; text-align: center; text-decoration: none; color: #111827; transition: all 0.2s; cursor: pointer; }
+    .access-card:hover { border-color: #185FA5; box-shadow: 0 8px 32px rgba(24,95,165,0.13); transform: translateY(-2px); }
+    .access-card .ac-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+    .access-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.4rem; color: #111827; }
+    .access-card p { font-size: 0.88rem; color: #6b7280; margin-bottom: 1.5rem; }
+    .access-card .ac-btns { display: flex; flex-direction: column; gap: 0.6rem; }
+    .ac-btn-login { background: #185FA5; color: #fff; border: none; padding: 0.65rem 1.2rem; border-radius: 50px; font-size: 0.88rem; font-weight: 600; text-decoration: none; display: block; cursor: pointer; }
+    .ac-btn-reg { background: transparent; color: #185FA5; border: 1.5px solid #185FA5; padding: 0.65rem 1.2rem; border-radius: 50px; font-size: 0.88rem; font-weight: 600; text-decoration: none; display: block; cursor: pointer; }
+    .ac-btn-login:hover { background: #0d4a87; }
+    .ac-btn-reg:hover { background: rgba(24,95,165,0.07); }
 
     footer { text-align: center; padding: 2rem; color: #9ca3af; font-size: 0.85rem; border-top: 1px solid #e5e7eb; background: #fff; }
   </style>
@@ -82,7 +86,7 @@
 
 <nav>
   <div class="nav-logo"><img src="logo-blanco.png" alt="Propii"></div>
-  <a href="#login" class="nav-btn">Iniciar sesión</a>
+  <a href="#acceso" class="nav-btn">Iniciar sesión</a>
 </nav>
 
 <section class="hero">
@@ -90,7 +94,7 @@
   <h1>Tu trabajo merece<br><span>una propina digital</span></h1>
   <p>Recibe propinas con tarjeta, Apple Pay o Google Pay directo a tu cuenta. Sin efectivo, sin complicaciones.</p>
   <div class="hero-btns">
-    <a href="registro.html" class="btn-primary">Registrarme gratis</a>
+    <a href="#acceso" class="btn-primary">Comenzar gratis</a>
     <a href="#como-funciona" class="btn-outline">Cómo funciona</a>
   </div>
 </section>
@@ -152,7 +156,7 @@
 <div class="empresas">
   <div class="section-label">Para empresas</div>
   <h2>Aumenta la satisfacción de tu equipo</h2>
-  <p class="sub" style="color:rgba(255,255,255,0.55); font-size:1.05rem; margin-bottom:0;">Propii se integra sin fricción en supermercados, restaurantes, hoteles y gasolineras.</p>
+  <p class="sub" style="color:#6b7280; font-size:1.05rem; margin-bottom:0;">Propii se integra sin fricción en supermercados, restaurantes, hoteles y gasolineras.</p>
   <div class="empresas-grid">
     <div class="empresa-card">
       <h3>🏪 Supermercados y retail</h3>
@@ -162,52 +166,41 @@
     <div class="empresa-card">
       <h3>🍽️ Restaurantes y hoteles</h3>
       <p>Cada mesero, botones o valet tiene su propio QR. Tú ves el reporte general, ellos ven sus propinas en tiempo real.</p>
-      <a href="mailto:hola@propii.mx" class="btn-empresa">Contactar</a>
+      <a href="#acceso" class="btn-empresa">Registrar empresa</a>
     </div>
   </div>
 </div>
 
-<div id="login" class="login-section">
-  <div class="login-card">
-    <h2>Iniciar sesión</h2>
-    <p>Accede a tu dashboard de propinas</p>
-    <div class="input-group">
-      <label>Correo electrónico</label>
-      <input type="email" id="email" placeholder="tu@correo.com">
+<!-- SELECTOR DE ACCESO -->
+<div id="acceso" class="access-section">
+  <h2>¿Cómo quieres entrar?</h2>
+  <p>Selecciona si eres trabajador o representas una empresa</p>
+  <div class="access-grid">
+
+    <div class="access-card">
+      <span class="ac-icon">👤</span>
+      <h3>Soy trabajador</h3>
+      <p>Recibe propinas con tu QR personal y monitorea tus ganancias</p>
+      <div class="ac-btns">
+        <a href="login.html?tipo=trabajador" class="ac-btn-login">Iniciar sesión</a>
+        <a href="registro.html?tipo=trabajador" class="ac-btn-reg">Registrarme gratis</a>
+      </div>
     </div>
-    <div class="input-group">
-      <label>Contraseña</label>
-      <input type="password" id="password" placeholder="••••••••">
+
+    <div class="access-card">
+      <span class="ac-icon">🏨</span>
+      <h3>Soy empresa</h3>
+      <p>Gestiona a tus trabajadores y ve el rendimiento de propinas de tu equipo</p>
+      <div class="ac-btns">
+        <a href="login.html?tipo=empresa" class="ac-btn-login">Iniciar sesión</a>
+        <a href="registro.html?tipo=empresa" class="ac-btn-reg">Registrar empresa</a>
+      </div>
     </div>
-    <button class="btn-login" onclick="login()">Entrar</button>
-    <div class="login-footer">
-      ¿No tienes cuenta? <a href="registro.html">Regístrate gratis</a>
-    </div>
+
   </div>
 </div>
 
 <footer>© 2026 Propii · Propinas digitales para México</footer>
-
-<script>
-  async function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    if (!email || !password) return alert('Llena todos los campos');
-    const res = await fetch('https://propii-production.up.railway.app/workers/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem('propii_token', data.access_token);
-      localStorage.setItem('propii_worker_id', data.worker_id);
-      window.location.href = 'dashboard.html';
-    } else {
-      alert('Credenciales incorrectas');
-    }
-  }
-</script>
 
 </body>
 </html>

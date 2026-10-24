@@ -10,19 +10,56 @@
     body { font-family: 'Inter', -apple-system, sans-serif; background: #0a1628; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
     .logo { margin-bottom: 2rem; }
     .logo img { height: 90px; }
-    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 440px; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 480px; }
     .card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .card p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 2rem; }
+    .card .sub { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 1.8rem; }
+
+    /* TIPO SELECTOR */
+    .tipo-selector { display: flex; gap: 10px; margin-bottom: 2rem; }
+    .tipo-btn {
+      flex: 1; padding: 14px 10px; border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.55); cursor: pointer;
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      text-align: center; transition: all 0.15s;
+    }
+    .tipo-btn .icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+    .tipo-btn.active { border-color: #F7931E; background: rgba(247,147,30,0.12); color: #F7931E; }
+
     .input-group { margin-bottom: 1rem; }
     .input-group label { display: block; font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; }
-    .input-group input, .input-group select { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 0.75rem 1rem; color: #fff; font-size: 0.95rem; outline: none; }
+    .input-group input, .input-group select, .input-group textarea {
+      width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 0.75rem 1rem; color: #fff; font-size: 0.95rem;
+      outline: none; font-family: inherit;
+    }
     .input-group select option { background: #0d2444; }
-    .input-group input:focus, .input-group select:focus { border-color: #2B7BC4; }
-    .btn-register { width: 100%; background: #F7931E; color: #fff; border: none; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+    .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: #F7931E; }
+    .input-group textarea { resize: vertical; min-height: 80px; }
+    .hint { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-top: 0.3rem; }
+
+    .section-divider {
+      font-size: 0.78rem; color: rgba(255,255,255,0.35); text-transform: uppercase;
+      letter-spacing: 1.5px; margin: 1.5rem 0 1rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .section-divider::before, .section-divider::after {
+      content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1);
+    }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } }
+
+    .btn-register { width: 100%; background: #F7931E; color: #fff; border: none; padding: 0.9rem; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; font-family: inherit; }
     .btn-register:disabled { opacity: 0.6; cursor: not-allowed; }
+    .error { color: #f87171; font-size: 0.85rem; margin-top: 0.6rem; text-align: center; }
     .footer-link { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: rgba(255,255,255,0.4); }
     .footer-link a { color: #F7931E; text-decoration: none; }
-    .error { color: #f87171; font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
+
+    /* SECCIONES */
+    #form-trabajador, #form-empresa { display: none; }
+    #form-trabajador.visible, #form-empresa.visible { display: block; }
 
     /* QR SUCCESS */
     .success { display: none; text-align: center; }
@@ -32,99 +69,170 @@
     #qrcode canvas { border-radius: 12px; padding: 12px; background: #fff; }
     .qr-url { background: rgba(255,255,255,0.07); border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.5); word-break: break-all; margin-bottom: 1.5rem; }
     .btn-dashboard { display: block; background: #2B7BC4; color: #fff; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 600; text-decoration: none; text-align: center; }
+
+    /* EMPRESA SUCCESS */
+    .empresa-success { display: none; text-align: center; }
+    .empresa-success h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .empresa-success p { color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .empresa-success .check { font-size: 4rem; margin-bottom: 1rem; }
   </style>
 </head>
 <body>
 
 <div class="logo"><a href="index.html"><img src="logo.png" alt="Propii"></a></div>
 
-<div class="card" id="form-card">
-  <h2>Crea tu cuenta</h2>
-  <p>Gratis. Tu QR listo en segundos.</p>
+<div class="card" id="main-card">
+  <h2>Crear cuenta</h2>
+  <p class="sub">¿Eres trabajador o representas una empresa?</p>
 
-<div class="input-group">
-    <label>Nombre(s)</label>
-    <input type="text" id="first_name" placeholder="Ej. Juan Carlos">
-</div>
-<div class="input-group">
-    <label>Apellido(s)</label>
-    <input type="text" id="last_name" placeholder="Ej. García López">
-</div>
-  <div class="input-group">
-    <label>Correo electrónico</label>
-    <input type="email" id="email" placeholder="tu@correo.com">
+  <div class="tipo-selector">
+    <button class="tipo-btn" id="btn-tipo-trabajador" onclick="setTipo('trabajador')">
+      <span class="icon">👤</span>
+      Trabajador
+    </button>
+    <button class="tipo-btn" id="btn-tipo-empresa" onclick="setTipo('empresa')">
+      <span class="icon">🏨</span>
+      Empresa / Hotel
+    </button>
   </div>
-  <div class="input-group">
-    <label>Teléfono</label>
-    <input type="tel" id="phone" placeholder="+52 81 1234 5678">
-  </div>
-<div class="input-group">
-    <label>Fecha de nacimiento</label>
-    <input type="date" id="fecha_nacimiento">
-</div>
-<div class="input-group">
-    <label>Calle</label>
-    <input type="text" id="calle" placeholder="Ej. Av. Constitución">
-</div>
-<div class="input-group">
-    <label>Número exterior</label>
-    <input type="text" id="numero_exterior" placeholder="Ej. 123">
-</div>
-<div class="input-group">
-    <label>Colonia</label>
-    <input type="text" id="colonia" placeholder="Ej. Centro">
-</div>
-<div class="input-group">
-    <label>Ciudad</label>
-    <input type="text" id="ciudad" placeholder="Ej. Monterrey">
-</div>
-<div class="input-group">
-    <label>Código postal</label>
-    <input type="text" id="codigo_postal" placeholder="Ej. 64000">
-</div>
-<div class="input-group">
-    <label>CLABE interbancaria</label>
-    <input type="text" id="clabe" placeholder="18 dígitos">
-</div>
-<div class="input-group">
-    <label>RFC</label>
-    <input type="text" id="rfc" placeholder="Ej. GALO900101ABC">
-</div>
-  <div class="input-group">
-    <label>¿Qué eres?</label>
-    <select id="role">
-      <option value="">Selecciona tu rol</option>
-      <option value="Empacador">Empacador</option>
-      <option value="Mesero">Mesero</option>
-      <option value="Gasolinero">Gasolinero</option>
-      <option value="Hotelería">Hotelería</option>
-      <option value="Valet parking">Valet parking</option>
-      <option value="Estilista">Estilista</option>
-      <option value="Bartender">Bartender</option>
-      <option value="Entrenador">Entrenador</option>
-      <option value="Otro">Otro</option>
-    </select>
-  </div>
-  <div class="input-group">
-    <label>Lugar de trabajo</label>
-    <input type="text" id="hotel_or_place" placeholder="Ej. HEB Cumbres, Hotel Fiesta">
-  </div>
-  <div class="input-group">
+
+  <!-- FORMULARIO TRABAJADOR -->
+  <div id="form-trabajador">
+    <div class="section-divider">Datos personales</div>
+    <div class="row2">
+      <div class="input-group">
+        <label>Nombre(s)</label>
+        <input type="text" id="t-first_name" placeholder="Ej. Juan Carlos">
+      </div>
+      <div class="input-group">
+        <label>Apellido(s)</label>
+        <input type="text" id="t-last_name" placeholder="Ej. García López">
+      </div>
+    </div>
+    <div class="input-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="t-email" placeholder="tu@correo.com">
+    </div>
+    <div class="input-group">
+      <label>Teléfono</label>
+      <input type="tel" id="t-phone" placeholder="+52 81 1234 5678">
+    </div>
+    <div class="input-group">
+      <label>Fecha de nacimiento</label>
+      <input type="date" id="t-fecha_nacimiento">
+    </div>
+
+    <div class="section-divider">Tu trabajo</div>
+    <div class="input-group">
+      <label>¿Qué eres?</label>
+      <select id="t-role">
+        <option value="">Selecciona tu rol</option>
+        <option value="Empacador">Empacador</option>
+        <option value="Mesero">Mesero</option>
+        <option value="Gasolinero">Gasolinero</option>
+        <option value="Hotelería">Hotelería</option>
+        <option value="Valet parking">Valet parking</option>
+        <option value="Estilista">Estilista</option>
+        <option value="Bartender">Bartender</option>
+        <option value="Entrenador">Entrenador</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>Lugar de trabajo</label>
+      <input type="text" id="t-hotel_or_place" placeholder="Ej. HEB Cumbres, Hotel Fiesta">
+    </div>
+    <div class="input-group">
       <label>Mensaje de agradecimiento para tus clientes</label>
-      <input type="text" id="mensaje_agradecimiento" placeholder="Ej. ¡Gracias! Me ayuda a pagar mis estudios 🙏" maxlength="150">
-      <div style="font-size:0.75rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">Tus clientes verán este mensaje después de dejarte propina.</div>
+      <input type="text" id="t-mensaje" placeholder="Ej. ¡Gracias! Me ayuda a pagar mis estudios 🙏" maxlength="150">
+      <div class="hint">Tus clientes verán este mensaje después de dejarte propina.</div>
+    </div>
+
+    <div class="section-divider">Domicilio</div>
+    <div class="input-group">
+      <label>Calle</label>
+      <input type="text" id="t-calle" placeholder="Ej. Av. Constitución">
+    </div>
+    <div class="row2">
+      <div class="input-group">
+        <label>Número ext.</label>
+        <input type="text" id="t-numero_exterior" placeholder="123">
+      </div>
+      <div class="input-group">
+        <label>Código postal</label>
+        <input type="text" id="t-codigo_postal" placeholder="64000">
+      </div>
+    </div>
+    <div class="row2">
+      <div class="input-group">
+        <label>Colonia</label>
+        <input type="text" id="t-colonia" placeholder="Centro">
+      </div>
+      <div class="input-group">
+        <label>Ciudad</label>
+        <input type="text" id="t-ciudad" placeholder="Monterrey">
+      </div>
+    </div>
+
+    <div class="section-divider">Datos bancarios y fiscales</div>
+    <div class="input-group">
+      <label>CLABE interbancaria</label>
+      <input type="text" id="t-clabe" placeholder="18 dígitos">
+    </div>
+    <div class="input-group">
+      <label>RFC</label>
+      <input type="text" id="t-rfc" placeholder="Ej. GALO900101ABC">
+    </div>
+
+    <div class="section-divider">Contraseña</div>
+    <div class="input-group">
+      <label>Contraseña</label>
+      <input type="password" id="t-password" placeholder="Mínimo 6 caracteres">
+    </div>
+
+    <button class="btn-register" id="btn-register-trabajador" onclick="registrarTrabajador()">Crear cuenta y obtener QR</button>
+    <div class="error" id="t-error-msg"></div>
   </div>
 
-  <div class="input-group">
-    <label>Contraseña</label>
-    <input type="password" id="password" placeholder="Mínimo 6 caracteres">
+  <!-- FORMULARIO EMPRESA -->
+  <div id="form-empresa">
+    <div class="section-divider">Datos de la empresa</div>
+    <div class="input-group">
+      <label>Nombre de la empresa / hotel</label>
+      <input type="text" id="e-name" placeholder="Ej. Wakax Hacienda, Hotel Fiesta">
+    </div>
+    <div class="input-group">
+      <label>Correo electrónico del administrador</label>
+      <input type="email" id="e-email" placeholder="admin@tuhotel.com">
+    </div>
+    <div class="input-group">
+      <label>Ubicación (ciudad o dirección)</label>
+      <input type="text" id="e-location" placeholder="Ej. Monterrey, NL">
+    </div>
+    <div class="input-group">
+      <label>Google Place ID <span style="color:rgba(255,255,255,0.35);font-size:0.8rem;">(opcional)</span></label>
+      <input type="text" id="e-google_place_id" placeholder="ChIJ...">
+      <div class="hint">Para vincular tu perfil de Google Maps</div>
+    </div>
+
+    <div class="section-divider">Contraseña</div>
+    <div class="input-group">
+      <label>Contraseña</label>
+      <input type="password" id="e-password" placeholder="Mínimo 6 caracteres">
+    </div>
+    <div class="input-group">
+      <label>Confirmar contraseña</label>
+      <input type="password" id="e-password2" placeholder="Repite la contraseña">
+    </div>
+
+    <button class="btn-register" id="btn-register-empresa" onclick="registrarEmpresa()">Registrar empresa</button>
+    <div class="error" id="e-error-msg"></div>
   </div>
 
-  <button class="btn-register" id="btn-register" onclick="registrar()">Crear cuenta y obtener QR</button>
-  <div class="error" id="error-msg"></div>
-  <div class="footer-link">¿Ya tienes cuenta? <a href="index.html">Iniciar sesión</a></div>
+  <div class="footer-link" id="footer-link">¿Ya tienes cuenta? <a href="login.html" id="link-login">Iniciar sesión</a></div>
 </div>
 
+<!-- SUCCESS TRABAJADOR -->
 <div class="card success" id="success-card">
   <h2>¡Bienvenido a Propii! 🎉</h2>
   <p>Este es tu QR personal. Muéstralo o imprímelo para recibir propinas.</p>
@@ -134,173 +242,203 @@
   <a href="dashboard.html" class="btn-dashboard">Ver mi dashboard</a>
 </div>
 
-
+<!-- SUCCESS EMPRESA -->
+<div class="card empresa-success" id="empresa-success-card">
+  <div class="check">🏨</div>
+  <h2>¡Empresa registrada!</h2>
+  <p id="empresa-success-msg">Tu cuenta está lista. Ahora puedes iniciar sesión y ver el dashboard de tu equipo.</p>
+  <a href="login.html?tipo=empresa" class="btn-dashboard" style="margin-top:1rem;">Ir a iniciar sesión</a>
+</div>
 
 <script>
+const BACKEND = 'https://propii-production.up.railway.app';
+let tipoActual = 'trabajador';
+
+function setTipo(t) {
+  tipoActual = t;
+  document.getElementById('btn-tipo-trabajador').classList.toggle('active', t === 'trabajador');
+  document.getElementById('btn-tipo-empresa').classList.toggle('active', t === 'empresa');
+  document.getElementById('form-trabajador').classList.toggle('visible', t === 'trabajador');
+  document.getElementById('form-empresa').classList.toggle('visible', t === 'empresa');
+  document.getElementById('link-login').href = `login.html?tipo=${t}`;
+}
+
+// Leer tipo desde URL
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const t = params.get('tipo');
+  setTipo(t === 'empresa' ? 'empresa' : 'trabajador');
+})();
+
+/* ── VALIDACIONES ── */
 function validarCLABE(clabe) {
-    if (clabe.length !== 18) return 'La CLABE debe tener exactamente 18 dígitos.';
-    if (!/^\d{18}$/.test(clabe)) return 'La CLABE solo debe contener números.';
-    const factores = [3, 7, 1];
-    let suma = 0;
-    for (let i = 0; i < 17; i++) {
-        suma += (parseInt(clabe[i]) * factores[i % 3]) % 10;
-    }
-    const digitoVerificador = (10 - (suma % 10)) % 10;
-    if (digitoVerificador !== parseInt(clabe[17])) return 'La CLABE no es válida, verifica que esté correcta.';
-    return null;
-
+  if (clabe.length !== 18) return 'La CLABE debe tener exactamente 18 dígitos.';
+  if (!/^\d{18}$/.test(clabe)) return 'La CLABE solo debe contener números.';
+  const factores = [3, 7, 1];
+  let suma = 0;
+  for (let i = 0; i < 17; i++) suma += (parseInt(clabe[i]) * factores[i % 3]) % 10;
+  const dv = (10 - (suma % 10)) % 10;
+  if (dv !== parseInt(clabe[17])) return 'La CLABE no es válida, verifica que esté correcta.';
+  return null;
 }
-
 function validarRFC(rfc) {
-    if (!rfc) return null;
-    const regex = /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/i;
-    if (!regex.test(rfc)) return 'El RFC no tiene un formato válido. Ejemplo: GALO900101ABC';
-    return null;
+  if (!rfc) return null;
+  return /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/i.test(rfc) ? null : 'El RFC no tiene un formato válido. Ejemplo: GALO900101ABC';
 }
-
 function validarTelefono(tel) {
-    const limpio = tel.replace(/[\s\+\-\(\)]/g, '');
-    if (!/^\d{10,12}$/.test(limpio)) return 'El teléfono debe tener entre 10 y 12 dígitos numéricos.';
-    return null;
+  const limpio = tel.replace(/[\s\+\-\(\)]/g, '');
+  return /^\d{10,12}$/.test(limpio) ? null : 'El teléfono debe tener entre 10 y 12 dígitos numéricos.';
 }
-
 function validarCP(cp) {
-    if (!/^\d{5}$/.test(cp)) return 'El código postal debe tener exactamente 5 dígitos.';
-    return null;
+  return /^\d{5}$/.test(cp) ? null : 'El código postal debe tener exactamente 5 dígitos.';
 }
 
-  async function registrar() {
-const first_name = document.getElementById('first_name').value.trim();
-const last_name = document.getElementById('last_name').value.trim();
-const full_name = `${first_name} ${last_name}`.trim();
-const email = document.getElementById('email').value.trim();
-const phone = document.getElementById('phone').value.trim();
-const role = document.getElementById('role').value;
-const hotel_or_place = document.getElementById('hotel_or_place').value.trim();
-const password = document.getElementById('password').value;
-const fecha_nacimiento = document.getElementById('fecha_nacimiento').value;
-const calle = document.getElementById('calle').value.trim();
-const numero_exterior = document.getElementById('numero_exterior').value.trim();
-const colonia = document.getElementById('colonia').value.trim();
-const ciudad = document.getElementById('ciudad').value.trim();
-const codigo_postal = document.getElementById('codigo_postal').value.trim();
-const clabe = document.getElementById('clabe').value.replace(/\s/g, '');
-const rfc = document.getElementById('rfc').value.trim();
-const mensaje_agradecimiento = document.getElementById('mensaje_agradecimiento').value.trim();
+/* ── REGISTRO TRABAJADOR ── */
+async function registrarTrabajador() {
+  const first_name = document.getElementById('t-first_name').value.trim();
+  const last_name = document.getElementById('t-last_name').value.trim();
+  const email = document.getElementById('t-email').value.trim();
+  const phone = document.getElementById('t-phone').value.trim();
+  const role = document.getElementById('t-role').value;
+  const hotel_or_place = document.getElementById('t-hotel_or_place').value.trim();
+  const password = document.getElementById('t-password').value;
+  const fecha_nacimiento = document.getElementById('t-fecha_nacimiento').value;
+  const calle = document.getElementById('t-calle').value.trim();
+  const numero_exterior = document.getElementById('t-numero_exterior').value.trim();
+  const colonia = document.getElementById('t-colonia').value.trim();
+  const ciudad = document.getElementById('t-ciudad').value.trim();
+  const codigo_postal = document.getElementById('t-codigo_postal').value.trim();
+  const clabe = document.getElementById('t-clabe').value.replace(/\s/g, '');
+  const rfc = document.getElementById('t-rfc').value.trim();
+  const mensaje_agradecimiento = document.getElementById('t-mensaje').value.trim();
+  const full_name = `${first_name} ${last_name}`.trim();
+  const errEl = document.getElementById('t-error-msg');
 
-    if (!first_name || !last_name || !email || !phone || !role || !hotel_or_place || !password || !fecha_nacimiento || !calle || !colonia || !ciudad || !codigo_postal) {
-      document.getElementById('error-msg').textContent = 'Por favor llena todos los campos.';
-      return;
+  if (!first_name || !last_name || !email || !phone || !role || !hotel_or_place || !password || !fecha_nacimiento || !calle || !colonia || !ciudad || !codigo_postal) {
+    errEl.textContent = 'Por favor llena todos los campos obligatorios.'; return;
+  }
+  if (password.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+
+  if (clabe) {
+    const eClabe = validarCLABE(clabe);
+    if (eClabe) { errEl.textContent = eClabe; return; }
+  }
+  const eRFC = validarRFC(rfc);
+  if (eRFC) { errEl.textContent = eRFC; return; }
+  const eTel = validarTelefono(phone);
+  if (eTel) { errEl.textContent = eTel; return; }
+  const eCP = validarCP(codigo_postal);
+  if (eCP) { errEl.textContent = eCP; return; }
+
+  const btn = document.getElementById('btn-register-trabajador');
+  btn.disabled = true; btn.textContent = 'Creando cuenta...'; errEl.textContent = '';
+
+  try {
+    const res = await fetch(`${BACKEND}/workers/onboard`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name, first_name, last_name, email, role, hotel_or_place, phone, fecha_nacimiento, numero_exterior, calle, colonia, ciudad, codigo_postal, clabe, rfc, mensaje_agradecimiento })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errEl.textContent = data.detail || 'Error al crear la cuenta.';
+      btn.disabled = false; btn.textContent = 'Crear cuenta y obtener QR'; return;
     }
-    if (password.length < 6) {
-      document.getElementById('error-msg').textContent = 'La contraseña debe tener al menos 6 caracteres.';
-      return;
+    const workerId = data.worker_id;
+    await fetch(`${BACKEND}/workers/set-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    if (data.onboarding_url) {
+      window.location.href = data.onboarding_url;
+    } else {
+      const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
+      document.getElementById('qr-url-text').textContent = pagoUrl;
+      const qrDiv = document.getElementById('qrcode');
+      qrDiv.style.background = '#ffffff';
+      qrDiv.style.padding = '16px';
+      qrDiv.style.borderRadius = '12px';
+      qrDiv.style.display = 'inline-block';
+      new QRCode(qrDiv, { text: pagoUrl, width: 200, height: 200, colorDark: '#0a1628', colorLight: '#ffffff' });
+      document.getElementById('main-card').style.display = 'none';
+      document.getElementById('success-card').style.display = 'block';
     }
-
-      if (clabe) {
-      const errorClabe = validarCLABE(clabe);
-      if (errorClabe) {
-          document.getElementById('error-msg').textContent = errorClabe;
-      return;
-      }
-
-      const errorRFC = validarRFC(rfc);
-      if (errorRFC) { document.getElementById('error-msg').textContent = errorRFC; return; }
-
-      const errorTel = validarTelefono(phone);
-      if (errorTel) { document.getElementById('error-msg').textContent = errorTel; return; }
-
-      const errorCP = validarCP(codigo_postal);
-      if (errorCP) { document.getElementById('error-msg').textContent = errorCP; return; }
-
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Intenta de nuevo.';
+    btn.disabled = false; btn.textContent = 'Crear cuenta y obtener QR';
+  }
 }
 
-    const btn = document.getElementById('btn-register');
-    btn.disabled = true;
-    btn.textContent = 'Creando cuenta...';
-    document.getElementById('error-msg').textContent = '';
+/* ── REGISTRO EMPRESA ── */
+async function registrarEmpresa() {
+  const name = document.getElementById('e-name').value.trim();
+  const email = document.getElementById('e-email').value.trim();
+  const location = document.getElementById('e-location').value.trim();
+  const google_place_id = document.getElementById('e-google_place_id').value.trim();
+  const password = document.getElementById('e-password').value;
+  const password2 = document.getElementById('e-password2').value;
+  const errEl = document.getElementById('e-error-msg');
 
-    try {
-      const res = await fetch('https://propii-production.up.railway.app/workers/onboard', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ full_name, first_name, last_name, email, role, hotel_or_place, phone, fecha_nacimiento, numero_exterior, calle, colonia, ciudad, codigo_postal, clabe, rfc, mensaje_agradecimiento })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        document.getElementById('error-msg').textContent = data.detail || 'Error al crear la cuenta.';
-        btn.disabled = false;
-        btn.textContent = 'Crear cuenta y obtener QR';
-        return;
-      }
+  if (!name || !email || !password) { errEl.textContent = 'Por favor llena nombre, email y contraseña.'; return; }
+  if (password.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+  if (password !== password2) { errEl.textContent = 'Las contraseñas no coinciden.'; return; }
 
-      const workerId = data.worker_id;
+  const btn = document.getElementById('btn-register-empresa');
+  btn.disabled = true; btn.textContent = 'Registrando...'; errEl.textContent = '';
 
-      await fetch('https://propii-production.up.railway.app/workers/set-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      if (data.onboarding_url) {
-        window.location.href = data.onboarding_url;
-      } else {
-        const pagoUrl = `https://www.propii.mx/pago.html?id=${workerId}`;
-        document.getElementById('qr-url-text').textContent = pagoUrl;
-        const qrDiv = document.getElementById('qrcode');
-        qrDiv.style.background = '#ffffff';
-        qrDiv.style.padding = '16px';
-        qrDiv.style.borderRadius = '12px';
-        qrDiv.style.display = 'inline-block';
-        new QRCode(qrDiv, { text: pagoUrl, width: 200, height: 200, colorDark: '#0a1628', colorLight: '#ffffff' });
-        document.getElementById('form-card').style.display = 'none';
-        document.getElementById('success-card').style.display = 'block';
-      }
-
-    } catch (e) {
-      document.getElementById('error-msg').textContent = 'Error de conexión. Intenta de nuevo.';
-      btn.disabled = false;
-      btn.textContent = 'Crear cuenta y obtener QR';
+  try {
+    const res = await fetch(`${BACKEND}/hotels/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, location: location || null, google_place_id: google_place_id || null })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errEl.textContent = data.detail || 'Error al registrar la empresa.';
+      btn.disabled = false; btn.textContent = 'Registrar empresa'; return;
     }
+    document.getElementById('empresa-success-msg').textContent =
+      `"${name}" ha sido registrada. Ahora puedes iniciar sesión con tu correo y contraseña.`;
+    document.getElementById('main-card').style.display = 'none';
+    document.getElementById('empresa-success-card').style.display = 'block';
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Intenta de nuevo.';
+    btn.disabled = false; btn.textContent = 'Registrar empresa';
   }
+}
 
-  function guardarQR() {
-    const qrCanvas = document.querySelector('#qrcode canvas');
-    const nombre = document.getElementById('full_name').value.trim();
-    const canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 620;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.roundRect(0, 0, 400, 620, 20);
-    ctx.fill();
-    const logo = new Image();
-    logo.src = 'logo.png';
-    logo.onload = function() {
-      const ratio = logo.width / logo.height;
-      const logoH = 140;
-      const logoW = logoH * ratio;
-      ctx.drawImage(logo, (400 - logoW) / 2, 20, logoW, logoH);
-      ctx.drawImage(qrCanvas, 75, 170, 250, 250);
-      ctx.fillStyle = '#0a1628';
-      ctx.font = 'bold 22px Inter, Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('¡Escanéame!', 200, 460);
-      ctx.fillStyle = '#2B7BC4';
-      ctx.font = 'bold 22px Inter, Arial';
-      ctx.fillText('Déjame una propina digital', 200, 495);
-      ctx.fillStyle = '#555';
-      ctx.font = 'bold 16px Inter, Arial';
-      ctx.fillText(nombre, 200, 530);
-      ctx.fillStyle = '#F7931E';
-      ctx.font = 'bold 14px Inter, Arial';
-      ctx.fillText('propii.mx', 200, 560);
-      const link = document.createElement('a');
-      link.download = 'mi-qr-propii.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    };
-  }
+/* ── GUARDAR QR ── */
+function guardarQR() {
+  const qrCanvas = document.querySelector('#qrcode canvas');
+  const nombre = document.getElementById('t-first_name').value.trim() + ' ' + document.getElementById('t-last_name').value.trim();
+  const canvas = document.createElement('canvas');
+  canvas.width = 400; canvas.height = 620;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.roundRect(0, 0, 400, 620, 20);
+  ctx.fill();
+  const logo = new Image();
+  logo.src = 'logo.png';
+  logo.onload = function() {
+    const ratio = logo.width / logo.height;
+    const logoH = 140; const logoW = logoH * ratio;
+    ctx.drawImage(logo, (400 - logoW) / 2, 20, logoW, logoH);
+    ctx.drawImage(qrCanvas, 75, 170, 250, 250);
+    ctx.fillStyle = '#0a1628'; ctx.font = 'bold 22px Inter, Arial'; ctx.textAlign = 'center';
+    ctx.fillText('¡Escanéame!', 200, 460);
+    ctx.fillStyle = '#2B7BC4'; ctx.font = 'bold 22px Inter, Arial';
+    ctx.fillText('Déjame una propina digital', 200, 495);
+    ctx.fillStyle = '#555'; ctx.font = 'bold 16px Inter, Arial';
+    ctx.fillText(nombre.trim(), 200, 530);
+    ctx.fillStyle = '#F7931E'; ctx.font = 'bold 14px Inter, Arial';
+    ctx.fillText('propii.mx', 200, 560);
+    const link = document.createElement('a');
+    link.download = 'mi-qr-propii.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+}
 </script>
 </body>
 </html>

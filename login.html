@@ -76,7 +76,7 @@
     .btn-primary {
       width: 100%;
       padding: 14px;
-      background: #3B6D11;
+      background: #185FA5;
       border: none;
       border-radius: 8px;
       color: #fff;
@@ -86,15 +86,19 @@
       font-family: inherit;
       transition: background 0.15s;
     }
-    .btn-primary:hover { background: #2d5409; }
+    .btn-primary:hover { background: #0d4a87; }
     .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
-    .footer-link {
+    .footer-links {
       text-align: center;
       font-size: 13px;
       color: #9ca3af;
       padding: 0 1.25rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
-    .footer-link a { color: #185FA5; text-decoration: none; }
+    .footer-links a { color: #185FA5; text-decoration: none; }
+    .divider { border: none; border-top: 1px solid #f3f4f6; margin: 0 1.25rem; }
   </style>
 </head>
 <body>
@@ -106,7 +110,7 @@
     </div>
 
     <div class="type-selector">
-      <button class="type-btn active" id="btn-trabajador" onclick="setTipo('trabajador')">
+      <button class="type-btn" id="btn-trabajador" onclick="setTipo('trabajador')">
         <span class="icon">👤</span>
         Trabajador
       </button>
@@ -123,8 +127,10 @@
       <button class="btn-primary" id="btn-login" onclick="login()">Entrar</button>
     </div>
 
-    <div class="footer-link">
-      ¿Eres nuevo? <a href="registro.html">Regístrate aquí</a>
+    <hr class="divider">
+    <div class="footer-links">
+      <span>¿No tienes cuenta? <a href="" id="link-registro">Regístrate aquí</a></span>
+      <span><a href="index.html" style="color:#9ca3af;">← Volver al inicio</a></span>
     </div>
   </div>
 
@@ -143,7 +149,19 @@ function setTipo(t) {
   document.getElementById('btn-empresa').classList.toggle('active', t === 'empresa');
   document.getElementById('subtitle').textContent = subtitles[t];
   document.getElementById('error-msg').textContent = '';
+  document.getElementById('link-registro').href = `registro.html?tipo=${t}`;
 }
+
+// Leer tipo desde URL al cargar
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const tipoUrl = params.get('tipo');
+  if (tipoUrl === 'empresa') {
+    setTipo('empresa');
+  } else {
+    setTipo('trabajador');
+  }
+})();
 
 async function login() {
   const email = document.getElementById('email').value.trim();
