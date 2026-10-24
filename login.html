@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Propii — Iniciar sesión</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .card {
+      width: 100%;
+      max-width: 380px;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .card-header {
+      background: #185FA5;
+      padding: 2rem 1.5rem 1.5rem;
+      text-align: center;
+    }
+    .logo { font-size: 13px; font-weight: 500; color: #B5D4F4; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+    .title { font-size: 22px; font-weight: 600; color: #fff; }
+    .subtitle { font-size: 14px; color: #85B7EB; margin-top: 4px; }
+
+    /* Selector de tipo */
+    .type-selector {
+      display: flex;
+      gap: 8px;
+      padding: 1.25rem 1.25rem 0;
+    }
+    .type-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: 10px;
+      border: 2px solid #e5e7eb;
+      background: #f9fafb;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .type-btn .icon { font-size: 20px; display: block; margin-bottom: 4px; }
+    .type-btn.active {
+      border-color: #185FA5;
+      background: #E6F1FB;
+      color: #185FA5;
+    }
+
+    .form-body { padding: 1.25rem; }
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 15px;
+      margin-bottom: 10px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .input-field:focus { border-color: #185FA5; }
+    .error-msg { color: #dc2626; font-size: 13px; min-height: 20px; margin-bottom: 10px; }
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: #3B6D11;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #2d5409; }
+    .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+    .footer-link {
+      text-align: center;
+      font-size: 13px;
+      color: #9ca3af;
+      padding: 0 1.25rem 1.25rem;
+    }
+    .footer-link a { color: #185FA5; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <div class="logo"><a href="index.html" style="color:inherit;text-decoration:none;">Propii</a></div>
+      <div class="title">Iniciar sesión</div>
+      <div class="subtitle" id="subtitle">Accede a tu cuenta</div>
+    </div>
+
+    <div class="type-selector">
+      <button class="type-btn active" id="btn-trabajador" onclick="setTipo('trabajador')">
+        <span class="icon">👤</span>
+        Trabajador
+      </button>
+      <button class="type-btn" id="btn-empresa" onclick="setTipo('empresa')">
+        <span class="icon">🏨</span>
+        Empresa
+      </button>
+    </div>
+
+    <div class="form-body">
+      <input id="email" class="input-field" type="email" placeholder="Email" autocomplete="email" />
+      <input id="password" class="input-field" type="password" placeholder="Contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter') login()" />
+      <div id="error-msg" class="error-msg"></div>
+      <button class="btn-primary" id="btn-login" onclick="login()">Entrar</button>
+    </div>
+
+    <div class="footer-link">
+      ¿Eres nuevo? <a href="registro.html">Regístrate aquí</a>
+    </div>
+  </div>
+
+  <script>
+const BACKEND = 'https://propii-production.up.railway.app';
+let tipo = 'trabajador';
+
+const subtitles = {
+  trabajador: 'Accede a tus propinas',
+  empresa: 'Panel de tu negocio'
+};
+
+function setTipo(t) {
+  tipo = t;
+  document.getElementById('btn-trabajador').classList.toggle('active', t === 'trabajador');
+  document.getElementById('btn-empresa').classList.toggle('active', t === 'empresa');
+  document.getElementById('subtitle').textContent = subtitles[t];
+  document.getElementById('error-msg').textContent = '';
+}
+
+async function login() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errorEl = document.getElementById('error-msg');
+  const btn = document.getElementById('btn-login');
+
+  if (!email || !password) {
+    errorEl.textContent = 'Completa todos los campos';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+  errorEl.textContent = '';
+
+  try {
+    const endpoint = tipo === 'trabajador'
+      ? `${BACKEND}/workers/login`
+      : `${BACKEND}/hotels/login`;
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (tipo === 'trabajador') {
+        localStorage.setItem('propii_token', data.access_token);
+        localStorage.setItem('propii_worker_id', data.worker_id);
+        window.location.href = 'dashboard.html';
+      } else {
+        localStorage.setItem('propii_hotel_token', data.access_token);
+        localStorage.setItem('propii_hotel_id', data.hotel_id);
+        window.location.href = 'hotel-dashboard.html';
+      }
+    } else {
+      errorEl.textContent = 'Email o contraseña incorrectos';
+      btn.disabled = false;
+      btn.textContent = 'Entrar';
+    }
+  } catch (e) {
+    errorEl.textContent = 'Error de conexión. Intenta de nuevo.';
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
+  }
+}
+  </script>
+</body>
+</html>
