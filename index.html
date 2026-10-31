@@ -1,206 +1,1210 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Propii — Propinas digitales</title>
-  <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, sans-serif; background: #F4F6F9; color: #111827; }
+<title>Propii — Propinas digitales para México</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
 
-    /* NAV */
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; position: fixed; top: 0; width: 100%; z-index: 100; background: #185FA5; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-    .nav-logo img { height: 52px; }
-    .nav-btn { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.7); padding: 0.5rem 1.4rem; border-radius: 50px; font-size: 0.9rem; cursor: pointer; text-decoration: none; font-weight: 500; transition: all 0.2s; }
-    .nav-btn:hover { background: rgba(255,255,255,0.15); }
+<style>
+/* ─── DESIGN TOKENS ─────────────────────────────────────────── */
+:root {
+  --navy:    #0D1E3D;
+  --blue:    #1558A8;
+  --blue-lt: #2272C3;
+  --blue-bg: #EBF2FC;
+  --amber:   #E8920A;
+  --amber-lt:#F5B84C;
+  --amber-bg:#FEF3DC;
+  --green:   #0D9B6A;
+  --green-bg:#E0F5ED;
+  --white:   #FFFFFF;
+  --off:     #F4F7FB;
+  --off2:    #E9EFF8;
+  --border:  #D0DBF0;
+  --text:    #0A1629;
+  --text-2:  #3A5070;
+  --text-3:  #6B82A0;
 
-    /* HERO */
-    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6rem 2rem 4rem; background: #F4F6F9; }
-    .hero-badge { background: rgba(24,95,165,0.1); border: 1px solid rgba(24,95,165,0.25); color: #185FA5; padding: 0.4rem 1.2rem; border-radius: 50px; font-size: 0.85rem; margin-bottom: 1.5rem; display: inline-block; font-weight: 500; }
-    .hero h1 { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.2rem; color: #185FA5; }
-    .hero h1 span { color: #F7931E; }
-    .hero p { font-size: 1.15rem; color: #4B5563; max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem; }
-    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-    .btn-primary { background: #F7931E; color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(247,147,30,0.35); }
-    .btn-outline { background: transparent; color: #185FA5; padding: 0.85rem 2rem; border-radius: 50px; font-size: 1rem; border: 1.5px solid #185FA5; text-decoration: none; cursor: pointer; font-weight: 500; }
+  --bg:      #F4F7FB;
+  --surface: #FFFFFF;
+  --fg:      #0A1629;
+  --fg2:     #3A5070;
+  --fg3:     #6B82A0;
+  --bdr:     #D0DBF0;
 
-    /* CÓMO FUNCIONA */
-    .section { padding: 5rem 2rem; max-width: 1000px; margin: 0 auto; }
-    .section-label { color: #F7931E; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8rem; }
-    .section h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; margin-bottom: 1rem; color: #111827; }
-    .section p.sub { color: #6b7280; font-size: 1.05rem; margin-bottom: 3rem; }
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
-    .step { background: #fff; border: 1px solid #e5e7eb; border-radius: 20px; padding: 2rem 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    .step-num { width: 40px; height: 40px; background: #185FA5; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.2rem; color: #fff; }
-    .step h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.6rem; color: #111827; }
-    .step p { color: #6b7280; font-size: 0.9rem; line-height: 1.6; }
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
 
-    /* PARA QUIÉN ES */
-    .who { background: #fff; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; padding: 5rem 2rem; }
-    .who-inner { max-width: 1000px; margin: 0 auto; }
-    .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2.5rem; }
-    .who-card { background: #F4F6F9; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.5rem; text-align: center; }
-    .who-icon { font-size: 2rem; margin-bottom: 0.8rem; }
-    .who-card h4 { font-size: 0.95rem; font-weight: 600; color: #111827; }
+  font-family: 'Inter', system-ui, sans-serif;
+  color-scheme: light;
+}
 
-    /* TESTIMONIO */
-    .testimonial { padding: 5rem 2rem; display: flex; justify-content: center; background: #EBF3FB; border-top: 1px solid #C5DDF5; border-bottom: 1px solid #C5DDF5; }
-    .testimonial-inner { max-width: 620px; text-align: center; }
-    .testimonial-quote { font-size: 1.4rem; font-weight: 300; line-height: 1.7; color: #111827; margin-bottom: 1.5rem; font-style: italic; }
-    .testimonial-quote span { color: #185FA5; font-weight: 600; font-style: normal; }
-    .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 1rem; }
-    .testimonial-avatar { width: 48px; height: 48px; border-radius: 50%; background: #185FA5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: #fff; }
-    .testimonial-name strong { display: block; font-size: 0.95rem; color: #111827; }
-    .testimonial-name span { font-size: 0.85rem; color: #6b7280; }
+*, *::before, *::after { box-sizing: border-box; }
 
-    /* EMPRESAS */
-    .empresas { padding: 5rem 2rem; max-width: 1000px; margin: 0 auto; }
-    .empresas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem; }
-    @media (max-width: 600px) { .empresas-grid { grid-template-columns: 1fr; } }
-    .empresa-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    .empresa-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; color: #111827; }
-    .empresa-card p { color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
-    .btn-empresa { background: #185FA5; color: #fff; padding: 0.7rem 1.5rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-block; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-    /* SELECTOR DE ACCESO */
-    .access-section { padding: 5rem 2rem; display: flex; flex-direction: column; align-items: center; background: #F4F6F9; }
-    .access-section h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; color: #111827; margin-bottom: 0.6rem; text-align: center; }
-    .access-section p { color: #6b7280; font-size: 1rem; margin-bottom: 2.5rem; text-align: center; }
-    .access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; max-width: 560px; }
-    @media (max-width: 520px) { .access-grid { grid-template-columns: 1fr; } }
-    .access-card { background: #fff; border: 2px solid #e5e7eb; border-radius: 24px; padding: 2.5rem 2rem; text-align: center; text-decoration: none; color: #111827; transition: all 0.2s; cursor: pointer; }
-    .access-card:hover { border-color: #185FA5; box-shadow: 0 8px 32px rgba(24,95,165,0.13); transform: translateY(-2px); }
-    .access-card .ac-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
-    .access-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.4rem; color: #111827; }
-    .access-card p { font-size: 0.88rem; color: #6b7280; margin-bottom: 1.5rem; }
-    .access-card .ac-btns { display: flex; flex-direction: column; gap: 0.6rem; }
-    .ac-btn-login { background: #185FA5; color: #fff; border: none; padding: 0.65rem 1.2rem; border-radius: 50px; font-size: 0.88rem; font-weight: 600; text-decoration: none; display: block; cursor: pointer; }
-    .ac-btn-reg { background: transparent; color: #185FA5; border: 1.5px solid #185FA5; padding: 0.65rem 1.2rem; border-radius: 50px; font-size: 0.88rem; font-weight: 600; text-decoration: none; display: block; cursor: pointer; }
-    .ac-btn-login:hover { background: #0d4a87; }
-    .ac-btn-reg:hover { background: rgba(24,95,165,0.07); }
+h1,h2,h3,h4 {
+  font-family: 'Manrope', system-ui, sans-serif;
+  text-wrap: balance;
+  line-height: 1.15;
+  margin: 0;
+}
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
 
-    footer { text-align: center; padding: 2rem; color: #9ca3af; font-size: 0.85rem; border-top: 1px solid #e5e7eb; background: #fff; }
-  </style>
-</head>
-<body>
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
 
+/* ─── NAVBAR ─────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--bdr);
+  box-shadow: 0 1px 8px rgba(10,22,41,0.06);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 14px;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.nav-logo {
+  font-family: 'Manrope', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--blue); }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-link {
+  color: var(--fg2);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+.nav-link:hover { color: var(--navy); background: var(--off2); }
+.nav-cta {
+  background: var(--blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 9px 20px;
+  border-radius: 50px;
+  transition: background 0.15s, transform 0.1s;
+  box-shadow: 0 2px 10px rgba(21,88,168,0.25);
+}
+.nav-cta:hover { background: var(--blue-lt); transform: translateY(-1px); }
+@media (max-width: 600px) {
+  .nav-link { display: none; }
+  .nav-cta { font-size: 13px; padding: 8px 16px; }
+}
+
+/* ─── HERO ─────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(150deg, #FFFFFF 0%, #EDF2FB 50%, #E3EBF8 100%);
+  padding-block: 120px 80px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--bdr);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -160px; right: -100px;
+  width: 640px; height: 640px;
+  background: radial-gradient(circle, rgba(21,88,168,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -80px;
+  width: 440px; height: 440px;
+  background: radial-gradient(circle, rgba(232,146,10,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero .wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 780px) {
+  .hero .wrap { grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual { order: -1; }
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--blue-bg);
+  border: 1px solid rgba(21,88,168,0.2);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 5px 13px;
+  border-radius: 50px;
+  margin-bottom: 22px;
+}
+.hero-eyebrow::before { content: '⚡'; }
+
+.hero h1 {
+  font-size: clamp(2.3rem, 4.8vw, 3.7rem);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -1.5px;
+  margin-bottom: 18px;
+  line-height: 1.1;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--blue);
+  position: relative;
+}
+
+.hero-sub {
+  font-size: 1.08rem;
+  color: var(--fg2);
+  line-height: 1.72;
+  max-width: 470px;
+  margin-bottom: 36px;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 30px;
+  border-radius: 50px;
+  box-shadow: 0 4px 18px rgba(21,88,168,0.28);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover { background: var(--blue-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(21,88,168,0.32); }
+.btn-outline {
+  color: var(--blue);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 26px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(21,88,168,0.3);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-outline:hover { background: var(--blue-bg); border-color: var(--blue); color: var(--navy); }
+
+.hero-trust {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--fg2);
+  font-size: 13px;
+  font-weight: 500;
+}
+.trust-dot {
+  width: 20px; height: 20px;
+  background: var(--green-bg);
+  border: 1px solid rgba(13,155,106,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+/* ─── PHONE MOCKUP (light-themed) ───────────────────────────── */
+.hero-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.phone-wrap {
+  position: relative;
+}
+.phone-glow {
+  position: absolute;
+  inset: -24px;
+  background: radial-gradient(ellipse at center, rgba(21,88,168,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  border-radius: 60px;
+}
+.phone-frame {
+  width: 272px;
+  background: var(--navy);
+  border-radius: 44px;
+  padding: 12px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.1),
+    0 32px 80px rgba(10,22,41,0.22),
+    0 8px 20px rgba(10,22,41,0.1);
+  position: relative;
+  z-index: 1;
+}
+.phone-screen {
+  background: var(--off);
+  border-radius: 34px;
+  overflow: hidden;
+}
+.phone-bar {
+  background: var(--blue);
+  padding: 18px 16px 14px;
+}
+.phone-bar-label { font-size: 10px; color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+.phone-bar-name { font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 800; color: #fff; }
+.phone-bar-role { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.phone-body { padding: 14px 14px 18px; }
+.phone-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg3); margin-bottom: 8px; }
+.phone-stat-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.phone-stat {
+  flex: 1;
+  background: var(--white);
+  border: 1px solid var(--bdr);
+  border-radius: 10px;
+  padding: 10px 10px 8px;
+  box-shadow: 0 1px 4px rgba(10,22,41,0.05);
+}
+.phone-stat-val {
+  font-family: 'Manrope', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.phone-stat-lbl { font-size: 9px; color: var(--fg3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.phone-tx-list { display: flex; flex-direction: column; gap: 6px; }
+.phone-tx {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  border: 1px solid var(--bdr);
+  border-radius: 9px;
+  padding: 8px 10px;
+}
+.phone-tx-left { display: flex; align-items: center; gap: 8px; }
+.phone-tx-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.tx-a { background: var(--amber-bg); }
+.tx-b { background: var(--green-bg); }
+.tx-c { background: var(--blue-bg); }
+.phone-tx-name { font-size: 11px; color: var(--fg); font-weight: 600; }
+.phone-tx-time { font-size: 9px; color: var(--fg3); margin-top: 1px; }
+.phone-tx-amt { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 800; color: var(--green); }
+.phone-qr-row { margin-top: 10px; }
+.phone-qr-btn {
+  width: 100%;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  border-radius: 10px;
+  padding: 11px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(21,88,168,0.2);
+}
+
+/* ─── STATS STRIP ─────────────────────────────────────────────── */
+.stats-strip {
+  background: var(--navy);
+  padding-block: 36px;
+  border-top: 3px solid var(--blue);
+}
+.stats-strip .wrap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+@media (max-width: 700px) {
+  .stats-strip .wrap { grid-template-columns: repeat(2, 1fr); }
+  .stat-item { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .stat-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.08) !important; }
+}
+.stat-item {
+  text-align: center;
+  padding: 12px 20px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Manrope', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -1px;
+}
+.stat-num span { color: var(--amber); }
+.stat-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 5px; font-weight: 500; line-height: 1.3; }
+.stat-note { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 3px; }
+
+/* ─── SECTIONS SHARED ─────────────────────────────────────────── */
+.section { padding-block: 88px; }
+.section-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
+}
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--fg2);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 52px;
+}
+
+/* ─── HOW IT WORKS ─────────────────────────────────────────────── */
+.how { background: var(--white); }
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  position: relative;
+}
+@media (max-width: 700px) { .steps { grid-template-columns: 1fr; } }
+.step {
+  background: var(--off);
+  border: 1.5px solid var(--bdr);
+  border-radius: var(--r-lg);
+  padding: 32px 28px;
+  position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.step:hover {
+  border-color: var(--blue);
+  box-shadow: 0 4px 24px rgba(21,88,168,0.1);
+}
+.step-num {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: var(--navy);
+  color: var(--amber);
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--navy); }
+.step p { font-size: 0.9rem; color: var(--fg2); line-height: 1.65; }
+.step-highlight {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--blue-bg);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 50px;
+  border: 1px solid rgba(21,88,168,0.2);
+}
+
+/* ─── PARA QUIÉN ─────────────────────────────────────────────── */
+.whom { background: var(--off); }
+.sector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 14px;
+}
+.sector-card {
+  background: var(--white);
+  border: 1.5px solid var(--bdr);
+  border-radius: var(--r-md);
+  padding: 22px 18px;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  cursor: default;
+  box-shadow: 0 1px 4px rgba(10,22,41,0.04);
+}
+.sector-card:hover {
+  border-color: var(--blue);
+  box-shadow: 0 4px 20px rgba(21,88,168,0.1);
+  transform: translateY(-2px);
+}
+.sector-icon { font-size: 2rem; margin-bottom: 10px; }
+.sector-name { font-size: 0.88rem; font-weight: 700; color: var(--navy); }
+.sector-note { font-size: 0.76rem; color: var(--fg3); margin-top: 4px; line-height: 1.4; }
+.sector-card.highlight {
+  border-color: rgba(21,88,168,0.3);
+  background: var(--blue-bg);
+}
+.sector-badge {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 50px;
+  margin-bottom: 8px;
+}
+
+/* ─── FEATURES EMPRESA ───────────────────────────────────────── */
+.features { background: var(--white); }
+.feat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 650px) { .feat-grid { grid-template-columns: 1fr; } }
+.feat-card {
+  background: var(--off);
+  border: 1.5px solid var(--bdr);
+  border-radius: var(--r-lg);
+  padding: 32px 28px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.feat-card:hover {
+  border-color: var(--blue);
+  box-shadow: 0 4px 24px rgba(21,88,168,0.08);
+}
+.feat-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+.feat-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; color: var(--navy); }
+.feat-card p { font-size: 0.88rem; color: var(--fg2); line-height: 1.65; }
+.feat-card.span-2 { grid-column: span 2; }
+@media (max-width: 650px) { .feat-card.span-2 { grid-column: span 1; } }
+.feat-list { margin-top: 14px; display: flex; flex-direction: column; gap: 7px; }
+.feat-list li {
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--fg2);
+}
+.feat-list li::before {
+  content: '✓';
+  color: var(--green);
+  font-weight: 800;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─── NUMBERS SECTION ────────────────────────────────────────── */
+.numbers { background: var(--off); }
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+@media (max-width: 700px) { .numbers-grid { grid-template-columns: 1fr; } }
+.number-card {
+  background: var(--white);
+  border: 1.5px solid var(--bdr);
+  border-radius: var(--r-lg);
+  padding: 32px 28px;
+  text-align: center;
+}
+.number-big {
+  font-family: 'Manrope', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--blue);
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.number-big span { color: var(--amber); }
+.number-label { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.number-sub { font-size: 0.82rem; color: var(--fg3); line-height: 1.5; }
+
+/* ─── TESTIMONIAL ─────────────────────────────────────────────── */
+.testimonial {
+  background: linear-gradient(135deg, var(--navy) 0%, #152C5A 100%);
+  padding-block: 88px;
+}
+.testimonial-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+.quote-mark {
+  font-size: 72px;
+  color: var(--amber);
+  line-height: 0.8;
+  font-family: Georgia, serif;
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+.quote-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.55;
+  margin-bottom: 36px;
+}
+.quote-text strong { color: var(--amber); font-weight: 800; }
+.quote-author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.author-avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--amber) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.author-name { font-weight: 700; font-size: 15px; color: #fff; }
+.author-role { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+
+/* ─── STRIPE TRANSPARENCY BANNER ────────────────────────────── */
+.stripe-banner {
+  background: var(--amber-bg);
+  border-top: 1px solid rgba(232,146,10,0.2);
+  border-bottom: 1px solid rgba(232,146,10,0.2);
+  padding-block: 36px;
+}
+.stripe-inner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 28px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+@media (max-width: 640px) { .stripe-inner { grid-template-columns: 1fr; } }
+.stripe-icon {
+  font-size: 2.4rem;
+  flex-shrink: 0;
+}
+.stripe-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.stripe-sub { font-size: 0.88rem; color: var(--fg2); line-height: 1.6; }
+
+/* ─── SECURITY STRIP ─────────────────────────────────────────── */
+.security {
+  background: var(--white);
+  border-top: 1px solid var(--bdr);
+  border-bottom: 1px solid var(--bdr);
+  padding-block: 36px;
+}
+.security-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+.sec-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--fg2);
+  font-size: 13px;
+  font-weight: 500;
+}
+.sec-icon { font-size: 20px; }
+
+/* ─── ACCESO ─────────────────────────────────────────────────── */
+.acceso {
+  background: linear-gradient(180deg, var(--off) 0%, var(--white) 100%);
+  padding-block: 88px 100px;
+}
+.acceso-title {
+  text-align: center;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+.acceso-sub { text-align: center; color: var(--fg2); font-size: 1rem; margin-bottom: 52px; }
+.acceso-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+@media (max-width: 560px) { .acceso-grid { grid-template-columns: 1fr; } }
+.acceso-card {
+  background: var(--white);
+  border: 2px solid var(--bdr);
+  border-radius: var(--r-xl);
+  padding: 36px 28px;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 2px 12px rgba(10,22,41,0.06);
+}
+.acceso-card:hover {
+  border-color: var(--blue);
+  box-shadow: 0 8px 32px rgba(21,88,168,0.12);
+  transform: translateY(-3px);
+}
+.acceso-card.primary { border-color: var(--blue); background: var(--blue-bg); }
+.acceso-card.primary:hover { border-color: var(--blue-lt); box-shadow: 0 8px 32px rgba(21,88,168,0.18); }
+.acceso-icon { font-size: 40px; margin-bottom: 16px; display: block; }
+.acceso-card h3 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.acceso-card p { font-size: 0.88rem; color: var(--fg2); line-height: 1.6; margin-bottom: 24px; }
+.acceso-btns { display: flex; flex-direction: column; gap: 10px; }
+.ac-primary {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 20px;
+  border-radius: 50px;
+  display: block;
+  transition: background 0.15s;
+  box-shadow: 0 2px 8px rgba(21,88,168,0.2);
+}
+.ac-primary:hover { background: var(--blue-lt); }
+.ac-ghost {
+  background: transparent;
+  color: var(--blue);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(21,88,168,0.3);
+  display: block;
+  transition: all 0.15s;
+}
+.ac-ghost:hover { background: rgba(21,88,168,0.06); border-color: var(--blue); }
+
+/* ─── FOOTER ─────────────────────────────────────────────────── */
+footer {
+  background: var(--navy);
+  padding-block: 40px 32px;
+}
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+.footer-logo {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+.footer-logo span { color: var(--amber); }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,0.4); transition: color 0.15s; }
+.footer-links a:hover { color: rgba(255,255,255,0.8); }
+
+/* ─── SCROLL REVEAL ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+</style>
+
+<!-- NAVBAR -->
 <nav>
-  <div class="nav-logo"><img src="logo-blanco.png" alt="Propii"></div>
-  <a href="#acceso" class="nav-btn">Iniciar sesión</a>
+  <div class="nav-inner">
+    <div class="nav-logo">propii<span>.</span></div>
+    <div class="nav-right">
+      <a href="#como-funciona" class="nav-link">Cómo funciona</a>
+      <a href="#empresas" class="nav-link">Empresas</a>
+      <a href="#acceso" class="nav-cta">Comenzar →</a>
+    </div>
+  </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">✦ Propinas digitales para trabajadores mexicanos</div>
-  <h1>Tu trabajo merece<br><span>una propina digital</span></h1>
-  <p>Recibe propinas con tarjeta, Apple Pay o Google Pay directo a tu cuenta. Sin efectivo, sin complicaciones.</p>
-  <div class="hero-btns">
-    <a href="#acceso" class="btn-primary">Comenzar gratis</a>
-    <a href="#como-funciona" class="btn-outline">Cómo funciona</a>
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Propinas digitales para México</div>
+      <h1>Tu trabajo vale.<br><em>Cobra tu propina</em><br>al instante.</h1>
+      <p class="hero-sub">
+        Sin efectivo. Sin terminales. Sin esperar. Muestra tu QR personal, el cliente paga con tarjeta o celular, y recibes directo a tu cuenta bancaria.
+      </p>
+      <div class="hero-btns">
+        <a href="registro.html?tipo=trabajador" class="btn-primary">Regístrate gratis →</a>
+        <a href="#como-funciona" class="btn-outline">Ver cómo funciona</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><span class="trust-dot">✓</span> Pagos reales con Stripe</div>
+        <div class="trust-item"><span class="trust-dot">✓</span> Directo a tu CLABE</div>
+        <div class="trust-item"><span class="trust-dot">✓</span> Sin costo de registro</div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="phone-wrap">
+        <div class="phone-glow"></div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-bar">
+              <div class="phone-bar-label">Propii · Mi perfil</div>
+              <div class="phone-bar-name">Carlos Ramírez</div>
+              <div class="phone-bar-role">Mesero · Restaurante El Patio</div>
+            </div>
+            <div class="phone-body">
+              <div class="phone-section-label">Esta semana</div>
+              <div class="phone-stat-row">
+                <div class="phone-stat">
+                  <div class="phone-stat-val" id="stat-monto">$0</div>
+                  <div class="phone-stat-lbl">Propinas</div>
+                </div>
+                <div class="phone-stat">
+                  <div class="phone-stat-val" id="stat-cobros">0</div>
+                  <div class="phone-stat-lbl">Cobros</div>
+                </div>
+              </div>
+              <div class="phone-section-label">Últimas propinas</div>
+              <div class="phone-tx-list">
+                <div class="phone-tx" id="tx-1" style="opacity:0;transition:opacity 0.4s ease">
+                  <div class="phone-tx-left">
+                    <div class="phone-tx-icon tx-a">💳</div>
+                    <div>
+                      <div class="phone-tx-name">Visa ···4821</div>
+                      <div class="phone-tx-time">Hace 4 min</div>
+                    </div>
+                  </div>
+                  <div class="phone-tx-amt">+$80</div>
+                </div>
+                <div class="phone-tx" id="tx-2" style="opacity:0;transition:opacity 0.4s ease">
+                  <div class="phone-tx-left">
+                    <div class="phone-tx-icon tx-b">📱</div>
+                    <div>
+                      <div class="phone-tx-name">Google Pay</div>
+                      <div class="phone-tx-time">Hace 27 min</div>
+                    </div>
+                  </div>
+                  <div class="phone-tx-amt">+$50</div>
+                </div>
+                <div class="phone-tx" id="tx-3" style="opacity:0;transition:opacity 0.4s ease">
+                  <div class="phone-tx-left">
+                    <div class="phone-tx-icon tx-c">💳</div>
+                    <div>
+                      <div class="phone-tx-name">MC ···7703</div>
+                      <div class="phone-tx-time">Hace 1 hr</div>
+                    </div>
+                  </div>
+                  <div class="phone-tx-amt">+$120</div>
+                </div>
+              </div>
+              <div class="phone-qr-row">
+                <div class="phone-qr-btn">📲 Ver mi QR de cobro</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div id="como-funciona" class="section">
-  <div class="section-label">Cómo funciona</div>
-  <h2>Tres pasos y listo</h2>
-  <p class="sub">Sin banco, sin terminal, sin trámites.</p>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <h3>Crea tu cuenta</h3>
-      <p>Regístrate gratis en menos de 2 minutos con tu nombre y teléfono.</p>
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="wrap">
+    <div class="stat-item">
+      <div class="stat-num">+1.7<span>M</span></div>
+      <div class="stat-label">Trabajadores que dependen de propinas en México</div>
     </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <h3>Muestra tu QR</h3>
-      <p>Imprime o muestra tu código QR único al cliente al terminar el servicio.</p>
+    <div class="stat-item">
+      <div class="stat-num">&lt;10<span>s</span></div>
+      <div class="stat-label">Para cobrar una propina con tu QR</div>
     </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <h3>Recibe tu dinero</h3>
-      <p>El cliente paga con tarjeta o Google Pay, tú ves tus cobros en tu dashboard y recibes tus pagos en tu tarjeta bancaria.</p>
+    <div class="stat-item">
+      <div class="stat-num">3.6<span>%</span></div>
+      <div class="stat-label">Comisión de Stripe por transacción</div>
+      <div class="stat-note">+ $3 MXN fijos · Sin cuota de Propii</div>
     </div>
-  </div>
-</div>
-
-<div class="who">
-  <div class="who-inner">
-    <div class="section-label">Para quién es</div>
-    <h2>Cualquier trabajador que merece propina</h2>
-    <div class="who-grid">
-      <div class="who-card"><div class="who-icon">🛒</div><h4>Empacadores</h4></div>
-      <div class="who-card"><div class="who-icon">🍽️</div><h4>Meseros</h4></div>
-      <div class="who-card"><div class="who-icon">🏨</div><h4>Hotelería</h4></div>
-      <div class="who-card"><div class="who-icon">⛽</div><h4>Gasolineros</h4></div>
-      <div class="who-card"><div class="who-icon">🚗</div><h4>Valet parking</h4></div>
-      <div class="who-card"><div class="who-icon">💇</div><h4>Estilistas</h4></div>
-      <div class="who-card"><div class="who-icon">🏋️</div><h4>Entrenadores</h4></div>
+    <div class="stat-item">
+      <div class="stat-num">100<span>%</span></div>
+      <div class="stat-label">Digital, rastreable y al instante</div>
     </div>
   </div>
 </div>
 
-<div class="testimonial">
-  <div class="testimonial-inner">
-    <div class="testimonial-quote">
-      "Antes perdía propinas porque los clientes no traían efectivo. Con Propii <span>recibo más del doble</span> y veo todo en mi teléfono."
+<!-- HOW IT WORKS -->
+<section id="como-funciona" class="section how">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-eyebrow">Cómo funciona</div>
+      <h2 class="section-title">Tres pasos. Sin terminales. Sin efectivo.</h2>
+      <p class="section-sub">El cliente escanea, paga como prefiera, y tú recibes al instante. Así de simple.</p>
     </div>
-    <div class="testimonial-author">
-      <div class="testimonial-avatar">CR</div>
-      <div class="testimonial-name">
-        <strong>Carlos Ramírez</strong>
-        <span>Mesero · Hotel Fiesta Americana, Monterrey</span>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Crea tu cuenta</h3>
+        <p>Regístrate con tu nombre, teléfono y CLABE interbancaria. Gratuito y listo en menos de 3 minutos.</p>
+        <div class="step-highlight">✓ Sin costo de registro</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Muestra tu QR</h3>
+        <p>Imprime o muestra en pantalla tu código QR único al terminar el servicio. El cliente lo escanea con su cámara — sin descargar ninguna app.</p>
+        <div class="step-highlight">✓ Sin app para el cliente</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Cobra al instante</h3>
+        <p>El cliente elige el monto y paga con tarjeta, Apple Pay o Google Pay. Tu propina va directo a tu cuenta — Stripe cobra su comisión estándar.</p>
+        <div class="step-highlight">✓ Transferencia inmediata</div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="empresas">
-  <div class="section-label">Para empresas</div>
-  <h2>Aumenta la satisfacción de tu equipo</h2>
-  <p class="sub" style="color:#6b7280; font-size:1.05rem; margin-bottom:0;">Propii se integra sin fricción en supermercados, restaurantes, hoteles y gasolineras.</p>
-  <div class="empresas-grid">
-    <div class="empresa-card">
-      <h3>🏪 Supermercados y retail</h3>
-      <p>Tus empacadores y personal de piso reciben propinas digitales sin interrumpir la operación. Sin terminales extra, sin efectivo.</p>
-      <a href="mailto:hola@propii.mx" class="btn-empresa">Contactar</a>
+<!-- PARA QUIÉN -->
+<section class="section whom">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-eyebrow">Para quién es</div>
+      <h2 class="section-title">Si tu trabajo merece propina, Propii es para ti</h2>
+      <p class="section-sub">Desde gasolineras hasta restaurantes de lujo — cualquier trabajador puede cobrar propinas digitales hoy mismo.</p>
     </div>
-    <div class="empresa-card">
-      <h3>🍽️ Restaurantes y hoteles</h3>
-      <p>Cada mesero, botones o valet tiene su propio QR. Tú ves el reporte general, ellos ven sus propinas en tiempo real.</p>
-      <a href="#acceso" class="btn-empresa">Registrar empresa</a>
+    <div class="sector-grid reveal">
+      <div class="sector-card highlight">
+        <div class="sector-badge">Fase 1</div>
+        <div class="sector-icon">⛽</div>
+        <div class="sector-name">Gasolineros</div>
+        <div class="sector-note">Las terminales ya no sirven aquí. Propii sí.</div>
+      </div>
+      <div class="sector-card highlight">
+        <div class="sector-badge">Fase 1</div>
+        <div class="sector-icon">🛒</div>
+        <div class="sector-name">Empacadores</div>
+        <div class="sector-note">HEB, Soriana, Walmart y más</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🍽️</div>
+        <div class="sector-name">Meseros</div>
+        <div class="sector-note">Restaurantes y bares</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏨</div>
+        <div class="sector-name">Hotelería</div>
+        <div class="sector-note">Botones, limpieza, concierge</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🚗</div>
+        <div class="sector-name">Valet Parking</div>
+        <div class="sector-note">Centros comerciales, restaurantes</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">💇</div>
+        <div class="sector-name">Estilistas</div>
+        <div class="sector-note">Salones y barberías</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏋️</div>
+        <div class="sector-name">Entrenadores</div>
+        <div class="sector-note">Gym, pilates, clases privadas</div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🚚</div>
+        <div class="sector-name">Repartidores</div>
+        <div class="sector-note">Restaurantes y tiendas propias</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA EMPRESAS -->
+<section id="empresas" class="section features">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-eyebrow">Para empresas</div>
+      <h2 class="section-title">Tu equipo feliz. Tu operación limpia.</h2>
+      <p class="section-sub">Propii se integra sin fricción en tu negocio. Sin terminales extra, sin cambios en tu sistema actual.</p>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Dashboard en tiempo real</h3>
+        <p>Ve las propinas de todo tu equipo por día, semana o mes. Ranking de trabajadores, tendencias y métricas de satisfacción del cliente.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⭐</div>
+        <h3>Más reseñas en Google, automático</h3>
+        <p>Después de pagar la propina, el cliente ve un prompt directo a tu perfil de Google. El momento de mayor satisfacción — justo cuando dejó propina — es el mejor momento para pedirle una reseña.</p>
+        <ul class="feat-list">
+          <li>Redirect automático a tu Google Business tras el pago</li>
+          <li>Sin pedirlo en persona ni mandar mensajes después</li>
+          <li>Más reseñas = mejor posicionamiento en Maps</li>
+        </ul>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <h3>Sin inversión en hardware</h3>
+        <p>No necesitas terminales, tablets ni ningún dispositivo extra. Tu equipo usa sus propios teléfonos o una hoja impresa con su QR.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎯</div>
+        <h3>Control de repartición</h3>
+        <p>Define cómo se reparten las propinas entre categorías de trabajadores. Tú fijas los porcentajes; Propii ejecuta la distribución al instante.</p>
+        <ul class="feat-list">
+          <li>Porcentajes configurables por categoría</li>
+          <li>Distribución automática al momento del cobro</li>
+          <li>Historial descargable por período</li>
+        </ul>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔒</div>
+        <h3>Sin ISR. Sin nómina. Sin dolor de cabeza.</h3>
+        <p>Cuando las propinas pasan por la empresa — en efectivo o en terminal — el SAT las considera ingreso gravable y el negocio tiene que retener ISR, acumularlas en nómina y timbrarlas en el CFDI del trabajador. Con Propii eso desaparece.</p>
+        <ul class="feat-list">
+          <li>Cada propina va directo al trabajador vía Stripe — nunca toca tu caja</li>
+          <li>Sin retención de ISR a cargo de la empresa</li>
+          <li>Sin acumulación a nómina ni timbre de CFDI de propinas</li>
+          <li>Comprobante digital automático para el trabajador</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NÚMEROS CLAVE -->
+<section class="section numbers">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-eyebrow">La oportunidad</div>
+      <h2 class="section-title">Un mercado enorme, casi sin digitalizar</h2>
+      <p class="section-sub">Millones de trabajadores en México dependen de propinas, pero la mayoría sigue usando efectivo.</p>
+    </div>
+    <div class="numbers-grid reveal">
+      <div class="number-card">
+        <div class="number-big">1.7<span>M+</span></div>
+        <div class="number-label">Trabajadores en México</div>
+        <div class="number-sub">que dependen de propinas como parte de su ingreso</div>
+      </div>
+      <div class="number-card">
+        <div class="number-big">0<span>%</span></div>
+        <div class="number-label">Digitalización actual</div>
+        <div class="number-sub">la gran mayoría sigue cobrando propinas solo en efectivo</div>
+      </div>
+      <div class="number-card">
+        <div class="number-big">3<span>s</span></div>
+        <div class="number-label">Para escanear un QR</div>
+        <div class="number-sub">cualquier cliente con iPhone o Android puede pagar, sin instalar nada</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="testimonial-inner reveal">
+    <div class="quote-mark">"</div>
+    <div class="quote-text">
+      Antes perdía propinas porque los clientes no traían efectivo. Con Propii <strong>recibo más del doble</strong> y veo todo desde mi teléfono en tiempo real.
+    </div>
+    <div class="quote-author">
+      <div class="author-avatar">CR</div>
+      <div>
+        <div class="author-name">Carlos Ramírez</div>
+        <div class="author-role">Mesero · Restaurante El Patio, Monterrey</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRIPE TRANSPARENCY -->
+<div class="stripe-banner">
+  <div class="stripe-inner">
+    <div class="stripe-icon">💳</div>
+    <div>
+      <div class="stripe-title">Transparencia sobre comisiones</div>
+      <div class="stripe-sub">Propii no cobra cuota mensual ni comisión propia. El único costo es la comisión estándar de Stripe (3.6% + $3.00 MXN por transacción con tarjeta nacional) — la misma que cobra cualquier plataforma de pagos seria en México. Stripe es quien procesa el pago de forma segura y quien cobra esa comisión directamente.</div>
     </div>
   </div>
 </div>
 
-<!-- SELECTOR DE ACCESO -->
-<div id="acceso" class="access-section">
-  <h2>¿Cómo quieres entrar?</h2>
-  <p>Selecciona si eres trabajador o representas una empresa</p>
-  <div class="access-grid">
-
-    <div class="access-card">
-      <span class="ac-icon">👤</span>
-      <h3>Soy trabajador</h3>
-      <p>Recibe propinas con tu QR personal y monitorea tus ganancias</p>
-      <div class="ac-btns">
-        <a href="login.html?tipo=trabajador" class="ac-btn-login">Iniciar sesión</a>
-        <a href="registro.html?tipo=trabajador" class="ac-btn-reg">Registrarme gratis</a>
-      </div>
-    </div>
-
-    <div class="access-card">
-      <span class="ac-icon">🏨</span>
-      <h3>Soy empresa</h3>
-      <p>Gestiona a tus trabajadores y ve el rendimiento de propinas de tu equipo</p>
-      <div class="ac-btns">
-        <a href="login.html?tipo=empresa" class="ac-btn-login">Iniciar sesión</a>
-        <a href="registro.html?tipo=empresa" class="ac-btn-reg">Registrar empresa</a>
-      </div>
-    </div>
-
+<!-- SECURITY STRIP -->
+<div class="security">
+  <div class="security-inner">
+    <div class="sec-item"><span class="sec-icon">🔒</span> Procesado por Stripe</div>
+    <div class="sec-item"><span class="sec-icon">🏦</span> Transferencias a cualquier banco mexicano</div>
+    <div class="sec-item"><span class="sec-icon">🇲🇽</span> Cumple regulaciones mexicanas</div>
+    <div class="sec-item"><span class="sec-icon">📱</span> Apple Pay &amp; Google Pay</div>
+    <div class="sec-item"><span class="sec-icon">⚡</span> Transferencia al instante</div>
   </div>
 </div>
 
-<footer>© 2026 Propii · Propinas digitales para México</footer>
+<!-- ACCESO -->
+<section id="acceso" class="acceso">
+  <div class="wrap">
+    <h2 class="acceso-title reveal">¿Cómo quieres entrar?</h2>
+    <p class="acceso-sub reveal">Selecciona si eres trabajador o representas una empresa</p>
+    <div class="acceso-grid reveal">
+      <div class="acceso-card primary">
+        <span class="acceso-icon">👤</span>
+        <h3>Soy trabajador</h3>
+        <p>Recibe propinas con tu QR personal y monitorea tus ganancias en tiempo real.</p>
+        <div class="acceso-btns">
+          <a href="registro.html?tipo=trabajador" class="ac-primary">Registrarme gratis</a>
+          <a href="login.html?tipo=trabajador" class="ac-ghost">Ya tengo cuenta</a>
+        </div>
+      </div>
+      <div class="acceso-card">
+        <span class="acceso-icon">🏢</span>
+        <h3>Soy empresa</h3>
+        <p>Gestiona a tu equipo y ve el rendimiento de propinas de todo tu negocio.</p>
+        <div class="acceso-btns">
+          <a href="registro.html?tipo=empresa" class="ac-primary">Registrar empresa</a>
+          <a href="login.html?tipo=empresa" class="ac-ghost">Acceder al panel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-</body>
-</html>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">propii<span>.</span></div>
+    <div class="footer-links">
+      <a href="mailto:hola@propii.mx">hola@propii.mx</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#empresas">Empresas</a>
+    </div>
+    <div class="footer-copy">© 2026 Propii · Propinas digitales para México</div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Phone counter animation
+function countUp(el, target, duration, prefix) {
+  const start = performance.now();
+  (function tick(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = prefix + Math.round(ease * target).toLocaleString('es-MX');
+    if (p < 1) requestAnimationFrame(tick);
+  })(start);
+}
+
+let phoneAnimated = false;
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !phoneAnimated) {
+      phoneAnimated = true;
+      setTimeout(() => countUp(document.getElementById('stat-monto'), 847, 1200, '$'), 100);
+      setTimeout(() => countUp(document.getElementById('stat-cobros'), 23, 1000, ''), 100);
+      setTimeout(() => { document.getElementById('tx-1').style.opacity = '1'; }, 600);
+      setTimeout(() => { document.getElementById('tx-2').style.opacity = '1'; }, 1000);
+      setTimeout(() => { document.getElementById('tx-3').style.opacity = '1'; }, 1400);
+    }
+  });
+}, { threshold: 0.4 }).observe(document.querySelector('.phone-frame'));
+</script>
