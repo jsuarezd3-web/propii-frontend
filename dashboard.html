@@ -1,298 +1,779 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Propii — Mi Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propii — Panel del Hotel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --yellow: #d97706;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+      --radius: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f1117;
+        --surface: #1a1d27;
+        --border: #2d3142;
+        --text: #f0f2f8;
+        --muted: #9ca3af;
+        --blue-light: #1e3a5f;
+        --green-light: #052e16;
+        --red-light: #450a0a;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2d3142;
+      --text: #f0f2f8;
+      --muted: #9ca3af;
+      --blue-light: #1e3a5f;
+      --green-light: #052e16;
+      --red-light: #450a0a;
+      color-scheme: dark;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f4f6f9;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
     }
-    .header {
-      background: #185FA5;
-      padding: 1.25rem 1.5rem;
-      color: white;
-    }
-    .header-logo { font-size: 12px; font-weight: 500; color: #B5D4F4; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
-    .header-name { font-size: 20px; font-weight: 600; }
-    .header-role { font-size: 13px; color: #85B7EB; margin-top: 2px; }
-    .tabs {
+
+    /* ── Navbar ── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
       display: flex;
-      background: #fff;
-      border-bottom: 1px solid #e5e7eb;
-      overflow-x: auto;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
-    .tab {
-      flex: 1;
-      padding: 12px 8px;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 500;
-      color: #6b7280;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      white-space: nowrap;
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue);
+      text-decoration: none;
     }
-    .tab.active {
-      color: #185FA5;
-      border-bottom-color: #185FA5;
-    }
-    .body { padding: 1.25rem; max-width: 500px; margin: 0 auto; }
-    .summary-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
-    .summary-label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-    .summary-amount { font-size: 32px; font-weight: 700; color: #111827; }
-    .summary-amount span { font-size: 16px; font-weight: 400; color: #6b7280; margin-left: 4px; }
-    .summary-count { font-size: 13px; color: #6b7280; margin-top: 4px; }
-    .next-deposit {
-      background: #E6F1FB;
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 1rem;
+    .nav-right {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .next-deposit-icon { font-size: 24px; }
-    .next-deposit-label { font-size: 12px; color: #185FA5; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
-    .next-deposit-info { font-size: 15px; font-weight: 600; color: #111827; margin-top: 2px; }
-    .movements-title { font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
-    .movement-item {
-      background: #fff;
-      border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    .hotel-name-badge {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
     }
-    .movement-date { font-size: 13px; color: #6b7280; }
-    .movement-amount { font-size: 16px; font-weight: 600; color: #3B6D11; }
-    .empty { text-align: center; padding: 2rem; color: #9ca3af; font-size: 14px; }
-    .loading { text-align: center; padding: 2rem; color: #9ca3af; }
+    .btn-logout {
+      font-size: 13px;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+    }
+    .btn-logout:hover { color: var(--red); border-color: var(--red); }
+
+    /* ── Layout ── */
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    /* ── Section header ── */
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* ── Period tabs ── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      background: var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      width: fit-content;
+    }
+    .tab {
+      padding: 7px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 7px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--muted);
+      transition: all .15s;
+    }
+    .tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    /* ── Summary cards ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+    .card-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 8px;
+    }
+    .card-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .card-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Workers table ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 36px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td {
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+    .worker-name { font-weight: 600; }
+    .worker-role {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .amount { font-weight: 600; font-size: 15px; }
+    .zero { color: var(--muted); }
+
+    /* ── Splits section ── */
+    .splits-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .splits-header {
+      padding: 20px 24px 0;
+    }
+    .splits-header h2 { font-size: 17px; font-weight: 700; }
+    .splits-header p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    .splits-body { padding: 20px 24px; }
+
+    .split-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .split-row:last-child { border-bottom: none; }
+    .split-role {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .split-bar-wrap {
+      flex: 2;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .split-bar {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 4px;
+      transition: width .25s;
+    }
+    .split-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .split-input {
+      width: 64px;
+      padding: 6px 10px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      text-align: right;
+      transition: border-color .15s;
+    }
+    .split-input:focus { outline: none; border-color: var(--blue); }
+    .split-pct { font-size: 13px; color: var(--muted); }
+
+    /* ── Total bar ── */
+    .splits-total-wrap {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .total-label { font-size: 14px; font-weight: 600; }
+    .total-number {
+      font-size: 22px;
+      font-weight: 700;
+      transition: color .2s;
+    }
+    .total-number.ok { color: var(--green); }
+    .total-number.bad { color: var(--red); }
+    .total-hint {
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .total-hint.ok { color: var(--green); }
+    .total-hint.bad { color: var(--red); }
+
+    .splits-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg);
+    }
+    .btn-save {
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--blue);
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: opacity .15s, background .15s;
+    }
+    .btn-save:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+    .btn-save:not(:disabled):hover { background: #1d4ed8; }
+    .save-msg {
+      font-size: 13px;
+    }
+    .save-msg.ok { color: var(--green); }
+    .save-msg.bad { color: var(--red); }
+
+    /* ── Empty / loading ── */
+    .empty {
+      padding: 48px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Auth overlay ── */
+    #auth-wall {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .auth-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.12);
+    }
+    .auth-box h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .auth-box p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+    .field input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .field input:focus { outline: none; border-color: var(--blue); }
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--blue);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-login:hover { background: #1d4ed8; }
+    #auth-error { font-size: 13px; color: var(--red); margin-top: 12px; min-height: 18px; }
+
+    @media (max-width: 600px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .split-bar-wrap { display: none; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div id="login-section" style="display:none;">
-    <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1rem;">
-      <div style="width:100%; max-width:360px; background:#fff; border-radius:24px; box-shadow:0 4px 24px rgba(0,0,0,0.08); overflow:hidden;">
-        <div style="background:#185FA5; padding:2rem 1.5rem; text-align:center;">
-          <div style="font-size:13px; font-weight:500; color:#B5D4F4; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">Propii</div>
-          <div style="font-size:22px; font-weight:600; color:#fff;">Inicia sesión</div>
-          <div style="font-size:14px; color:#85B7EB; margin-top:4px;">Accede a tu dashboard de propinas</div>
-        </div>
-        <div style="padding:1.5rem;">
-          <input id="login-email" type="email" placeholder="Tu email" style="width:100%; padding:12px; border-radius:8px; border:1px solid #d1d5db; font-size:15px; margin-bottom:10px; outline:none;" />
-          <input id="login-password" type="password" placeholder="Contraseña" style="width:100%; padding:12px; border-radius:8px; border:1px solid #d1d5db; font-size:15px; margin-bottom:6px; outline:none;" />
-          <div id="login-error" style="color:#dc2626; font-size:13px; min-height:20px; margin-bottom:10px;"></div>
-          <button onclick="login()" style="width:100%; padding:14px; background:#3B6D11; border:none; border-radius:8px; color:#fff; font-size:16px; font-weight:500; cursor:pointer;">Entrar</button>
-        </div>
-      </div>
+<!-- ── AUTH WALL ── -->
+<div id="auth-wall">
+  <div class="auth-box">
+    <h1>Propii</h1>
+    <p>Panel de administración del hotel</p>
+    <div class="field">
+      <label>Correo electrónico</label>
+      <input type="email" id="email" placeholder="hotel@ejemplo.com" autocomplete="email">
     </div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="btn-login">Iniciar sesión</button>
+    <div id="auth-error"></div>
   </div>
-
-  <!-- DASHBOARD -->
-  <div id="dashboard-section" style="display:none;">
-    <div class="header">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div>
-          <div class="header-logo"><a href="index.html" style="color:inherit; text-decoration:none;">Propii</a></div>
-          <div class="header-name" id="worker-name">Cargando...</div>
-          <div class="header-role" id="worker-role"></div>
-        </div>
-        <button onclick="cerrarSesion()" style="background:rgba(255,255,255,0.2); border:none; color:#fff; padding:6px 12px; border-radius:20px; font-size:12px; cursor:pointer;">Salir</button>
-      </div>
-    </div>
-
-<div style="display:flex; gap:0.8rem; padding:1rem; background:rgba(0,0,0,0.1);">
-  <button id="btn-ver-qr" onclick="verQR()" style="flex:1; padding:10px; background:#F7931E; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">📱 Ver mi QR</button>
-  <button onclick="completarStripe()" style="flex:1; padding:10px; background:#2B7BC4; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">🏦 Completar banco</button>
-  <button onclick="editarMensaje()" style="flex:1; padding:10px; background:#185FA5; border:none; border-radius:10px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">✏️ Mi mensaje</button>
 </div>
 
+<!-- ── MAIN APP ── -->
+<div id="app" style="display:none">
+  <nav>
+    <a href="index.html" class="nav-logo">propii</a>
+    <div class="nav-right">
+      <span class="hotel-name-badge" id="hotel-name-badge"></span>
+      <button class="btn-logout" id="btn-logout">Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- Resumen de propinas -->
+    <h1 class="section-title">Resumen de propinas</h1>
+
     <div class="tabs">
-      <div class="tab active" onclick="cambiarPeriodo('hoy', this)">Hoy</div>
-      <div class="tab" onclick="cambiarPeriodo('semana', this)">Semana</div>
-      <div class="tab" onclick="cambiarPeriodo('mes', this)">Mes</div>
-      <div class="tab" onclick="cambiarPeriodo('año', this)">Año</div>
+      <button class="tab active" data-period="hoy">Hoy</button>
+      <button class="tab" data-period="semana">Semana</button>
+      <button class="tab" data-period="mes">Mes</button>
+      <button class="tab" data-period="año">Año</button>
     </div>
 
-    <div class="body">
-      <div class="loading" id="loading">Cargando datos...</div>
-      <div id="content" style="display:none;">
-        <div class="summary-card">
-          <div class="summary-label" id="summary-label">Hoy</div>
-          <div class="summary-amount" id="summary-amount">$0 <span>MXN</span></div>
-          <div class="summary-count" id="summary-count">0 propinas</div>
-        </div>
-        <div class="next-deposit">
-          <div class="next-deposit-icon">🏦</div>
-          <div>
-            <div class="next-deposit-label">Próximo depósito</div>
-            <div class="next-deposit-info" id="next-deposit">En proceso con Stripe</div>
-          </div>
-        </div>
-        <div class="movements-title">Movimientos</div>
-        <div id="movements"></div>
+    <div class="summary-grid">
+      <div class="card">
+        <div class="card-label">Total recaudado</div>
+        <div class="card-value" id="kpi-total">—</div>
+        <div class="card-sub" id="kpi-cobros">— cobros</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Promedio por cobro</div>
+        <div class="card-value" id="kpi-avg">—</div>
+        <div class="card-sub">MXN promedio</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Trabajadores activos</div>
+        <div class="card-value" id="kpi-workers">—</div>
+        <div class="card-sub" id="kpi-workers-sub">con actividad</div>
       </div>
     </div>
-  </div>
 
-  <script>
-const BACKEND = 'https://propii-production.up.railway.app';
-let dashboardData = null;
-let token = localStorage.getItem('propii_token');
-let workerId = localStorage.getItem('propii_worker_id');
+    <!-- Tabla de trabajadores -->
+    <h2 class="section-title" style="font-size:16px;margin-bottom:12px">Desglose por trabajador</h2>
+    <div class="table-wrap" id="workers-table-wrap">
+      <div class="spinner"></div>
+    </div>
 
-const labels = { hoy: 'Hoy', semana: 'Esta semana', mes: 'Este mes', año: 'Este año' };
+    <!-- ─────────────────────────────────── -->
+    <!-- REPARTICIÓN DE PROPINAS             -->
+    <!-- ─────────────────────────────────── -->
+    <h2 class="section-title" style="font-size:16px;margin-top:36px;margin-bottom:4px">Configurar repartición</h2>
+    <p class="section-sub">Define cuánto % del total de propinas recibe cada categoría de trabajador. La suma debe ser exactamente 100%.</p>
 
-function mostrarLogin() {
-  document.getElementById('login-section').style.display = 'block';
-  document.getElementById('dashboard-section').style.display = 'none';
+    <div class="splits-card" id="splits-card">
+      <div class="empty"><div class="spinner"></div></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API = 'https://propii-production.up.railway.app';
+let TOKEN = null;
+let HOTEL_ID = null;
+let dashData = null;
+let activePeriod = 'hoy';
+
+// ── Auth ──────────────────────────────────────────
+function saveSession(token, hotelId, hotelName) {
+  TOKEN = token; HOTEL_ID = hotelId;
+  try {
+    localStorage.setItem('propii_token', token);
+    localStorage.setItem('propii_hotel_id', String(hotelId));
+    localStorage.setItem('propii_hotel_name', hotelName);
+  } catch(e) {}
+  document.getElementById('hotel-name-badge').textContent = hotelName;
+  document.getElementById('auth-wall').style.display = 'none';
+  document.getElementById('app').style.display = '';
+  loadAll();
 }
 
-function mostrarDashboard() {
-  document.getElementById('login-section').style.display = 'none';
-  document.getElementById('dashboard-section').style.display = 'block';
+function restoreSession() {
+  try {
+    const t = localStorage.getItem('propii_token');
+    const id = localStorage.getItem('propii_hotel_id');
+    const name = localStorage.getItem('propii_hotel_name');
+    if (t && id) { TOKEN = t; HOTEL_ID = parseInt(id);
+      document.getElementById('hotel-name-badge').textContent = name || '';
+      document.getElementById('auth-wall').style.display = 'none';
+      document.getElementById('app').style.display = '';
+      loadAll(); return true;
+    }
+  } catch(e) {}
+  return false;
 }
 
-async function login() {
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-  const errorEl = document.getElementById('login-error');
+document.getElementById('btn-login').addEventListener('click', async () => {
+  const email = document.getElementById('email').value.trim();
+  const pw = document.getElementById('password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.textContent = '';
+  if (!email || !pw) { errEl.textContent = 'Completa todos los campos.'; return; }
+  document.getElementById('btn-login').textContent = 'Entrando…';
+  try {
+    const r = await fetch(`${API}/hotels/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pw })
+    });
+    const d = await r.json();
+    if (!r.ok) { errEl.textContent = d.detail || 'Credenciales incorrectas.'; return; }
+    saveSession(d.access_token, d.hotel_id, d.hotel_name);
+  } catch(e) {
+    errEl.textContent = 'Error de conexión. Intenta de nuevo.';
+  } finally {
+    document.getElementById('btn-login').textContent = 'Iniciar sesión';
+  }
+});
 
-  const res = await fetch(`${BACKEND}/workers/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
+// Allow Enter key on password
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-login').click();
+});
 
-  if (res.ok) {
-    const data = await res.json();
-    localStorage.setItem('propii_token', data.access_token);
-    localStorage.setItem('propii_worker_id', data.worker_id);
-    token = data.access_token;
-    workerId = data.worker_id;
-    errorEl.textContent = '';
-    cargarDashboard();
-  } else {
-    errorEl.textContent = 'Email o contraseña incorrectos';
+document.getElementById('btn-logout').addEventListener('click', () => {
+  TOKEN = null; HOTEL_ID = null;
+  try { localStorage.removeItem('propii_token'); localStorage.removeItem('propii_hotel_id'); localStorage.removeItem('propii_hotel_name'); } catch(e) {}
+  document.getElementById('auth-wall').style.display = '';
+  document.getElementById('app').style.display = 'none';
+});
+
+// ── Load dashboard ──────────────────────────────
+async function loadDashboard() {
+  try {
+    const r = await fetch(`${API}/hotels/${HOTEL_ID}/dashboard`, {
+      headers: { 'Authorization': `Bearer ${TOKEN}` }
+    });
+    if (r.status === 401) { document.getElementById('btn-logout').click(); return; }
+    dashData = await r.json();
+    renderPeriod(activePeriod);
+  } catch(e) {
+    document.getElementById('workers-table-wrap').innerHTML = '<p class="empty">Error al cargar datos.</p>';
   }
 }
 
-function cerrarSesion() {
-  localStorage.removeItem('propii_token');
-  localStorage.removeItem('propii_worker_id');
-  token = null;
-  workerId = null;
-  mostrarLogin();
-}
+function renderPeriod(period) {
+  const d = dashData[period];
+  const total = d.total_mxn;
+  const qty = d.cantidad;
+  const avg = qty > 0 ? (total / qty) : 0;
+  const conActividad = d.trabajadores.filter(w => w.cantidad > 0).length;
 
-async function cargarDashboard() {
-  if (!token || !workerId) { mostrarLogin(); return; }
+  document.getElementById('kpi-total').textContent = `$${total.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+  document.getElementById('kpi-cobros').textContent = `${qty} cobro${qty !== 1 ? 's' : ''}`;
+  document.getElementById('kpi-avg').textContent = qty > 0 ? `$${avg.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2})}` : '—';
+  document.getElementById('kpi-workers').textContent = conActividad;
+  document.getElementById('kpi-workers-sub').textContent = `de ${d.trabajadores.length} con actividad`;
 
-  const res = await fetch(`${BACKEND}/workers/${workerId}/dashboard`, { 
-    headers: { 'Authorization': `Bearer ${token}` }
-  });
-  if (!res.ok) { cerrarSesion(); return; }
-
-  dashboardData = await res.json();
-  document.getElementById('worker-name').textContent = dashboardData.worker.full_name;
-  document.getElementById('worker-role').textContent = dashboardData.worker.role + ' · ' + dashboardData.worker.hotel_or_place;
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('content').style.display = 'block';
-  mostrarDashboard();
-  
-  // Aviso si Stripe no está completo
-  if (!dashboardData.worker.stripe_completo) {
-    const aviso = document.createElement('div');
-    aviso.style.cssText = 'background:#F7931E; color:#fff; padding:12px 16px; text-align:center; font-size:13px; font-weight:600;';
-    aviso.innerHTML = '⚠️ Completa tu registro bancario para empezar a recibir propinas. <a href="#" onclick="completarStripe()" style="color:#fff; text-decoration:underline;">Completar ahora</a>';
-    document.querySelector('.header').after(aviso);
-
-    document.getElementById('btn-ver-qr').disabled = true;
-    document.getElementById('btn-ver-qr').style.opacity = '0.4';
-    document.getElementById('btn-ver-qr').title = 'Completa tu registro bancario primero';
-
+  if (d.trabajadores.length === 0) {
+    document.getElementById('workers-table-wrap').innerHTML = '<p class="empty">No hay trabajadores registrados.</p>';
+    return;
   }
-  
-  renderPeriodo('hoy');
+
+  const rows = d.trabajadores.map(w => `
+    <tr>
+      <td>
+        <div class="worker-name">${w.nombre}</div>
+        <div class="worker-role">${w.rol || 'Sin rol'}</div>
+      </td>
+      <td class="amount ${w.total_mxn === 0 ? 'zero' : ''}">
+        $${w.total_mxn.toLocaleString('es-MX', {minimumFractionDigits:2})}
+      </td>
+      <td style="color:var(--muted);font-size:13px">${w.cantidad} cobro${w.cantidad !== 1 ? 's' : ''}</td>
+    </tr>`).join('');
+
+  document.getElementById('workers-table-wrap').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>Trabajador</th>
+        <th>Total recibido</th>
+        <th>Cobros</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
 }
 
-function renderPeriodo(periodo) {
-  const data = dashboardData[periodo];
-  document.getElementById('summary-label').textContent = labels[periodo];
-  document.getElementById('summary-amount').innerHTML = `$${data.total_mxn.toFixed(0)} <span>MXN</span>`;
-  document.getElementById('summary-count').textContent = `${data.cantidad} propina${data.cantidad !== 1 ? 's' : ''}`;
+// ── Period tabs ──────────────────────────────────
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activePeriod = btn.dataset.period;
+    if (dashData) renderPeriod(activePeriod);
+  });
+});
 
-  const movEl = document.getElementById('movements');
-  if (data.movimientos.length === 0) {
-    movEl.innerHTML = '<div class="empty">Sin movimientos en este periodo</div>';
-  } else {
-    movEl.innerHTML = data.movimientos.map(m => `
-      <div class="movement-item">
-        <div class="movement-date">${m.fecha}</div>
-        <div class="movement-amount">$${m.monto.toFixed(0)} MXN</div>
+// ── Splits ───────────────────────────────────────
+let splitsData = [];     // [{role, percentage}]
+let workerRoles = [];    // roles únicos de los workers del hotel
+
+async function loadSplits() {
+  const card = document.getElementById('splits-card');
+  try {
+    // Cargar splits guardados
+    const r = await fetch(`${API}/hotels/${HOTEL_ID}/splits`, {
+      headers: { 'Authorization': `Bearer ${TOKEN}` }
+    });
+    const d = await r.json();
+    splitsData = d.splits || [];
+
+    // Obtener roles únicos de los trabajadores
+    if (dashData) {
+      const allRoles = [...new Set(
+        dashData.hoy.trabajadores
+          .map(w => w.rol)
+          .filter(Boolean)
+      )];
+      workerRoles = allRoles;
+
+      // Mezclar: roles existentes en splits + roles de workers sin split todavía
+      const existingRoles = splitsData.map(s => s.role);
+      for (const r of workerRoles) {
+        if (!existingRoles.includes(r)) {
+          splitsData.push({ role: r, percentage: 0 });
+        }
+      }
+      // Si no hay roles en workers, mostrar los splits guardados
+      if (splitsData.length === 0) {
+        card.innerHTML = '<p class="empty">No hay trabajadores con rol asignado. Agrega trabajadores primero.</p>';
+        return;
+      }
+    }
+
+    renderSplits();
+  } catch(e) {
+    card.innerHTML = '<p class="empty">Error al cargar repartición.</p>';
+  }
+}
+
+function renderSplits() {
+  const card = document.getElementById('splits-card');
+
+  const rows = splitsData.map((s, i) => `
+    <div class="split-row">
+      <span class="split-role">${s.role}</span>
+      <div class="split-bar-wrap">
+        <div class="split-bar" id="bar-${i}" style="width:${s.percentage}%"></div>
       </div>
-    `).join('');
-  }
+      <div class="split-input-wrap">
+        <input class="split-input" type="number" min="0" max="100" step="0.5"
+          value="${s.percentage}" data-idx="${i}" id="inp-${i}">
+        <span class="split-pct">%</span>
+      </div>
+    </div>`).join('');
+
+  card.innerHTML = `
+    <div class="splits-header">
+      <h2>Repartición de propinas</h2>
+      <p>Define el porcentaje que recibe cada categoría.</p>
+    </div>
+    <div class="splits-body" id="splits-rows">${rows}</div>
+    <div class="splits-total-wrap">
+      <div>
+        <div class="total-label">Total asignado</div>
+        <div class="total-hint" id="total-hint">Debe sumar exactamente 100%</div>
+      </div>
+      <div class="total-number" id="total-number">0%</div>
+    </div>
+    <div class="splits-footer">
+      <button class="btn-save" id="btn-save" disabled>Guardar repartición</button>
+      <span class="save-msg" id="save-msg"></span>
+    </div>`;
+
+  updateTotal();
+  attachSplitEvents();
 }
 
-function cambiarPeriodo(periodo, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  renderPeriodo(periodo);
-}
+function updateTotal() {
+  const total = splitsData.reduce((sum, s) => sum + (parseFloat(s.percentage) || 0), 0);
+  const rounded = Math.round(total * 100) / 100;
+  const numEl = document.getElementById('total-number');
+  const hintEl = document.getElementById('total-hint');
+  const saveBtn = document.getElementById('btn-save');
 
-if (token && workerId) {
-  cargarDashboard();
-} else {
-  mostrarLogin();
-}
+  numEl.textContent = `${rounded}%`;
+  const ok = rounded === 100;
+  numEl.className = 'total-number ' + (ok ? 'ok' : 'bad');
+  hintEl.className = 'total-hint ' + (ok ? 'ok' : 'bad');
+  hintEl.textContent = ok ? '✓ Listo para guardar' : `Faltan ${Math.round((100 - rounded) * 100) / 100}% por asignar`;
+  saveBtn.disabled = !ok;
 
-function verQR() {
-  const workerId = localStorage.getItem('propii_worker_id');
-  const workerName = document.getElementById('worker-name').textContent;
-  window.location.href = `stripe-success.html?id=${workerId}&name=${encodeURIComponent(workerName)}`;
-}
-
-
-
-async function completarStripe() {
-  const workerId = localStorage.getItem('propii_worker_id');
-  const res = await fetch(`https://propii-production.up.railway.app/workers/${workerId}/stripe-link`);
-  const data = await res.json();
-  if (data.url) {
-    window.location.href = data.url;
-  } else {
-    alert('Error al generar el link de Stripe');
-  }
-}
-
-function editarMensaje() {
-  const mensaje = prompt('Escribe tu mensaje de agradecimiento (máx. 150 caracteres):', dashboardData.worker.mensaje_agradecimiento || '');
-  if (mensaje === null) return;
-  fetch(`https://propii-production.up.railway.app/workers/${workerId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-    body: JSON.stringify({ mensaje_agradecimiento: mensaje.substring(0, 150) })
-  }).then(r => {
-    if (r.ok) alert('¡Mensaje actualizado!');
-    else alert('Error al actualizar el mensaje.');
+  // Actualizar barras
+  splitsData.forEach((s, i) => {
+    const bar = document.getElementById(`bar-${i}`);
+    if (bar) bar.style.width = `${Math.min(s.percentage, 100)}%`;
   });
 }
 
+function attachSplitEvents() {
+  document.querySelectorAll('.split-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const idx = parseInt(inp.dataset.idx);
+      splitsData[idx].percentage = parseFloat(inp.value) || 0;
+      document.getElementById('save-msg').textContent = '';
+      updateTotal();
+    });
+  });
+
+  document.getElementById('btn-save').addEventListener('click', saveSplits);
+}
+
+async function saveSplits() {
+  const btn = document.getElementById('btn-save');
+  const msg = document.getElementById('save-msg');
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+  msg.textContent = '';
+  msg.className = 'save-msg';
+
+  try {
+    const r = await fetch(`${API}/hotels/${HOTEL_ID}/splits`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify({ splits: splitsData })
+    });
+    const d = await r.json();
+    if (!r.ok) {
+      msg.textContent = d.detail || 'Error al guardar.';
+      msg.className = 'save-msg bad';
+    } else {
+      msg.textContent = '✓ Guardado correctamente';
+      msg.className = 'save-msg ok';
+    }
+  } catch(e) {
+    msg.textContent = 'Error de conexión.';
+    msg.className = 'save-msg bad';
+  } finally {
+    btn.textContent = 'Guardar repartición';
+    updateTotal(); // re-enables if still 100
+  }
+}
+
+// ── Init ────────────────────────────────────────
+async function loadAll() {
+  await loadDashboard();
+  await loadSplits();
+}
+
+if (!restoreSession()) {
+  // Show login
+}
 </script>
 </body>
 </html>
