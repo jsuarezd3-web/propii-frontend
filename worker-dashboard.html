@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propii — Mi Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --yellow: #d97706;
+      --yellow-light: #fffbeb;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+      --radius: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f1117; --surface: #1a1d27; --border: #2d3142;
+        --text: #f0f2f8; --muted: #9ca3af;
+        --blue-light: #1e3a5f; --green-light: #052e16;
+        --red-light: #450a0a; --yellow-light: #1c1200;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f1117; --surface: #1a1d27; --border: #2d3142;
+      --text: #f0f2f8; --muted: #9ca3af;
+      --blue-light: #1e3a5f; --green-light: #052e16;
+      --red-light: #450a0a; --yellow-light: #1c1200;
+      color-scheme: dark;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Navbar */
+    nav {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .nav-logo { font-size: 18px; font-weight: 700; color: var(--blue); text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .worker-badge { font-size: 13px; font-weight: 500; color: var(--muted); }
+    .btn-logout {
+      font-size: 13px; color: var(--muted); background: none;
+      border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; cursor: pointer;
+    }
+    .btn-logout:hover { color: var(--red); border-color: var(--red); }
+
+    /* Layout */
+    .main { max-width: 860px; margin: 0 auto; padding: 28px 20px 60px; }
+
+    /* Section title */
+    .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+
+    /* Period tabs */
+    .tabs {
+      display: flex; gap: 4px; margin-bottom: 20px;
+      background: var(--border); border-radius: 10px; padding: 4px; width: fit-content;
+    }
+    .tab {
+      padding: 7px 18px; font-size: 13px; font-weight: 500;
+      border-radius: 7px; cursor: pointer; border: none;
+      background: none; color: var(--muted); transition: all .15s;
+    }
+    .tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+
+    /* KPI cards */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+    .card-label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+    .card-value { font-size: 26px; font-weight: 700; }
+    .card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* Transactions list */
+    .tx-list { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 32px; }
+    .tx-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .tx-row:last-child { border-bottom: none; }
+    .tx-monto { font-weight: 700; color: var(--green); }
+    .tx-fecha { font-size: 12px; color: var(--muted); }
+    .empty { padding: 36px; text-align: center; color: var(--muted); font-size: 14px; }
+
+    /* QR section */
+    .qr-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; box-shadow: var(--shadow); margin-bottom: 32px;
+      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+    .qr-box {
+      width: 140px; height: 140px; flex-shrink: 0;
+      background: var(--bg); border: 2px dashed var(--border);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .qr-box img { width: 100%; height: 100%; object-fit: contain; }
+    .qr-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .qr-info p { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+    .qr-url { font-size: 13px; color: var(--blue); word-break: break-all; margin-bottom: 12px; }
+    .btn-copy {
+      padding: 8px 18px; font-size: 13px; font-weight: 600;
+      background: var(--blue-light); color: var(--blue);
+      border: 1px solid var(--blue); border-radius: 8px; cursor: pointer;
+    }
+    .btn-copy:hover { background: var(--blue); color: #fff; }
+
+    /* Stripe status */
+    .stripe-banner {
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 32px;
+      display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow);
+    }
+    .stripe-banner.ok { background: var(--green-light); border: 1px solid #bbf7d0; }
+    .stripe-banner.warn { background: var(--yellow-light); border: 1px solid #fde68a; }
+    .stripe-banner.bad { background: var(--red-light); border: 1px solid #fecaca; }
+    .stripe-icon { font-size: 24px; }
+    .stripe-text h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .stripe-text p { font-size: 13px; color: var(--muted); }
+    .btn-stripe {
+      margin-left: auto; padding: 8px 18px; font-size: 13px; font-weight: 600;
+      background: var(--blue); color: #fff; border: none; border-radius: 8px; cursor: pointer; white-space: nowrap;
+    }
+    .btn-stripe:hover { background: #1d4ed8; }
+
+    /* Datos bancarios */
+    .datos-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 32px; }
+    .datos-header { padding: 20px 20px 0; }
+    .datos-header h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .datos-header p { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+    .datos-body { padding: 0 20px 20px; }
+    .campo-fila { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .campo-fila:last-child { border-bottom: none; }
+    .campo-icono { font-size: 18px; width: 28px; text-align: center; }
+    .campo-label { font-size: 13px; font-weight: 600; flex: 1; }
+    .campo-status { font-size: 12px; }
+    .campo-status.ok { color: var(--green); }
+    .campo-status.missing { color: var(--yellow); }
+
+    /* Form para completar datos */
+    .form-completar { padding: 0 20px 20px; border-top: 1px solid var(--border); }
+    .form-completar h4 { font-size: 14px; font-weight: 700; margin: 16px 0 12px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .form-group input {
+      padding: 9px 12px; font-size: 14px; border: 1.5px solid var(--border);
+      border-radius: 8px; background: var(--bg); color: var(--text); font-family: inherit;
+    }
+    .form-group input:focus { outline: none; border-color: var(--blue); }
+    .form-group input:disabled { opacity: .5; cursor: not-allowed; }
+    .form-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .btn-guardar {
+      margin-top: 14px; padding: 10px 24px; font-size: 14px; font-weight: 600;
+      background: var(--blue); color: #fff; border: none; border-radius: 9px; cursor: pointer;
+    }
+    .btn-guardar:hover { background: #1d4ed8; }
+    .btn-guardar:disabled { opacity: .4; cursor: not-allowed; }
+    .form-msg { font-size: 13px; margin-top: 10px; }
+    .form-msg.ok { color: var(--green); }
+    .form-msg.bad { color: var(--red); }
+
+    /* Spinner */
+    .spinner {
+      width: 28px; height: 28px; border: 3px solid var(--border);
+      border-top-color: var(--blue); border-radius: 50%;
+      animation: spin .7s linear infinite; margin: 36px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      .qr-card { flex-direction: column; }
+      .form-grid { grid-template-columns: 1fr; }
+      .btn-stripe { margin-left: 0; margin-top: 8px; }
+      .stripe-banner { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">propii</a>
+  <div class="nav-right">
+    <span class="worker-badge" id="worker-name-badge"></span>
+    <button class="btn-logout" id="btn-logout">Cerrar sesión</button>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- ── Propinas ── -->
+  <h2 class="section-title">Mis propinas</h2>
+
+  <div class="tabs">
+    <button class="tab active" data-period="hoy">Hoy</button>
+    <button class="tab" data-period="semana">Semana</button>
+    <button class="tab" data-period="mes">Mes</button>
+    <button class="tab" data-period="año">Año</button>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="card">
+      <div class="card-label">Total recibido</div>
+      <div class="card-value" id="kpi-total">—</div>
+      <div class="card-sub" id="kpi-cobros">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Promedio por propina</div>
+      <div class="card-value" id="kpi-avg">—</div>
+      <div class="card-sub">MXN promedio</div>
+    </div>
+  </div>
+
+  <h3 class="section-title">Movimientos</h3>
+  <div class="tx-list" id="tx-list"><div class="spinner"></div></div>
+
+  <!-- ── QR ── -->
+  <h2 class="section-title" style="margin-top:8px">Mi código QR</h2>
+  <div class="qr-card" id="qr-card">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- ── Stripe ── -->
+  <h2 class="section-title">Estado de pagos</h2>
+  <div id="stripe-banner"><div class="spinner"></div></div>
+
+  <!-- ── Datos bancarios ── -->
+  <h2 class="section-title">Datos bancarios</h2>
+  <div class="datos-card" id="datos-card"><div class="spinner"></div></div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const API = 'https://propii-production.up.railway.app';
+let TOKEN = null;
+let WORKER_ID = null;
+let dashData = null;
+let perfilData = null;
+let activePeriod = 'hoy';
+
+// ── Auth ─────────────────────────────────────────────────────
+function getSession() {
+  try {
+    TOKEN = localStorage.getItem('propii_token');
+    WORKER_ID = parseInt(localStorage.getItem('propii_worker_id'));
+    const name = localStorage.getItem('propii_worker_name') || '';
+    if (!TOKEN || !WORKER_ID) {
+      window.location.href = 'login.html';
+      return false;
+    }
+    document.getElementById('worker-name-badge').textContent = name;
+    return true;
+  } catch(e) {
+    window.location.href = 'login.html';
+    return false;
+  }
+}
+
+document.getElementById('btn-logout').addEventListener('click', () => {
+  try {
+    localStorage.removeItem('propii_token');
+    localStorage.removeItem('propii_worker_id');
+    localStorage.removeItem('propii_worker_name');
+  } catch(e) {}
+  window.location.href = 'login.html';
+});
+
+// ── Load dashboard ────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const r = await fetch(`${API}/workers/${WORKER_ID}/dashboard`, {
+      headers: { 'Authorization': `Bearer ${TOKEN}` }
+    });
+    if (r.status === 401) { window.location.href = 'login.html'; return; }
+    dashData = await r.json();
+    try { localStorage.setItem('propii_worker_name', dashData.worker.full_name); } catch(e) {}
+    document.getElementById('worker-name-badge').textContent = dashData.worker.full_name;
+    renderPeriod('hoy');
+    renderQR(dashData.worker);
+  } catch(e) {
+    document.getElementById('tx-list').innerHTML = '<p class="empty">Error al cargar datos.</p>';
+  }
+}
+
+function renderPeriod(period) {
+  const d = dashData[period];
+  const total = d.total_mxn;
+  const qty = d.cantidad;
+  const avg = qty > 0 ? (total / qty) : 0;
+
+  document.getElementById('kpi-total').textContent =
+    `$${total.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+  document.getElementById('kpi-cobros').textContent = `${qty} propina${qty !== 1 ? 's' : ''}`;
+  document.getElementById('kpi-avg').textContent = qty > 0
+    ? `$${avg.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2})}`
+    : '—';
+
+  if (d.movimientos.length === 0) {
+    document.getElementById('tx-list').innerHTML = '<p class="empty">Sin propinas en este período.</p>';
+    return;
+  }
+
+  document.getElementById('tx-list').innerHTML = d.movimientos.map(m => `
+    <div class="tx-row">
+      <span class="tx-monto">$${m.monto.toLocaleString('es-MX', {minimumFractionDigits:2})}</span>
+      <span class="tx-fecha">${m.fecha}</span>
+    </div>`).join('');
+}
+
+// ── Period tabs ───────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activePeriod = btn.dataset.period;
+    if (dashData) renderPeriod(activePeriod);
+  });
+});
+
+// ── QR ───────────────────────────────────────────────────────
+function renderQR(worker) {
+  const tipUrl = `https://propii.mx/tip.html?id=${WORKER_ID}`;
+  const card = document.getElementById('qr-card');
+  card.innerHTML = `
+    <div class="qr-box" id="qr-img"></div>
+    <div class="qr-info">
+      <h3>${worker.full_name}</h3>
+      <p>${worker.role || ''} ${worker.hotel_or_place ? '· ' + worker.hotel_or_place : ''}</p>
+      <div class="qr-url">${tipUrl}</div>
+      <button class="btn-copy" id="btn-copy-url">Copiar enlace</button>
+    </div>`;
+
+  new QRCode(document.getElementById('qr-img'), {
+    text: tipUrl,
+    width: 136,
+    height: 136,
+    colorDark: '#111827',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  document.getElementById('btn-copy-url').addEventListener('click', () => {
+    navigator.clipboard.writeText(tipUrl).then(() => {
+      document.getElementById('btn-copy-url').textContent = '¡Copiado!';
+      setTimeout(() => { document.getElementById('btn-copy-url').textContent = 'Copiar enlace'; }, 2000);
+    }).catch(() => {
+      prompt('Copia este enlace:', tipUrl);
+    });
+  });
+}
+
+// ── Perfil / Stripe / Datos ───────────────────────────────────
+async function loadPerfil() {
+  try {
+    const r = await fetch(`${API}/workers/${WORKER_ID}/perfil`, {
+      headers: { 'Authorization': `Bearer ${TOKEN}` }
+    });
+    if (!r.ok) throw new Error();
+    perfilData = await r.json();
+    renderStripeBanner(perfilData);
+    renderDatos(perfilData);
+  } catch(e) {
+    document.getElementById('stripe-banner').innerHTML = '<p class="empty">Error al cargar estado de pagos.</p>';
+    document.getElementById('datos-card').innerHTML = '<p class="empty">Error al cargar datos bancarios.</p>';
+  }
+}
+
+function renderStripeBanner(p) {
+  const el = document.getElementById('stripe-banner');
+  if (p.stripe_completo) {
+    el.innerHTML = `
+      <div class="stripe-banner ok">
+        <span class="stripe-icon">✅</span>
+        <div class="stripe-text">
+          <h4>Pagos activados</h4>
+          <p>Tu cuenta de Stripe está verificada. Recibirás propinas directamente.</p>
+        </div>
+      </div>`;
+  } else if (p.stripe_account_id) {
+    el.innerHTML = `
+      <div class="stripe-banner warn">
+        <span class="stripe-icon">⚠️</span>
+        <div class="stripe-text">
+          <h4>Verificación pendiente</h4>
+          <p>Tu cuenta de Stripe aún no está activa. Completa el proceso para recibir pagos.</p>
+        </div>
+        <button class="btn-stripe" id="btn-stripe-link">Completar verificación</button>
+      </div>`;
+    document.getElementById('btn-stripe-link').addEventListener('click', abrirStripeLink);
+  } else {
+    el.innerHTML = `
+      <div class="stripe-banner bad">
+        <span class="stripe-icon">❌</span>
+        <div class="stripe-text">
+          <h4>Sin cuenta de pagos</h4>
+          <p>No tienes una cuenta de Stripe vinculada. Contacta a tu administrador.</p>
+        </div>
+      </div>`;
+  }
+}
+
+async function abrirStripeLink() {
+  try {
+    const r = await fetch(`${API}/workers/${WORKER_ID}/stripe-link`, {
+      headers: { 'Authorization': `Bearer ${TOKEN}` }
+    });
+    const d = await r.json();
+    if (d.url) window.location.href = d.url;
+  } catch(e) {
+    alert('Error al generar el enlace de Stripe.');
+  }
+}
+
+function renderDatos(p) {
+  const card = document.getElementById('datos-card');
+  const campos = p.campos;
+  const faltanCampos = !campos.fecha_nacimiento || !campos.direccion || !campos.clabe || !campos.rfc;
+
+  const filas = [
+    { icon: '🎂', label: 'Fecha de nacimiento', ok: campos.fecha_nacimiento },
+    { icon: '🏠', label: 'Dirección', ok: campos.direccion },
+    { icon: '🏦', label: 'CLABE interbancaria', ok: campos.clabe },
+    { icon: '🪪', label: 'RFC', ok: campos.rfc },
+  ];
+
+  const filasHtml = filas.map(f => `
+    <div class="campo-fila">
+      <span class="campo-icono">${f.icon}</span>
+      <span class="campo-label">${f.label}</span>
+      <span class="campo-status ${f.ok ? 'ok' : 'missing'}">${f.ok ? '✓ Registrado' : '⚠ Falta'}</span>
+    </div>`).join('');
+
+  let formHtml = '';
+  if (faltanCampos) {
+    formHtml = `
+      <div class="form-completar">
+        <h4>Completar información faltante</h4>
+        <p class="form-note" style="margin-bottom:12px">Una vez guardados, estos datos no podrán modificarse desde aquí. Contacta a soporte si necesitas correcciones.</p>
+        <div class="form-grid">
+          ${!campos.fecha_nacimiento ? `
+          <div class="form-group full">
+            <label>Fecha de nacimiento</label>
+            <input type="date" id="inp-nacimiento" max="${new Date().toISOString().split('T')[0]}">
+          </div>` : ''}
+          ${!campos.direccion ? `
+          <div class="form-group full">
+            <label>Calle y número</label>
+            <input type="text" id="inp-calle" placeholder="Ej. Av. Juárez 123">
+          </div>
+          <div class="form-group">
+            <label>Colonia</label>
+            <input type="text" id="inp-colonia" placeholder="Ej. Centro">
+          </div>
+          <div class="form-group">
+            <label>Ciudad</label>
+            <input type="text" id="inp-ciudad" placeholder="Ej. Monterrey">
+          </div>
+          <div class="form-group">
+            <label>Código postal</label>
+            <input type="text" id="inp-cp" placeholder="Ej. 64000" maxlength="5">
+          </div>` : ''}
+          ${!campos.clabe ? `
+          <div class="form-group full">
+            <label>CLABE interbancaria (18 dígitos)</label>
+            <input type="text" id="inp-clabe" placeholder="000000000000000000" maxlength="18" inputmode="numeric">
+          </div>` : ''}
+          ${!campos.rfc ? `
+          <div class="form-group">
+            <label>RFC</label>
+            <input type="text" id="inp-rfc" placeholder="XAXX010101000" maxlength="13" style="text-transform:uppercase">
+          </div>` : ''}
+        </div>
+        <button class="btn-guardar" id="btn-guardar-datos">Guardar datos</button>
+        <div class="form-msg" id="form-msg"></div>
+      </div>`;
+  }
+
+  card.innerHTML = `
+    <div class="datos-header">
+      <h3>Información bancaria</h3>
+      <p>Estos datos se usan para configurar tu cuenta de pagos y recibir propinas.</p>
+    </div>
+    <div class="datos-body">${filasHtml}</div>
+    ${formHtml}`;
+
+  if (faltanCampos) {
+    document.getElementById('btn-guardar-datos').addEventListener('click', guardarDatos);
+  }
+}
+
+async function guardarDatos() {
+  const btn = document.getElementById('btn-guardar-datos');
+  const msg = document.getElementById('form-msg');
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+  msg.textContent = '';
+  msg.className = 'form-msg';
+
+  const body = {};
+  const nacimiento = document.getElementById('inp-nacimiento');
+  const calle = document.getElementById('inp-calle');
+  const colonia = document.getElementById('inp-colonia');
+  const ciudad = document.getElementById('inp-ciudad');
+  const cp = document.getElementById('inp-cp');
+  const clabe = document.getElementById('inp-clabe');
+  const rfc = document.getElementById('inp-rfc');
+
+  if (nacimiento) body.fecha_nacimiento = nacimiento.value;
+  if (calle) body.calle = calle.value.trim();
+  if (colonia) body.colonia = colonia.value.trim();
+  if (ciudad) body.ciudad = ciudad.value.trim();
+  if (cp) body.codigo_postal = cp.value.trim();
+  if (clabe) {
+    const clabeVal = clabe.value.replace(/\D/g, '');
+    if (clabeVal.length !== 18) {
+      msg.textContent = 'La CLABE debe tener exactamente 18 dígitos.';
+      msg.className = 'form-msg bad';
+      btn.disabled = false; btn.textContent = 'Guardar datos';
+      return;
+    }
+    body.clabe = clabeVal;
+  }
+  if (rfc) {
+    const rfcVal = rfc.value.trim().toUpperCase();
+    if (rfcVal.length < 12 || rfcVal.length > 13) {
+      msg.textContent = 'El RFC debe tener 12 o 13 caracteres.';
+      msg.className = 'form-msg bad';
+      btn.disabled = false; btn.textContent = 'Guardar datos';
+      return;
+    }
+    body.rfc = rfcVal;
+  }
+
+  try {
+    const r = await fetch(`${API}/workers/${WORKER_ID}/completar-datos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (!r.ok) {
+      msg.textContent = d.detail || 'Error al guardar.';
+      msg.className = 'form-msg bad';
+      btn.disabled = false; btn.textContent = 'Guardar datos';
+    } else {
+      msg.textContent = '✓ Datos guardados correctamente. Recarga la página para ver el estado actualizado.';
+      msg.className = 'form-msg ok';
+      btn.textContent = '✓ Guardado';
+      // Recargar perfil después de 2s
+      setTimeout(() => { loadPerfil(); }, 2000);
+    }
+  } catch(e) {
+    msg.textContent = 'Error de conexión. Intenta de nuevo.';
+    msg.className = 'form-msg bad';
+    btn.disabled = false; btn.textContent = 'Guardar datos';
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────
+if (getSession()) {
+  loadDashboard();
+  loadPerfil();
+}
+</script>
+</body>
+</html>
