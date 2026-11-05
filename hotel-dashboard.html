@@ -139,6 +139,44 @@
 
     /* Rank medal */
     .rank { font-size: 18px; flex-shrink: 0; width: 24px; text-align: center; }
+
+    /* Reparto */
+    .modo-option {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 12px; border-radius: 8px; cursor: pointer;
+      border: 1.5px solid #e5e7eb; transition: border-color 0.15s;
+    }
+    .modo-option:has(input:checked) { border-color: #185FA5; background: #EFF6FF; }
+    .modo-option input[type=radio] { margin-top: 3px; accent-color: #185FA5; }
+    .split-row {
+      display: flex; align-items: center; gap: 8px;
+      background: #fff; border-radius: 10px; padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 8px;
+    }
+    .split-input {
+      flex: 1; padding: 8px 10px; border-radius: 6px;
+      border: 1px solid #d1d5db; font-size: 14px;
+      font-family: inherit; outline: none;
+    }
+    .split-input:focus { border-color: #185FA5; }
+    .split-pct {
+      width: 68px; padding: 8px 10px; border-radius: 6px;
+      border: 1px solid #d1d5db; font-size: 14px;
+      font-family: inherit; outline: none; text-align: right;
+    }
+    .split-pct:focus { border-color: #185FA5; }
+    .btn-remove {
+      background: none; border: none; color: #9ca3af;
+      font-size: 18px; cursor: pointer; padding: 2px 4px; line-height: 1;
+    }
+    .btn-remove:hover { color: #dc2626; }
+    .btn-add {
+      background: none; border: 1.5px solid #185FA5; color: #185FA5;
+      font-size: 13px; font-weight: 600; padding: 6px 12px;
+      border-radius: 20px; cursor: pointer; font-family: inherit;
+    }
+    .btn-add:hover { background: #EFF6FF; }
+    select.split-input { background: #fff; }
   </style>
 </head>
 <body>
@@ -176,14 +214,78 @@
   </div>
 
   <div class="tabs">
-    <div class="tab active" onclick="cambiarPeriodo('hoy', this)">Hoy</div>
-    <div class="tab" onclick="cambiarPeriodo('semana', this)">Semana</div>
-    <div class="tab" onclick="cambiarPeriodo('mes', this)">Mes</div>
-    <div class="tab" onclick="cambiarPeriodo('año', this)">Año</div>
+    <div class="tab active" id="tab-hoy" onclick="cambiarPeriodo('hoy', this)">Hoy</div>
+    <div class="tab" id="tab-semana" onclick="cambiarPeriodo('semana', this)">Semana</div>
+    <div class="tab" id="tab-mes" onclick="cambiarPeriodo('mes', this)">Mes</div>
+    <div class="tab" id="tab-año" onclick="cambiarPeriodo('año', this)">Año</div>
+    <div class="tab" id="tab-reparto" onclick="mostrarSeccion('reparto', this)">⚙️ Reparto</div>
   </div>
 
   <div class="body">
     <div class="loading" id="loading">Cargando datos...</div>
+
+    <!-- SECCIÓN REPARTO -->
+    <div id="section-reparto" style="display:none;">
+      <div class="section-title" style="margin-top:0.5rem;">Configuración de reparto de propinas</div>
+
+      <!-- Selector de modo -->
+      <div style="background:#fff;border-radius:12px;padding:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:1rem;">
+        <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:10px;">Modo de reparto</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label class="modo-option" id="modo-individual">
+            <input type="radio" name="modo" value="individual" onchange="onModoChange('individual')" />
+            <div>
+              <div style="font-weight:600;font-size:14px;">Individual</div>
+              <div style="font-size:12px;color:#6b7280;">100% al empleado que cobró la propina</div>
+            </div>
+          </label>
+          <label class="modo-option" id="modo-rol">
+            <input type="radio" name="modo" value="rol" onchange="onModoChange('rol')" />
+            <div>
+              <div style="font-weight:600;font-size:14px;">Por categoría</div>
+              <div style="font-size:12px;color:#6b7280;">Repartir entre roles (Mesero, Botones, etc.)</div>
+            </div>
+          </label>
+          <label class="modo-option" id="modo-empleado">
+            <input type="radio" name="modo" value="empleado" onchange="onModoChange('empleado')" />
+            <div>
+              <div style="font-weight:600;font-size:14px;">Por empleado</div>
+              <div style="font-size:12px;color:#6b7280;">Definir porcentaje para cada persona</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Panel ROL -->
+      <div id="panel-rol" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div class="section-title" style="margin:0;">Categorías y porcentajes</div>
+          <button class="btn-add" onclick="agregarFilaRol()">+ Agregar</button>
+        </div>
+        <div id="filas-rol"></div>
+      </div>
+
+      <!-- Panel EMPLEADO -->
+      <div id="panel-empleado" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div class="section-title" style="margin:0;">Empleados y porcentajes</div>
+          <button class="btn-add" onclick="agregarFilaEmpleado()">+ Agregar</button>
+        </div>
+        <div id="filas-empleado"></div>
+      </div>
+
+      <!-- Total y guardar -->
+      <div id="reparto-footer" style="background:#fff;border-radius:12px;padding:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-top:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span style="font-size:14px;color:#6b7280;">Total asignado</span>
+          <span id="total-pct" style="font-size:18px;font-weight:700;color:#111827;">100%</span>
+        </div>
+        <div id="reparto-error" style="color:#dc2626;font-size:13px;min-height:18px;margin-bottom:8px;"></div>
+        <button class="btn-primary" onclick="guardarReparto()">Guardar configuración</button>
+        <div id="reparto-ok" style="color:#065F46;font-size:13px;text-align:center;margin-top:8px;min-height:18px;"></div>
+      </div>
+    </div>
+
     <div id="content" style="display:none;">
 
       <!-- Resumen total -->
@@ -350,9 +452,171 @@ function toggleDetalle(workerId) {
 }
 
 function cambiarPeriodo(periodo, el) {
+  document.getElementById('section-reparto').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   if (allData) renderPeriodo(periodo);
+}
+
+// ── REPARTO ──────────────────────────────────────────────
+
+let workersLista = []; // workers cargados del dashboard
+let modoActual = 'individual';
+
+function mostrarSeccion(seccion, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('content').style.display = 'none';
+  document.getElementById('section-reparto').style.display = 'block';
+  cargarReparto();
+}
+
+function onModoChange(modo) {
+  modoActual = modo;
+  document.getElementById('panel-rol').style.display = modo === 'rol' ? 'block' : 'none';
+  document.getElementById('panel-empleado').style.display = modo === 'empleado' ? 'block' : 'none';
+  actualizarTotal();
+}
+
+function agregarFilaRol() {
+  const container = document.getElementById('filas-rol');
+  const id = Date.now();
+  const div = document.createElement('div');
+  div.className = 'split-row';
+  div.id = `fila-rol-${id}`;
+  div.innerHTML = `
+    <input class="split-input" type="text" placeholder="Categoría (ej: Mesero)" />
+    <input class="split-pct" type="number" min="0" max="100" placeholder="%" oninput="actualizarTotal()" />
+    <button class="btn-remove" onclick="document.getElementById('fila-rol-${id}').remove(); actualizarTotal()">×</button>
+  `;
+  container.appendChild(div);
+  actualizarTotal();
+}
+
+function agregarFilaEmpleado() {
+  const container = document.getElementById('filas-empleado');
+  const id = Date.now();
+  const div = document.createElement('div');
+  div.className = 'split-row';
+  div.id = `fila-emp-${id}`;
+
+  const opts = workersLista.map(w =>
+    `<option value="${w.id}">${w.nombre} (${w.rol || 'Sin rol'})</option>`
+  ).join('');
+
+  div.innerHTML = `
+    <select class="split-input">${opts || '<option value="">Sin empleados</option>'}</select>
+    <input class="split-pct" type="number" min="0" max="100" placeholder="%" oninput="actualizarTotal()" />
+    <button class="btn-remove" onclick="document.getElementById('fila-emp-${id}').remove(); actualizarTotal()">×</button>
+  `;
+  container.appendChild(div);
+  actualizarTotal();
+}
+
+function actualizarTotal() {
+  if (modoActual === 'individual') {
+    document.getElementById('total-pct').textContent = '100%';
+    document.getElementById('total-pct').style.color = '#065F46';
+    return;
+  }
+  const panel = modoActual === 'rol' ? 'filas-rol' : 'filas-empleado';
+  const inputs = document.getElementById(panel).querySelectorAll('.split-pct');
+  const total = Array.from(inputs).reduce((s, i) => s + (parseFloat(i.value) || 0), 0);
+  const el = document.getElementById('total-pct');
+  el.textContent = `${total.toFixed(0)}%`;
+  el.style.color = Math.abs(total - 100) < 0.1 ? '#065F46' : '#dc2626';
+}
+
+async function cargarReparto() {
+  // Usar workers del dashboard ya cargado
+  if (allData) workersLista = allData.hoy?.trabajadores || [];
+
+  try {
+    const res = await fetch(`${BACKEND}/hotels/${hotelId}/splits`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+
+    // Seleccionar modo
+    modoActual = data.modo || 'individual';
+    document.querySelector(`input[name=modo][value="${modoActual}"]`).checked = true;
+    onModoChange(modoActual);
+
+    // Cargar filas existentes
+    if (modoActual === 'rol' && data.splits.length) {
+      data.splits.forEach(s => {
+        agregarFilaRol();
+        const filas = document.getElementById('filas-rol');
+        const ultima = filas.lastElementChild;
+        ultima.querySelector('input[type=text]').value = s.role || '';
+        ultima.querySelector('.split-pct').value = s.percentage || '';
+      });
+      actualizarTotal();
+    } else if (modoActual === 'empleado' && data.splits.length) {
+      data.splits.forEach(s => {
+        agregarFilaEmpleado();
+        const filas = document.getElementById('filas-empleado');
+        const ultima = filas.lastElementChild;
+        const sel = ultima.querySelector('select');
+        if (sel) sel.value = s.worker_id;
+        ultima.querySelector('.split-pct').value = s.percentage || '';
+      });
+      actualizarTotal();
+    }
+  } catch(e) {}
+}
+
+async function guardarReparto() {
+  const errEl = document.getElementById('reparto-error');
+  const okEl = document.getElementById('reparto-ok');
+  errEl.textContent = '';
+  okEl.textContent = '';
+
+  let splits = [];
+
+  if (modoActual === 'rol') {
+    const filas = document.getElementById('filas-rol').querySelectorAll('.split-row');
+    filas.forEach(f => {
+      const role = f.querySelector('input[type=text]').value.trim();
+      const pct = parseFloat(f.querySelector('.split-pct').value);
+      if (role) splits.push({ role, percentage: pct || 0 });
+    });
+    if (splits.length === 0) { errEl.textContent = 'Agrega al menos una categoría.'; return; }
+    const total = splits.reduce((s, i) => s + i.percentage, 0);
+    if (Math.abs(total - 100) > 0.1) { errEl.textContent = `Los porcentajes deben sumar 100%. Suma actual: ${total.toFixed(0)}%`; return; }
+
+  } else if (modoActual === 'empleado') {
+    const filas = document.getElementById('filas-empleado').querySelectorAll('.split-row');
+    filas.forEach(f => {
+      const worker_id = parseInt(f.querySelector('select').value);
+      const pct = parseFloat(f.querySelector('.split-pct').value);
+      if (worker_id) splits.push({ worker_id, percentage: pct || 0 });
+    });
+    if (splits.length === 0) { errEl.textContent = 'Agrega al menos un empleado.'; return; }
+    const total = splits.reduce((s, i) => s + i.percentage, 0);
+    if (Math.abs(total - 100) > 0.1) { errEl.textContent = `Los porcentajes deben sumar 100%. Suma actual: ${total.toFixed(0)}%`; return; }
+  }
+
+  try {
+    const res = await fetch(`${BACKEND}/hotels/${hotelId}/splits`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ modo: modoActual, splits })
+    });
+    if (res.ok) {
+      okEl.textContent = '✓ Configuración guardada correctamente';
+    } else {
+      const err = await res.json();
+      errEl.textContent = err.detail || 'Error al guardar';
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión';
+  }
 }
 
 // Init
