@@ -352,3 +352,20 @@ input,select,textarea{font-weight:400;color:var(--text)}
   .f-art .stage{aspect-ratio:auto;min-height:300px;padding:28px 0}
   .card{width:90%}
 }
+
+/* Premium card destacada */
+.plan.pro{background:linear-gradient(160deg,#0A79B8 0%,var(--blue) 45%,var(--blue-dark) 100%);border:none;color:#fff;box-shadow:0 24px 60px rgba(0,68,107,.35)}
+.plan.pro h3,.plan.pro .price{color:#fff}
+.plan.pro .per{color:rgba(255,255,255,.75)}
+.pfeat{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:16px;margin-bottom:10px;background:rgba(255,255,255,.08);transition:background .3s,transform .3s var(--ease)}
+.pfeat:hover{background:rgba(255,255,255,.14);transform:translateX(4px)}
+.pfeat.star{background:rgba(254,121,0,.18);border:1px solid rgba(254,121,0,.55)}
+.pf-ic{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pfeat.star .pf-ic{background:var(--orange)}
+.pf-ic svg{width:20px;height:20px;stroke:#fff}
+.pfeat b{display:block;font-family:var(--display);font-size:1rem;color:#fff}
+.pfeat span{display:block;font-size:.86rem;color:rgba(255,255,255,.8);line-height:1.45;margin-top:2px}
+.pf-stars{color:#FFC233;letter-spacing:3px;margin-top:6px;font-size:1rem}
+.in .pf-stars{animation:starPulse 2.4s ease-in-out infinite}
+@keyframes starPulse{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+.plan.pro .btn{margin-top:18px}
