@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /worker-dashboard.html
+Disallow: /hotel-dashboard.html
+Disallow: /pago.html
+Disallow: /stripe-success.html
+
+Sitemap: https://www.propii.mx/sitemap.xml
