@@ -53,6 +53,15 @@
 
     .btn-register { width: 100%; background: #F7931E; color: #fff; border: none; padding: 0.9rem; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; font-family: inherit; }
     .btn-register:disabled { opacity: 0.6; cursor: not-allowed; }
+    .fees { background: rgba(247,147,30,0.08); border: 1px solid rgba(247,147,30,0.35); border-radius: 14px; padding: 1rem 1.1rem; margin: 1.5rem 0 1rem; }
+    .fees h4 { color: #F7931E; font-size: 0.95rem; margin-bottom: 0.6rem; }
+    .fees ul { list-style: none; display: grid; gap: 0.5rem; }
+    .fees li { font-size: 0.85rem; color: rgba(255,255,255,0.8); line-height: 1.45; padding-left: 1.1rem; position: relative; }
+    .fees li::before { content: '•'; color: #F7931E; position: absolute; left: 0; }
+    .fees li b { color: #fff; }
+    .consent { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.82rem; color: rgba(255,255,255,0.75); line-height: 1.45; margin: 0.8rem 0 0.4rem; cursor: pointer; }
+    .consent input { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; accent-color: #F7931E; }
+    .consent a { color: #F7931E; }
     .error { color: #f87171; font-size: 0.85rem; margin-top: 0.6rem; text-align: center; }
     .footer-link { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: rgba(255,255,255,0.4); }
     .footer-link a { color: #F7931E; text-decoration: none; }
@@ -190,6 +199,15 @@
       <input type="password" id="t-password" placeholder="Mínimo 6 caracteres">
     </div>
 
+    <label class="consent">
+      <input type="checkbox" id="t-acepto-cobros">
+      <span>Entiendo y acepto las <a href="/comisiones#trabajadores" target="_blank" rel="noopener">comisiones y cobros</a> de Propii.</span>
+    </label>
+    <label class="consent">
+      <input type="checkbox" id="t-acepto-privacidad">
+      <span>He leído el <a href="/aviso-de-privacidad" target="_blank" rel="noopener">Aviso de privacidad</a> y doy mi consentimiento expreso para el tratamiento de mis datos personales, incluidos mis datos financieros (CLABE) y fiscales (RFC).</span>
+    </label>
+
     <button class="btn-register" id="btn-register-trabajador" onclick="registrarTrabajador()">Crear cuenta y obtener QR</button>
     <div class="error" id="t-error-msg"></div>
   </div>
@@ -224,6 +242,15 @@
       <label>Confirmar contraseña</label>
       <input type="password" id="e-password2" placeholder="Repite la contraseña">
     </div>
+
+    <label class="consent">
+      <input type="checkbox" id="e-acepto-cobros">
+      <span>Entiendo y acepto los <a href="/comisiones#empresas" target="_blank" rel="noopener">planes, comisiones y cobros</a> de Propii.</span>
+    </label>
+    <label class="consent">
+      <input type="checkbox" id="e-acepto-privacidad">
+      <span>He leído y acepto el <a href="/aviso-de-privacidad" target="_blank" rel="noopener">Aviso de privacidad</a>.</span>
+    </label>
 
     <button class="btn-register" id="btn-register-empresa" onclick="registrarEmpresa()">Registrar empresa</button>
     <div class="error" id="e-error-msg"></div>
@@ -329,6 +356,8 @@ async function registrarTrabajador() {
   if (eTel) { errEl.textContent = eTel; return; }
   const eCP = validarCP(codigo_postal);
   if (eCP) { errEl.textContent = eCP; return; }
+  if (!document.getElementById('t-acepto-cobros').checked) { errEl.textContent = 'Para continuar acepta las comisiones y cobros.'; return; }
+  if (!document.getElementById('t-acepto-privacidad').checked) { errEl.textContent = 'Para continuar acepta el Aviso de privacidad.'; return; }
 
   const btn = document.getElementById('btn-register-trabajador');
   btn.disabled = true; btn.textContent = 'Creando cuenta...'; errEl.textContent = '';
@@ -383,6 +412,8 @@ async function registrarEmpresa() {
   if (!name || !email || !password) { errEl.textContent = 'Por favor llena nombre, email y contraseña.'; return; }
   if (password.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
   if (password !== password2) { errEl.textContent = 'Las contraseñas no coinciden.'; return; }
+  if (!document.getElementById('e-acepto-cobros').checked) { errEl.textContent = 'Para continuar acepta los planes, comisiones y cobros.'; return; }
+  if (!document.getElementById('e-acepto-privacidad').checked) { errEl.textContent = 'Para continuar acepta el Aviso de privacidad.'; return; }
 
   const btn = document.getElementById('btn-register-empresa');
   btn.disabled = true; btn.textContent = 'Registrando...'; errEl.textContent = '';
