@@ -36,6 +36,12 @@
    "logo": "https://www.propii.mx/logo.png",
    "email": "hola@propii.mx",
    "areaServed": "MX",
+   "sameAs": [
+    "https://www.linkedin.com/company/propiimx/",
+    "https://www.instagram.com/propiimx/",
+    "https://www.facebook.com/propiiapp",
+    "https://www.tiktok.com/@propii.mx"
+   ],
    "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "ventas",
@@ -148,16 +154,16 @@
 <body>
 <header>
   <nav class="wrap nav" aria-label="Principal">
-    <a href="index.html" aria-label="Propii — inicio"><img src="logo-propii.png" alt="Propii — propinas digitales" width="454" height="204"></a>
+    <a href="/" aria-label="Propii — inicio"><img src="logo-propii.png" alt="Propii — propinas digitales" width="454" height="204"></a>
     <ul>
       <li><a href="#como-funciona">Cómo funciona</a></li>
-      <li><a href="empresas.html">Empresas</a></li>
-      <li><a href="trabajadores.html">Trabajadores</a></li>
+      <li><a href="/empresas">Empresas</a></li>
+      <li><a href="/trabajadores">Trabajadores</a></li>
       <li><a href="#precios">Precios</a></li>
       <li><a href="#preguntas">Preguntas</a></li>
     </ul>
     <div class="nav-cta">
-      <a class="login" href="login.html">Iniciar sesión</a>
+      <a class="login" href="/login">Iniciar sesión</a>
       <a class="btn btn-orange" href="#contacto">Contáctanos</a>
     </div>
   </nav>
@@ -171,8 +177,8 @@
       <h1 data-words><span class="w">Cobra propinas con</span> <span class="w hl">un QR.</span> <span class="w">Sin efectivo.</span></h1>
       <p class="lead">El cliente escanea, paga con tarjeta o celular, y la propina llega a la cuenta del trabajador.</p>
       <div class="hero-ctas">
-        <a class="btn btn-orange" href="empresas.html">Soy empresa <span class="arr">→</span></a>
-        <a class="btn btn-ghost" href="trabajadores.html">Soy trabajador <span class="arr">→</span></a>
+        <a class="btn btn-orange" href="/empresas">Soy empresa <span class="arr">→</span></a>
+        <a class="btn btn-ghost" href="/trabajadores">Soy trabajador <span class="arr">→</span></a>
       </div>
       <div class="pills"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"  aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M3 3l18 18"/></svg>Sin app</span><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"  aria-hidden="true"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/></svg>Directo a CLABE</span><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"  aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>Pagos con Stripe</span></div>
     </div>
@@ -218,13 +224,13 @@
   <div class="wrap">
     <div class="sec-head center reveal"><span class="eyebrow">Elige tu camino</span><h2>¿Eres empresa o trabajador?</h2></div>
     <div class="split">
-      <a class="aud b2b reveal left" href="empresas.html">
+      <a class="aud b2b reveal left" href="/empresas">
         <div class="aud-art"><div class="mini"><b>Propinas del equipo</b><div class="bars"><i style="height:40%"></i><i style="height:65%"></i><i style="height:50%"></i><i style="height:85%"></i><i style="height:70%"></i><i style="height:100%"></i></div></div></div>
         <h3>Para empresas</h3>
         <p>Sin ISR ni nómina por propinas, sin hardware, reparto automático y un motor de reseñas en Google.</p>
         <span class="go">Ver ventajas para empresas <span class="arr">→</span></span>
       </a>
-      <a class="aud b2c reveal right" href="trabajadores.html">
+      <a class="aud b2c reveal right" href="/trabajadores">
         <div class="aud-art"><div class="mini"><b>¡Recibiste una propina!</b><div style="font-family:var(--display);font-weight:800;font-size:1.6rem;color:#1F8A4C;margin-top:6px">+$50</div><div class="stars">★★★★★</div></div></div>
         <h3>Para trabajadores</h3>
         <p>Registro gratis. Nunca más pierdes una propina por falta de efectivo.</p>
@@ -330,10 +336,11 @@
   <div class="wrap">
     <div class="foot">
       <div><img src="logo-blanco.png" alt="Propii" width="1053" height="422"><p>Propinas digitales con QR para México.</p></div>
-      <div><h4>Propii</h4><ul><li><a href="index.html#como-funciona">Cómo funciona</a></li><li><a href="index.html#precios">Precios</a></li><li><a href="index.html#preguntas">Preguntas frecuentes</a></li></ul></div>
-      <div><h4>Soluciones</h4><ul><li><a href="empresas.html">Para empresas</a></li><li><a href="trabajadores.html">Para trabajadores</a></li></ul></div>
-      <div><h4>Cuenta</h4><ul><li><a href="registro.html?tipo=trabajador">Registro de trabajador</a></li><li><a href="login.html">Iniciar sesión</a></li></ul></div>
+      <div><h4>Propii</h4><ul><li><a href="/#como-funciona">Cómo funciona</a></li><li><a href="/#precios">Precios</a></li><li><a href="/#preguntas">Preguntas frecuentes</a></li></ul></div>
+      <div><h4>Soluciones</h4><ul><li><a href="/empresas">Para empresas</a></li><li><a href="/trabajadores">Para trabajadores</a></li></ul></div>
+      <div><h4>Cuenta</h4><ul><li><a href="/registro?tipo=trabajador">Registro de trabajador</a></li><li><a href="/login">Iniciar sesión</a></li></ul></div>
       <div><h4>Contacto</h4><ul><li><a href="mailto:hola@propii.mx">hola@propii.mx</a></li></ul></div>
+      <div><h4>Síguenos</h4><ul><li><a href="https://www.linkedin.com/company/propiimx/" rel="noopener" target="_blank">LinkedIn</a></li><li><a href="https://www.instagram.com/propiimx/" rel="noopener" target="_blank">Instagram</a></li><li><a href="https://www.facebook.com/propiiapp" rel="noopener" target="_blank">Facebook</a></li><li><a href="https://www.tiktok.com/@propii.mx" rel="noopener" target="_blank">TikTok</a></li></ul></div>
     </div>
     <div class="copy">© <span id="yr"></span> Propii. Pagos procesados por Stripe.</div>
   </div>
