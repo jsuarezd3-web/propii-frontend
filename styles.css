@@ -397,3 +397,12 @@ input,select,textarea{font-weight:400;color:var(--text)}
 .rel:hover{border-color:var(--orange);transform:translateY(-4px)}
 .rel .arr{color:var(--orange);transition:transform .25s var(--ease)}.rel:hover .arr{transform:translateX(4px)}
 @media(max-width:800px){.rels{grid-template-columns:1fr}}
+
+/* Botón Regístrate en el header */
+.nav-cta .nav-reg{border-color:var(--blue);color:var(--blue)}
+.nav-cta .nav-reg:hover{background:var(--blue);color:#fff}
+@media(max-width:1060px){.nav ul{gap:18px}}
+@media(max-width:600px){.nav-cta .nav-contact{display:none}}
+@media(max-width:1100px) and (min-width:901px){.nav-cta .login{display:none}}
+html{overflow-x:hidden}
+@media(max-width:600px){.nav-cta .login{display:inline;font-size:.88rem}.nav-cta .nav-reg{padding:9px 14px}}
