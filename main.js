@@ -87,13 +87,17 @@
   });
   window.addEventListener('pageshow', function () { document.body.classList.remove('leaving'); });
 
+  var EN = (document.documentElement.lang || '').indexOf('en') === 0;
+  var T = EN ? {sending:'Sending…',send:'Send',ok:'Thanks! We got your message and will be in touch soon.',err:'Could not send. Email us at <a href="mailto:hola@propii.mx">hola@propii.mx</a>.'}
+            : {sending:'Enviando…',send:'Enviar',ok:'¡Gracias! Recibimos tu mensaje y te contactaremos pronto.',err:'No se pudo enviar. Escríbenos a <a href="mailto:hola@propii.mx">hola@propii.mx</a>.'};
+
   // Contact forms → FormSubmit (llega a hola@propii.mx)
   document.querySelectorAll('.lead-form').forEach(function (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
       var btn = form.querySelector('button[type=submit]'), msg = form.querySelector('.form-msg');
       if (form._honey && form._honey.value) return;
-      btn.disabled = true; btn.textContent = 'Enviando…'; msg.className = 'form-msg';
+      btn.disabled = true; btn.textContent = T.sending; msg.className = 'form-msg';
       try {
         var res = await fetch('https://formsubmit.co/ajax/hola@propii.mx', {
           method: 'POST',
@@ -103,11 +107,11 @@
         var data = await res.json().catch(function () { return {}; });
         if (!res.ok || data.success === 'false' || data.success === false) throw new Error();
         form.reset(); msg.className = 'form-msg ok';
-        msg.textContent = '¡Gracias! Recibimos tu mensaje y te contactaremos pronto.';
+        msg.textContent = T.ok;
       } catch (err) {
         msg.className = 'form-msg err';
-        msg.innerHTML = 'No se pudo enviar. Escríbenos a <a href="mailto:hola@propii.mx">hola@propii.mx</a>.';
-      } finally { btn.disabled = false; btn.textContent = 'Enviar'; }
+        msg.innerHTML = T.err;
+      } finally { btn.disabled = false; btn.textContent = T.send; }
     });
   });
 
