@@ -369,3 +369,16 @@ input,select,textarea{font-weight:400;color:var(--text)}
 .in .pf-stars{animation:starPulse 2.4s ease-in-out infinite}
 @keyframes starPulse{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 .plan.pro .btn{margin-top:18px}
+
+/* Aviso de privacidad */
+.legal{padding:56px 0 88px}
+.legal-wrap{max-width:820px}
+.legal h1{font-size:clamp(1.9rem,4vw,2.6rem);margin-bottom:6px}
+.legal .upd{color:var(--muted);font-size:.9rem;margin-bottom:28px}
+.legal h2{font-size:1.3rem;margin:34px 0 10px}
+.legal h3{font-size:1.02rem;margin:18px 0 6px;color:var(--blue)}
+.legal p{color:var(--text);margin-bottom:10px}
+.legal ul{margin:0 0 12px 20px;display:grid;gap:6px}
+.legal li{color:var(--text)}
+.copy a{color:#C9D7E3}.copy a:hover{color:var(--orange)}
+.privacy a{color:var(--blue)}

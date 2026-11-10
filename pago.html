@@ -250,11 +250,12 @@ function showSuccess(amount) {
     <div style="font-size:14px; color:#6b7280; margin-bottom:24px;">${workerName} ${tx.received} $${parseFloat(amount).toFixed(2)} MXN</div>
 
     ${mensajeAgradecimiento ? `<div style="background:#F4F6F9; border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:14px; color:#374151; font-style:italic;">"${mensajeAgradecimiento}"</div>` : ''}
+    ${GOOGLE_REVIEW_URL ? `
     <div style="margin-bottom:16px;">
       <div style="font-size:13px; color:#6b7280; margin-bottom:10px;">${tx.reviewPrompt}</div>
       ${[1,2,3,4,5].map(i => `<span class="star" id="star-${i}" onclick="handleStar(${i})">☆</span>`).join('')}
     </div>
-    <div id="review-feedback" style="font-size:13px; color:#6b7280;"></div>
+    <div id="review-feedback" style="font-size:13px; color:#6b7280;"></div>` : ''}
   `;
 }
 
